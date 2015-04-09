@@ -1,4 +1,4 @@
-# windy-oak
+# Codename: windy oak
 
 ## Beschreibung
 
@@ -10,7 +10,7 @@ Zur Zeit existiert keine zentrale Anlaufstelle, wenn es um die Bekantmachung von
 
 ## Geplante Funktionen
 
-* öffentliche Präsentation von *geplanten* Projekten (innerhalb der Hochschule)
+* öffentliche Präsentation von geplanten Projekten (innerhalb der Hochschule)
 * taggen des Projektes
 * Kommentieren der Projektvorstellung (durch angemeldete Benutzer)
 * Projekt-Status (geplant, in Durchführung, abgeschlossen, ...)
@@ -20,13 +20,11 @@ Zur Zeit existiert keine zentrale Anlaufstelle, wenn es um die Bekantmachung von
 * Bekanntmachungen (importiert von RSS Feeds)
 * Speicherung in SQL-DB
 
-## evtl. (zukünftig) geplante Funktionen
+## mögliche Erweiterungen
 
 * Termine mit iCal Anbindung
 * Integration in HSMW App
 
-
-## Übersicht
 
 ## Gruppenmitglieder
 
