@@ -24,13 +24,11 @@ Zur Zeit existiert keine zentrale Anlaufstelle, wenn es um die Bekantmachung von
 
 * Termine mit iCal Anbindung
 * Integration in HSMW App
-
+* Datei-Upload (Download über REST-URL)
 
 ## Gruppenmitglieder
 
 * Konstantin Lorenz (klorenz1/IF13-wI-B)
 * Felix Haller (fhaller1/IF13-wI-B)
 
-
-## offene Fragen
 

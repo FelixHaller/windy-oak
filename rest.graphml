@@ -98,7 +98,7 @@
             <y:AttributeLabel>
 </y:AttributeLabel>
             <y:MethodLabel>&lt;&lt;GET&gt;&gt; list() : Project[]
-&lt;&lt;POST&gt;&gt; create() : Project.id</y:MethodLabel>
+&lt;&lt;POST&gt;&gt; create() : Project</y:MethodLabel>
           </y:UML>
         </y:UMLClassNode>
       </data>
@@ -122,7 +122,6 @@
 </y:AttributeLabel>
             <y:MethodLabel>&lt;&lt;GET&gt;&gt; show()
 &lt;&lt;PUT&gt;&gt; update()
-&lt;&lt;PATCH&gt;&gt; partUpdate()
 &lt;&lt;DELETE&gt;&gt; delete()</y:MethodLabel>
           </y:UML>
         </y:UMLClassNode>
@@ -157,7 +156,7 @@
           <y:Geometry height="139.0" width="201.213125" x="826.215883620689" y="178.71150862068964"/>
           <y:Fill color="#C0C0C0" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="13" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="19.1328125" modelName="custom" textColor="#000000" visible="true" width="128.62353515625" x="36.294794921874995" y="25.96875">ProjectPostsPost<y:LabelModel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="13" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="19.1328125" modelName="custom" textColor="#000000" visible="true" width="88.474609375" x="56.369257812499995" y="25.96875">ProjectPost<y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
             </y:LabelModel>
             <y:ModelParameter>
@@ -189,8 +188,8 @@
           <y:UML clipContent="true" constraint="" omitDetails="false" stereotype="Resource" use3DEffect="true">
             <y:AttributeLabel>
 </y:AttributeLabel>
-            <y:MethodLabel>&lt;&lt;GET&gt;&gt; list() : Project[]
-&lt;&lt;POST&gt;&gt; create() : Project.id</y:MethodLabel>
+            <y:MethodLabel>&lt;&lt;GET&gt;&gt; list() : Comment[]
+&lt;&lt;POST&gt;&gt; create() : Comment</y:MethodLabel>
           </y:UML>
         </y:UMLClassNode>
       </data>
@@ -214,7 +213,6 @@
 </y:AttributeLabel>
             <y:MethodLabel>&lt;&lt;GET&gt;&gt; show()
 &lt;&lt;PUT&gt;&gt; update()
-&lt;&lt;PATCH&gt;&gt; partUpdate()
 &lt;&lt;DELETE&gt;&gt; delete()</y:MethodLabel>
           </y:UML>
         </y:UMLClassNode>
@@ -227,7 +225,52 @@
           <y:Geometry height="139.0" width="201.213125" x="-86.86385775862061" y="347.71150862068964"/>
           <y:Fill color="#C0C0C0" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="13" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="19.1328125" modelName="custom" textColor="#000000" visible="true" width="44.14892578125" x="78.532099609375" y="25.96875">Posts<y:LabelModel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="13" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="19.1328125" modelName="custom" textColor="#000000" visible="true" width="54.8193359375" x="73.19689453125" y="25.96875">Recent<y:LabelModel>
+              <y:SmartNodeLabelModel distance="4.0"/>
+            </y:LabelModel>
+            <y:ModelParameter>
+              <y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="-0.03703090122767855" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/>
+            </y:ModelParameter>
+          </y:NodeLabel>
+          <y:UML clipContent="true" constraint="" omitDetails="false" stereotype="Resource" use3DEffect="true">
+            <y:AttributeLabel>
+</y:AttributeLabel>
+            <y:MethodLabel>&lt;&lt;GET&gt;&gt; list() : ProjAndPosts[]
+</y:MethodLabel>
+          </y:UML>
+        </y:UMLClassNode>
+      </data>
+    </node>
+    <node id="n10">
+      <data key="d4"/>
+      <data key="d6">
+        <y:UMLClassNode>
+          <y:Geometry height="139.0" width="201.213125" x="217.4960560344826" y="347.71150862068964"/>
+          <y:Fill color="#C0C0C0" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="13" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="19.1328125" modelName="custom" textColor="#000000" visible="true" width="114.62060546875" x="43.296259765624995" y="25.96875">RecentProjects<y:LabelModel>
+              <y:SmartNodeLabelModel distance="4.0"/>
+            </y:LabelModel>
+            <y:ModelParameter>
+              <y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="-0.03703090122767855" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/>
+            </y:ModelParameter>
+          </y:NodeLabel>
+          <y:UML clipContent="true" constraint="" omitDetails="false" stereotype="Resource" use3DEffect="true">
+            <y:AttributeLabel>
+</y:AttributeLabel>
+            <y:MethodLabel>&lt;&lt;GET&gt;&gt; list() : Project[]</y:MethodLabel>
+          </y:UML>
+        </y:UMLClassNode>
+      </data>
+    </node>
+    <node id="n11">
+      <data key="d4"/>
+      <data key="d6">
+        <y:UMLClassNode>
+          <y:Geometry height="139.0" width="201.213125" x="217.4960560344826" y="516.7115086206896"/>
+          <y:Fill color="#C0C0C0" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="13" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="19.1328125" modelName="custom" textColor="#000000" visible="true" width="94.96826171875" x="53.122431640624995" y="25.96875">RecentPosts<y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
             </y:LabelModel>
             <y:ModelParameter>
@@ -238,28 +281,6 @@
             <y:AttributeLabel>
 </y:AttributeLabel>
             <y:MethodLabel>&lt;&lt;GET&gt;&gt; list() : Post[]</y:MethodLabel>
-          </y:UML>
-        </y:UMLClassNode>
-      </data>
-    </node>
-    <node id="n10">
-      <data key="d4"/>
-      <data key="d6">
-        <y:UMLClassNode>
-          <y:Geometry height="139.0" width="201.213125" x="217.49605603448254" y="347.71150862068964"/>
-          <y:Fill color="#C0C0C0" transparent="false"/>
-          <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="13" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="19.1328125" modelName="custom" textColor="#000000" visible="true" width="76.56005859375" x="62.326533203124995" y="25.96875">PostsPost<y:LabelModel>
-              <y:SmartNodeLabelModel distance="4.0"/>
-            </y:LabelModel>
-            <y:ModelParameter>
-              <y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="-0.03703090122767855" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/>
-            </y:ModelParameter>
-          </y:NodeLabel>
-          <y:UML clipContent="true" constraint="" omitDetails="false" stereotype="Resource" use3DEffect="true">
-            <y:AttributeLabel>
-</y:AttributeLabel>
-            <y:MethodLabel>&lt;&lt;GET&gt;&gt; show()</y:MethodLabel>
           </y:UML>
         </y:UMLClassNode>
       </data>
@@ -331,13 +352,12 @@
     <edge id="e5" source="n4" target="n5">
       <data key="d10">
         <y:PolyLineEdge>
-          <y:Path sx="100.58824348449718" sy="0.0" tx="0.0" ty="0.0">
-            <y:Point x="427.9460541374011" y="79.21150862068964"/>
-            <y:Point x="427.9460541374011" y="248.21150862068964"/>
+          <y:Path sx="116.08537514640233" sy="0.023878425123996294" tx="0.0" ty="0.0">
+            <y:Point x="434.1879936808849" y="248.21150862068964"/>
           </y:Path>
           <y:LineStyle color="#000000" type="dashed" width="1.0"/>
           <y:Arrows source="none" target="plain"/>
-          <y:EdgeLabel alignment="center" configuration="AutoFlippingLabel" distance="2.0" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.96875" modelName="side_slider" preferredPlacement="anywhere" ratio="0.8330327136211347" textColor="#000000" visible="true" width="40.2109375" x="31.506022968821583" y="170.9999989160998">/posts<y:PreferredPlacementDescriptor angle="0.0" angleOffsetOnRightSide="0" angleReference="absolute" angleRotationOnRightSide="co" distance="-1.0" frozen="true" placement="anywhere" side="anywhere" sideReference="relative_to_edge_flow"/>
+          <y:EdgeLabel alignment="center" configuration="AutoFlippingLabel" distance="2.0" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.96875" modelName="side_slider" preferredPlacement="anywhere" ratio="0.8413395635534953" textColor="#000000" visible="true" width="40.2109375" x="19.166024722985355" y="170.976118911217">/posts<y:PreferredPlacementDescriptor angle="0.0" angleOffsetOnRightSide="0" angleReference="absolute" angleRotationOnRightSide="co" distance="-1.0" frozen="true" placement="anywhere" side="anywhere" sideReference="relative_to_edge_flow"/>
           </y:EdgeLabel>
           <y:BendStyle smoothed="false"/>
         </y:PolyLineEdge>
@@ -375,7 +395,7 @@
           </y:Path>
           <y:LineStyle color="#000000" type="dashed" width="1.0"/>
           <y:Arrows source="none" target="plain"/>
-          <y:EdgeLabel alignment="center" configuration="AutoFlippingLabel" distance="2.0" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.96875" modelName="side_slider" preferredPlacement="anywhere" ratio="0.8747161951687361" textColor="#000000" visible="true" width="40.2109375" x="74.9261990672145" y="579.6201695093615">/posts<y:PreferredPlacementDescriptor angle="0.0" angleOffsetOnRightSide="0" angleReference="absolute" angleRotationOnRightSide="co" distance="-1.0" frozen="true" placement="anywhere" side="anywhere" sideReference="relative_to_edge_flow"/>
+          <y:EdgeLabel alignment="center" configuration="AutoFlippingLabel" distance="2.0" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.96875" modelName="side_slider" preferredPlacement="anywhere" ratio="0.8747161951687361" textColor="#000000" visible="true" width="46.650390625" x="71.7064725047145" y="579.6201695093615">/recent<y:PreferredPlacementDescriptor angle="0.0" angleOffsetOnRightSide="0" angleReference="absolute" angleRotationOnRightSide="co" distance="-1.0" frozen="true" placement="anywhere" side="anywhere" sideReference="relative_to_edge_flow"/>
           </y:EdgeLabel>
           <y:BendStyle smoothed="false"/>
         </y:PolyLineEdge>
@@ -387,7 +407,21 @@
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
           <y:LineStyle color="#000000" type="dashed" width="1.0"/>
           <y:Arrows source="none" target="plain"/>
-          <y:EdgeLabel alignment="center" configuration="AutoFlippingLabel" distance="2.0" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.96875" modelName="side_slider" preferredPlacement="anywhere" ratio="0.5" textColor="#000000" visible="true" width="60.1796875" x="21.516106462149708" y="1.9999912867052672">/{postid}<y:PreferredPlacementDescriptor angle="0.0" angleOffsetOnRightSide="0" angleReference="absolute" angleRotationOnRightSide="co" distance="-1.0" frozen="true" placement="anywhere" side="anywhere" sideReference="relative_to_edge_flow"/>
+          <y:EdgeLabel alignment="center" configuration="AutoFlippingLabel" distance="2.0" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.96875" modelName="side_slider" preferredPlacement="anywhere" ratio="0.5" textColor="#000000" visible="true" width="56.20703125" x="23.502434587149736" y="1.9999912867052672">/projects<y:PreferredPlacementDescriptor angle="0.0" angleOffsetOnRightSide="0" angleReference="absolute" angleRotationOnRightSide="co" distance="-1.0" frozen="true" placement="anywhere" side="anywhere" sideReference="relative_to_edge_flow"/>
+          </y:EdgeLabel>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e10" source="n9" target="n11">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="100.58824348449707" sy="0.0" tx="0.0" ty="0.0">
+            <y:Point x="114.33094822587645" y="586.2115086206896"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:EdgeLabel alignment="center" configuration="AutoFlippingLabel" distance="2.0" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.96875" modelName="side_slider" preferredPlacement="anywhere" ratio="0.7450314431228569" textColor="#000000" visible="true" width="40.2109375" x="26.91458550420296" y="101.47728620858027">/posts<y:PreferredPlacementDescriptor angle="0.0" angleOffsetOnRightSide="0" angleReference="absolute" angleRotationOnRightSide="co" distance="-1.0" frozen="true" placement="anywhere" side="anywhere" sideReference="relative_to_edge_flow"/>
           </y:EdgeLabel>
           <y:BendStyle smoothed="false"/>
         </y:PolyLineEdge>
