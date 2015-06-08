@@ -1,0 +1,7 @@
+apply plugin: 'application'
+mainClassName = "phonebook.client.Client"
+
+dependencies {
+    compile project(':core')
+    compile 'commons-httpclient:commons-httpclient:3.1'
+}

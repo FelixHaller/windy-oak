@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<user id="1">
+    <name>anne</name>
+    <phone-numbers>
+        <number>
+            <caption>festnetz</caption>
+            <number>03727-12345678</number>
+        </number>
+        <number>
+            <caption>mobil</caption>
+            <number>0172-12345678</number>
+        </number>
+    </phone-numbers>
+</user>
