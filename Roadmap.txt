@@ -1,0 +1,12 @@
+#Datenbank (Konstantin)
+- Datenbank einrichten (inkl. Testdatensätze)
+- Datenbankabfragen testen (lesend)
+- Datenbankabfragen testen (schreibend)
+- Datenbankdokumentation erstellen
+
+#Webservice (Felix)
+- Grundgerüst erstellen
+- /Projects/ 			Liste aller Projekte abrufen
+- /Projects/{id} 		Projektdetails abrufen
+
+
