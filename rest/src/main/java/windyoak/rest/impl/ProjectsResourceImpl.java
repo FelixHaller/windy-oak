@@ -59,6 +59,16 @@ public class ProjectsResourceImpl implements ProjectsResource
         return Response.status(Status.OK).entity(project).build();
     }
 
+    @Override
+    public Response updateProject(int projectId) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Response deleteProject(int projectId) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 
     
 

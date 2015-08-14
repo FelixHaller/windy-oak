@@ -6,9 +6,11 @@
 package windyoak.rest;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -22,34 +24,50 @@ import javax.ws.rs.core.UriInfo;
  * @author fhaller1
  */
 @Path("projects")
-public interface ProjectsResource
-{
+public interface ProjectsResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(
-        {
-            MediaType.APPLICATION_XML,
-            MediaType.APPLICATION_JSON
-        })
+            {
+                MediaType.APPLICATION_XML,
+                MediaType.APPLICATION_JSON
+            })
     public Response createProject(@Context UriInfo uriInfo, @FormParam("name") String name);
 
     @GET
     @Produces(
-        {
-            MediaType.APPLICATION_XML,
-            MediaType.APPLICATION_JSON
-        })
+            {
+                MediaType.APPLICATION_XML,
+                MediaType.APPLICATION_JSON
+            })
     public Response getProjects();
-    
+
     @GET
     @Produces(
-        {
-            MediaType.APPLICATION_XML,
-            MediaType.APPLICATION_JSON
-        })
+            {
+                MediaType.APPLICATION_XML,
+                MediaType.APPLICATION_JSON
+            })
     @Path("{projectid}")
     public Response getProject(@PathParam("projectid") int projectId);
+
+    @PUT
+    @Produces({
+                MediaType.APPLICATION_XML,
+                MediaType.APPLICATION_JSON
+    })
+    @Path("{projectid}")
+    public Response updateProject(@PathParam("projectid") int projectId);
+
+    @DELETE
+    @Produces({
+                MediaType.APPLICATION_XML,
+                MediaType.APPLICATION_JSON
+    })
+    @Path("{projectid}")
+    public Response deleteProject(@PathParam("projectid") int projectId);
+
 
 //    @GET
 //    @Produces(
@@ -71,12 +89,7 @@ public interface ProjectsResource
 //    @Path("{userid}" + "/numbers/" + "{caption}")
 //    public Response deleteNumber(@PathParam("userid") int userId,
 //        @PathParam("caption") String caption);
-
 //    @DELETE
 //    @Path("/projects/" + "{projectid}")
 //    public Response deleteUser(@PathParam("projectid") int projectId);
-    
-    
-    
-
 }
