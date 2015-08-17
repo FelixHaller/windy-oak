@@ -5,6 +5,7 @@
  */
 package windyoak.rest;
 
+import java.util.Date;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
@@ -33,7 +34,14 @@ public interface ProjectsResource {
                 MediaType.APPLICATION_XML,
                 MediaType.APPLICATION_JSON
             })
-    public Response createProject(@Context UriInfo uriInfo, @FormParam("name") String name);
+    public Response createProject(
+            @Context UriInfo uriInfo,
+            @FormParam("name") String name,
+            @FormParam("user") String user,
+            @FormParam("description") String description,
+            @FormParam("dateCreated") String dateCreated,
+            @FormParam("status") String status
+    );
 
     @GET
     @Produces(
@@ -53,21 +61,31 @@ public interface ProjectsResource {
     public Response getProject(@PathParam("projectid") int projectId);
 
     @PUT
-    @Produces({
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(
+            {
                 MediaType.APPLICATION_XML,
                 MediaType.APPLICATION_JSON
-    })
+            })
     @Path("{projectid}")
-    public Response updateProject(@PathParam("projectid") int projectId);
+    public Response updateProject(
+            @PathParam("projectid") int projectId,
+            @Context UriInfo uriInfo,
+            @FormParam("name") String name,
+            @FormParam("user") String user,
+            @FormParam("description") String description,
+            @FormParam("dateUpdated") String dateUpdated,
+            @FormParam("status") String status
+    );
+    
 
     @DELETE
     @Produces({
-                MediaType.APPLICATION_XML,
-                MediaType.APPLICATION_JSON
+        MediaType.APPLICATION_XML,
+        MediaType.APPLICATION_JSON
     })
     @Path("{projectid}")
     public Response deleteProject(@PathParam("projectid") int projectId);
-
 
 //    @GET
 //    @Produces(

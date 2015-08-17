@@ -34,5 +34,27 @@ public class StoreServiceInMemory implements StoreService
     {
         return this.projects.get(projectID);
     }
+
+    @Override
+    public void setProject(int projectID, Project project) {
+        this.projects.put(projectID,project);
+    }
+
+    @Override
+    public Project addProject(Project project) {
+        Project _project = project; 
+               
+                _project.setId(lastID);
+        this.projects.put(lastID, _project);
+        return _project;
+    }
+
+    @Override
+    public Project deleteProject(int prjectID) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    
+    
     
 }

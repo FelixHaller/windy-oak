@@ -5,6 +5,13 @@
  */
 package windyoak.rest.impl;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import windyoak.core.StoreService;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -19,58 +26,89 @@ import windyoak.rest.ProjectsResource;
  *
  * @author fhaller1
  */
-public class ProjectsResourceImpl implements ProjectsResource
-{
+public class ProjectsResourceImpl implements ProjectsResource {
+
     @Context
     private StoreService storeService;
+    DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.GERMANY);
 
-    public StoreService getStoreService()
-    {
+    public StoreService getStoreService() {
         return storeService;
     }
 
-    public void setPhoneService(StoreService storeService)
-    {
+    public void setStoreService(StoreService storeService) {
         this.storeService = storeService;
     }
 
     @Override
-    public Response createProject(UriInfo uriInfo, String name)
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Response createProject(UriInfo uriInfo, String name, String user, String description, String dateCreated, String status) {
+        Project project = new Project(name);
+        if (name == null || name.isEmpty() || user == null || user.isEmpty() || description == null
+                || description.isEmpty() || dateCreated == null || dateCreated.isEmpty() || status == null || status.isEmpty()) {
+            return Response.status(Status.NOT_ACCEPTABLE).tag("Empty Parameter").build();
+        }
+        project.setDescription(description);
+        try {
+            project.setDateCreated(format.parse(dateCreated));
+        } catch (ParseException ex) {
+            return Response.status(Status.NOT_ACCEPTABLE).build();
+        }
+        this.storeService.addProject(project);
+        return Response.status(Status.OK).entity(project).build();
     }
 
     @Override
-    public Response getProjects()
-    {
+    public Response getProjects() {
         Projects projects = new Projects(storeService.fetchAllProjects());
-        
+
         return Response.status(Status.OK).entity(projects).build();
     }
 
     @Override
-    public Response getProject(int projectId)
-    {
+    public Response getProject(int projectId) {
         Project project = storeService.getProjectByID(projectId);
-        if(project == null)
-        {
+        if (project == null) {
             return Response.status(Status.NOT_FOUND).build();
         }
         return Response.status(Status.OK).entity(project).build();
     }
 
     @Override
-    public Response updateProject(int projectId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Response deleteProject(int projectId) {
+        Project project = storeService.getProjectByID(projectId);
+        if (project == null) {
+            return Response.status(Status.NOT_FOUND).build();
+        }
+        storeService.deleteProject(projectId);
+        return Response.status(Status.OK).entity(project).build();
     }
 
     @Override
-    public Response deleteProject(int projectId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Response updateProject(int projectId, UriInfo uriInfo, String name, String user, String description, String dateUpdated, String status) {
+        Project project = storeService.getProjectByID(projectId);
+        if (project == null) {
+            return Response.status(Status.NOT_FOUND).build();
+        }
+        if (!name.isEmpty()) {
+            project.setTitle(name);
+        }
+        if (!description.isEmpty()) {
+            project.setDescription(description);
+        }
+        if (!status.isEmpty()) {
+            project.setStatus(status);
+        }
+        if (dateUpdated.isEmpty()) {
+            return Response.status(Status.NOT_ACCEPTABLE).build();
+        } else {
+            try {
+                project.setDateUpdated(format.parse(dateUpdated));
+            } catch (ParseException ex) {
+                return Response.status(Status.NOT_ACCEPTABLE).build();
+            }
+        }
+        storeService.setProject(projectId, project);
+        return Response.status(Status.OK).entity(project).build();
     }
 
-
-    
-
-    
 }
