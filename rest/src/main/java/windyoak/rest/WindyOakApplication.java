@@ -9,6 +9,7 @@ import windyoak.core.StoreService;
 import windyoak.core.impl.StoreServiceInMemory;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import windyoak.rest.impl.ProjectsResourceImpl;
+import windyoak.rest.impl.UsersResourceImpl;
 
 
 /**
@@ -28,5 +29,7 @@ public class WindyOakApplication extends org.glassfish.jersey.server.ResourceCon
                 bind(new StoreServiceInMemory()).to(StoreService.class);
             }
         });
+        register(UsersResourceImpl.class);
+        
     }
 }

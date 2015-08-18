@@ -1,10 +1,13 @@
 package windyoak.core;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  *
  * @author Felix Haller
  */
-class User {
+@XmlRootElement(name = "user")
+public class User {
     
     private String username;
     private String forename;

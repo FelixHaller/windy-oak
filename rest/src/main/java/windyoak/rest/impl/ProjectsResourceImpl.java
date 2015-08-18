@@ -19,6 +19,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import windyoak.core.Project;
 import windyoak.core.Projects;
+import windyoak.core.User;
 
 import windyoak.rest.ProjectsResource;
 
@@ -41,18 +42,27 @@ public class ProjectsResourceImpl implements ProjectsResource {
     }
 
     @Override
-    public Response createProject(UriInfo uriInfo, String name, String user, String description, String dateCreated, String status) {
+    public Response createProject(UriInfo uriInfo, String name, int userID, String description, String dateCreated, String status) {
         Project project = new Project(name);
-        if (name == null || name.isEmpty() || user == null || user.isEmpty() || description == null
+        if (name == null || name.isEmpty() || description == null
                 || description.isEmpty() || dateCreated == null || dateCreated.isEmpty() || status == null || status.isEmpty()) {
             return Response.status(Status.NOT_ACCEPTABLE).tag("Empty Parameter").build();
         }
+
+        User user = storeService.getUser(userID);
+        if (user == null) {
+            return Response.status(Status.UNAUTHORIZED).build();
+        }
+        project.setCreator(user);
+
         project.setDescription(description);
+
         try {
             project.setDateCreated(format.parse(dateCreated));
         } catch (ParseException ex) {
             return Response.status(Status.NOT_ACCEPTABLE).build();
         }
+
         this.storeService.addProject(project);
         return Response.status(Status.OK).entity(project).build();
     }
@@ -84,7 +94,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
     }
 
     @Override
-    public Response updateProject(int projectId, UriInfo uriInfo, String name, String user, String description, String dateUpdated, String status) {
+    public Response updateProject(int projectId, UriInfo uriInfo, String name, int userID, String description, String dateUpdated, String status) {
         Project project = storeService.getProjectByID(projectId);
         if (project == null) {
             return Response.status(Status.NOT_FOUND).build();
@@ -107,6 +117,11 @@ public class ProjectsResourceImpl implements ProjectsResource {
                 return Response.status(Status.NOT_ACCEPTABLE).build();
             }
         }
+        User user = storeService.getUser(userID);
+        if (project.getCreator() != user) {
+            return Response.status(Status.UNAUTHORIZED).build();
+        }
+        
         storeService.setProject(projectId, project);
         return Response.status(Status.OK).entity(project).build();
     }
