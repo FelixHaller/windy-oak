@@ -6,8 +6,8 @@
 package windyoak.rest;
 
 import windyoak.core.StoreService;
-import windyoak.core.impl.StoreServiceInMemory;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import windyoak.core.impl.StoreServiceInSQLite;
 import windyoak.rest.impl.ProjectsResourceImpl;
 
 
@@ -25,7 +25,7 @@ public class WindyOakApplication extends org.glassfish.jersey.server.ResourceCon
             @Override
             protected void configure()
             {
-                bind(new StoreServiceInMemory()).to(StoreService.class);
+                bind(new StoreServiceInSQLite()).to(StoreService.class);
             }
         });
     }
