@@ -12,7 +12,17 @@ public class User {
     private String username;
     private String forename;
     private String surname;
-
+    
+    public User()
+    {
+        
+    }
+    
+    public User(String username)
+    {
+        this.username = username;
+    }
+    
     public String getUsername()
     {
         return username;
