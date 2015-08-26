@@ -31,7 +31,7 @@ public interface UsersResource {
                 MediaType.APPLICATION_XML,
                 MediaType.APPLICATION_JSON
     })
-    @Path("{userid}")
-    public Response showUser(@PathParam("userid") int userID);
+    @Path("{username}")
+    public Response showUser(@PathParam("username") String username);
     
 }

@@ -9,19 +9,108 @@ import java.util.List;
 public interface StoreService
 {
     //Project
+    
+    /**
+     * Gibt eine Liste aller Projekte zurück.
+     * 
+     * Sollte es keine Projekte geben, gibt die Funktion eine leere Liste zurück.
+     * 
+     * @return Eine Liste mit allen Projekten
+     */
     List<Project> fetchAllProjects();
-    List<Project> fetchRecentProjects(int count);
+
+    /**
+     * Gibt die letzten n Projekte absteigend geordnet nach dem 
+     * Erstellungsdatum.
+     * 
+     * Die Liste beinhaltet nur Projekte, die sich im Status "published" 
+     * befinden.
+     * 
+     * Sollte es keine Projekte geben, gibt die Funktion eine leere Liste zurück.
+     * 
+     * @param n maxmimale Anzahl an Projekten, die zurückgeliefert werden soll
+     * @return Eine Liste mit Projekten
+     */
+    List<Project> fetchRecentProjects(int n);
+
+    /**
+     * Gibt alle verfügbaren Informationen zu einem bestimmten Projekt zurück.
+     * 
+     * Sollte die eingegebene ID keinem Projekt zugeordnet sein, gibt die 
+     * Methode <b>null</b> zurück. 
+     * 
+     * @param projectID Die id des Projektes
+     * @return Ein Projekt oder null, wenn id nicht vorhanden.
+     */
     Project getProjectByID(int projectID);
+
+    /**
+     * Erstellt ein neues Projekt und liefert das erstellte Projekt samt 
+     * zugewiesener id zurück.
+     * 
+     * @param project Das Projekt-Objekt, das in die Datenbank eingetragen werden soll
+     * @return Das angelegte Projekt.
+     */
     Project createProject(Project project);
+
+    /**
+     * Aktualisiert ein bestehendes Projekt.
+     * 
+     * @param projectID die id des zu aktualisierenden Projekts.
+     * @param project Das überarbeitete Projekt-Objekt
+     */
     void updateProject(int projectID, Project project);
-    Project deleteProject(int prjectID);
+
+    /**
+     * Löscht ein bestehendes Projekt.
+     * 
+     * Dabei wird das Projekt in der Datenbank nicht gelöscht, sondern 
+     * lediglich als gelöscht markiert.
+     * 
+     * @param projectID ID des zu löschenden Projektes.
+     * @return Den letzten Stand des gelöschten Projektes.
+     */
+    Project deleteProject(int projectID);
     
     //User
-    User getUser(int userID);
+
+    /**
+     * Gibt eine Liste mit allen bekannten Benutzern zurück.
+     * 
+     * Angezeigt werden lediglich der username, Vorname und Nachname.
+     * Sollte es keine Benutzer geben, gibt die Funktion eine leere Liste zurück.
+     * 
+     * @return Liste alle Benutzer.
+     */
     List<User> fetchAllUsers();
+
+    /**
+     * Gibt alle bekannten Daten für einen bestimmten Benutzer aus.
+     * 
+     * Sollte der übergebene username nicht existieren, gibt die 
+     * Methode <b>null</b> zurück. 
+     * 
+     * @param username
+     * @return User Objekt.
+     */
+    User getUser(String username);
     
     //Project/Comments
+    
+    /**
+     * Gibt eine Liste aller Kommentare zu einem bestimmten Projekt zurück.
+     * 
+     * @param ProjectsID Die ID des Projektes
+     * @return Liste mit Kommentar-Objekten.
+     */
     List<Comment> fetchAllComments(int ProjectsID);
+
+    /**
+     * Ein einzelnes Kommentar mit allen Details abrufen.
+     * 
+     * @param commentID
+     * @return Ein Kommentar-Objekt.
+     */
     Comment getCommentByID(int commentID);
     
 }

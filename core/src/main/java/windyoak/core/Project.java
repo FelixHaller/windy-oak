@@ -3,6 +3,7 @@ package windyoak.core;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -11,10 +12,10 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Felix Haller
  */
-
 @XmlRootElement(name = "project")
 public class Project
 {
+
     private int id;
     private User creator;
     private String title;
@@ -24,6 +25,16 @@ public class Project
     private String status;
     private List<User> members;
     private ArrayList<Tag> tags;
+
+    public Project()
+    {
+
+    }
+
+    public Project(String title)
+    {
+        this.title = title;
+    }
 
     @XmlElement(name = "tag")
     @XmlElementWrapper(name = "tags")
@@ -36,7 +47,7 @@ public class Project
     {
         this.tags = tags;
     }
-    
+
     @XmlElement(name = "member")
     @XmlElementWrapper(name = "members")
     public List<User> getMembers()
@@ -49,16 +60,7 @@ public class Project
         this.members = members;
     }
     
-    public Project()
-    {
-        
-    }
-    
-    public Project(String title)
-    {
-        this.title = title;
-    }
-    
+    @XmlAttribute 
     public int getId()
     {
         return id;
@@ -119,6 +121,12 @@ public class Project
         this.dateCreated = dateCreated;
     }
 
+    /**
+     * Setzt das Datum anhand der Zeit seit dem 01.01.1970 in Millisekunden.
+     * 
+     * 
+     * @param epochTime
+     */
     public void setDateCreated(long epochTime)
     {
         this.dateCreated = new Date(epochTime);
@@ -128,17 +136,20 @@ public class Project
     {
         this.dateUpdated = dateUpdated;
     }
-    
+
+    /**
+     * Setzt das Datum anhand der Zeit seit dem 01.01.1970 in Millisekunden.
+     * 
+     * @param epochTime
+     */
     public void setDateUpdated(long epochTime)
-    {   
+    {
         this.dateUpdated = new Date(epochTime);
     }
-    
 
     public void setStatus(String status)
     {
         this.status = status;
     }
-    
 
 }

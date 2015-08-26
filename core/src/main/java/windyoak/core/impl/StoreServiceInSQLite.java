@@ -18,6 +18,11 @@ public class StoreServiceInSQLite implements StoreService
 
     Connection connection;
 
+    /**
+     * Verwaltet die Projektdaten in einer SQLite Datenbank.
+     * 
+     * 
+     */
     public StoreServiceInSQLite()
     {
         try
@@ -29,17 +34,25 @@ public class StoreServiceInSQLite implements StoreService
             System.err.println(ex.getClass().getName() + ": " + ex.getMessage());
         }
     }
-
-    @Override
-    public List<Project> fetchAllProjects()
-    {
+    
+    private List<Project> fetchProjects(boolean recent, int count)
+    {   
         ArrayList<Project> projects = new ArrayList<>();
-
+        String sql;
         try
         {
             this.connection = DriverManager.getConnection("jdbc:sqlite:db.sqlite");
             Statement statement = connection.createStatement();
-            String sql = "select * from project";
+            if (recent)
+            {
+                sql = String.format("select * from project "
+                    + "where status = 'published' "
+                    + "order by dateCreated desc limit %d", count);
+            }
+            else
+            {
+                sql = "select * from project order by projectID";
+            }
             ResultSet resultset = statement.executeQuery(sql);
             while (resultset.next())
             {
@@ -69,6 +82,19 @@ public class StoreServiceInSQLite implements StoreService
 
         return projects;
     }
+    
+    
+    @Override
+    public List<Project> fetchAllProjects()
+    {
+        return this.fetchProjects(false, 0);
+    }
+    
+    @Override
+    public List<Project> fetchRecentProjects(int n)
+    {
+        return this.fetchProjects(true, n);
+    }
 
     @Override
     public Project getProjectByID(int projectID)
@@ -90,10 +116,16 @@ public class StoreServiceInSQLite implements StoreService
         }
         try
         {
-            sql =   "select * from project, user " +
+            sql =   "select count(*) count, * from project, user " +
                     "where project.creator = user.username " +
                     "and project.projectID = " + projectID;
             resultset = statement.executeQuery(sql);
+            
+            if (resultset.getInt("count") == 0)
+            {
+                return null;
+            }
+            
             project.setTitle(resultset.getString("title"));
             project.setId(resultset.getInt("projectID"));
             project.setDescription(resultset.getString("description"));
@@ -158,39 +190,65 @@ public class StoreServiceInSQLite implements StoreService
 }
 
     @Override
-    public Project deleteProject(int prjectID)
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public User getUser(int userID)
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public List<User> fetchAllUsers()
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ArrayList<User> users = new ArrayList<>();
+
+        try
+        {
+            this.connection = DriverManager.getConnection("jdbc:sqlite:db.sqlite");
+            Statement statement = connection.createStatement();
+            String sql = "select * from user";
+            ResultSet resultset = statement.executeQuery(sql);
+            while (resultset.next())
+            {
+                User user = new User(resultset.getString("username"));
+                user.setForename(resultset.getString("forename"));
+                user.setSurname(resultset.getString("surname"));
+                
+                users.add(user);
+            }
+            resultset.close();
+            statement.close();
+            connection.close();
+        }
+        catch (SQLException ex)
+        {
+            System.err.println(ex.getClass().getName() + ": " + ex.getMessage());
+        }
+
+        return users;
     }
 
     @Override
-    public List<Project> fetchRecentProjects(int count)
+    public User getUser(String username)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+        User user = new User();
+        
+        try
+        {
+            this.connection = DriverManager.getConnection("jdbc:sqlite:db.sqlite");
+            Statement statement = connection.createStatement();
+            String sql = String.format("select count(*) count, * from user where username='%s'", username);
+            System.out.println(sql);
+            ResultSet resultset = statement.executeQuery(sql);
+            if (resultset.getInt("count") == 0)
+            {
+                return null;
+            }
+            user.setUsername(resultset.getString("username"));
+            user.setForename(resultset.getString("forename"));
+            user.setSurname(resultset.getString("surname"));
 
-    @Override
-    public Project createProject(Project project)
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void updateProject(int projectID, Project project)
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            resultset.close();
+            statement.close();
+            connection.close();
+        }
+        catch (SQLException ex)
+        {
+            System.err.println(ex.getClass().getName() + ": " + ex.getMessage());
+        }
+        return user;
     }
 
     @Override
@@ -204,5 +262,25 @@ public class StoreServiceInSQLite implements StoreService
     {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public Project deleteProject(int prjectID)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+
+    @Override
+    public Project createProject(Project project)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void updateProject(int projectID, Project project)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 
 }
