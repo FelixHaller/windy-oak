@@ -8,10 +8,7 @@ package windyoak.rest.impl;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import windyoak.core.StoreService;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -63,7 +60,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
             return Response.status(Status.NOT_ACCEPTABLE).build();
         }
 
-        this.storeService.addProject(project);
+        this.storeService.createProject(project);
         return Response.status(Status.OK).entity(project).build();
     }
 
@@ -122,7 +119,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
             return Response.status(Status.UNAUTHORIZED).build();
         }
         
-        storeService.setProject(projectId, project);
+        storeService.updateProject(projectId, project);
         return Response.status(Status.OK).entity(project).build();
     }
 

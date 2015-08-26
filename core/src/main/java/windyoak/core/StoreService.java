@@ -8,18 +8,20 @@ import java.util.List;
  */
 public interface StoreService
 {
-    //Project createProject(String name);
+    //Project
     List<Project> fetchAllProjects();
+    List<Project> fetchRecentProjects(int count);
     Project getProjectByID(int projectID);
-    void setProject(int projectID, Project project );
-    Project addProject(Project project);
+    Project createProject(Project project);
+    void updateProject(int projectID, Project project);
     Project deleteProject(int prjectID);
+    
+    //User
     User getUser(int userID);
     List<User> fetchAllUsers();
-     //void deleteProject(int projectID);
     
-    //Comment createComment();
-    //Comment getCommentByID(int userID);
- 
+    //Project/Comments
+    List<Comment> fetchAllComments(int ProjectsID);
+    Comment getCommentByID(int commentID);
     
 }

@@ -3,6 +3,7 @@ package windyoak.core.impl;
 import java.util.List;
 import java.sql.*;
 import java.util.ArrayList;
+import windyoak.core.Comment;
 import windyoak.core.Project;
 import windyoak.core.StoreService;
 import windyoak.core.Tag;
@@ -155,5 +156,53 @@ public class StoreServiceInSQLite implements StoreService
         }
         return project;
 }
+
+    @Override
+    public Project deleteProject(int prjectID)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public User getUser(int userID)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<User> fetchAllUsers()
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<Project> fetchRecentProjects(int count)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Project createProject(Project project)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void updateProject(int projectID, Project project)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<Comment> fetchAllComments(int ProjectsID)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Comment getCommentByID(int commentID)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
 }

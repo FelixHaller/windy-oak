@@ -4,6 +4,7 @@ import windyoak.core.StoreService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import windyoak.core.Comment;
 import windyoak.core.Project;
 import windyoak.core.User;
 
@@ -56,12 +57,12 @@ public class StoreServiceInMemory implements StoreService
     }
 
     @Override
-    public void setProject(int projectID, Project project) {
+    public void updateProject(int projectID, Project project) {
         this.projects.put(projectID,project);
     }
 
     @Override
-    public Project addProject(Project project) {
+    public Project createProject(Project project) {
         Project _project = project; 
                
                 _project.setId(lastProjectID);
@@ -84,6 +85,24 @@ public class StoreServiceInMemory implements StoreService
     @Override
     public List<User> fetchAllUsers() {
         return new ArrayList(users.values());
+    }
+
+    @Override
+    public List<Project> fetchRecentProjects(int count)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<Comment> fetchAllComments(int ProjectsID)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Comment getCommentByID(int commentID)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     
