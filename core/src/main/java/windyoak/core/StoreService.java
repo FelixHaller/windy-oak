@@ -103,7 +103,7 @@ public interface StoreService
      * @param ProjectsID Die ID des Projektes
      * @return Liste mit Kommentar-Objekten.
      */
-    List<Comment> fetchAllComments(int ProjectsID);
+    List<Comment> fetchAllComments(int projectID);
 
     /**
      * Ein einzelnes Kommentar mit allen Details abrufen.

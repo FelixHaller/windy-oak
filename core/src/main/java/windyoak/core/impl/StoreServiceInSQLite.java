@@ -10,7 +10,9 @@ import windyoak.core.Tag;
 import windyoak.core.User;
 
 /**
- *
+ * Verwaltet die Projektdaten in einer SQLite Datenbank.
+ * 
+ * 
  * @author Felix Haller
  */
 public class StoreServiceInSQLite implements StoreService
@@ -18,11 +20,6 @@ public class StoreServiceInSQLite implements StoreService
 
     Connection connection;
 
-    /**
-     * Verwaltet die Projektdaten in einer SQLite Datenbank.
-     * 
-     * 
-     */
     public StoreServiceInSQLite()
     {
         try
@@ -251,17 +248,6 @@ public class StoreServiceInSQLite implements StoreService
         return user;
     }
 
-    @Override
-    public List<Comment> fetchAllComments(int ProjectsID)
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Comment getCommentByID(int commentID)
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     @Override
     public Project deleteProject(int prjectID)
@@ -278,6 +264,57 @@ public class StoreServiceInSQLite implements StoreService
 
     @Override
     public void updateProject(int projectID, Project project)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    @Override
+    public List<Comment> fetchAllComments(int projectID)
+    {
+        ArrayList<Comment> comments = new ArrayList<>();
+
+        try
+        {
+            this.connection = DriverManager.getConnection("jdbc:sqlite:db.sqlite");
+            Statement statement = connection.createStatement();
+            String sql =    String.format(
+                            "select * from comment, user " +
+                            "where projectID=%d " +
+                            "and creator=user.username " +
+                            "and published=1",projectID);
+            
+            ResultSet resultset = statement.executeQuery(sql);
+            while (resultset.next())
+            {
+                Comment comment = new Comment();
+                comment.setContent(resultset.getString("content"));
+                
+                User creator = new User(resultset.getString("username"));
+                creator.setForename(resultset.getString("forename"));
+                creator.setSurname(resultset.getString("surname"));
+                
+                comment.setCreator(creator);
+                comment.setDateCreated(resultset.getLong("dateCreated"));
+                comment.setDateUpdated(resultset.getLong("dateUpdated"));
+                comment.setId(resultset.getInt("commentID"));
+                comment.setTitle(resultset.getString("title"));
+                
+                comments.add(comment);
+            }
+            resultset.close();
+            statement.close();
+            connection.close();
+        }
+        catch (SQLException ex)
+        {
+            System.err.println(ex.getClass().getName() + ": " + ex.getMessage());
+        }
+
+        return comments;
+        
+    }
+
+    @Override
+    public Comment getCommentByID(int commentID)
     {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

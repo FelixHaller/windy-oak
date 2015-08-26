@@ -9,8 +9,12 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *
- * @author Felix Haller
+ * Repräsentiert ein Projekt.
+ * 
+ * Ein Projekt enthält u.a. Projektmitglieder(members) und wird mit Stichwörtern 
+ * (tags) beschrieben.
+ * 
+ * @author felix
  */
 @XmlRootElement(name = "project")
 public class Project
