@@ -1,6 +1,11 @@
 subprojects {
     apply plugin: "java"
-
+    
+    javadoc {
+        options.charSet = 'UTF-8'
+    }
+    
+    
     repositories {
         mavenCentral()
     }

@@ -14,6 +14,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import windyoak.core.Project;
 import windyoak.core.Projects;
 import windyoak.core.User;
@@ -66,6 +67,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
 
     @Override
     public Response getProjects() {
+        
         Projects projects = new Projects(storeService.fetchAllProjects());
 
         return Response.status(Status.OK).entity(projects).build();

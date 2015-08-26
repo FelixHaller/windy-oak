@@ -18,6 +18,11 @@ public class StoreServiceInSQLite implements StoreService
 
     Connection connection;
 
+    /**
+     * Verwaltet die Projektdaten in einer SQLite Datenbank.
+     * 
+     * 
+     */
     public StoreServiceInSQLite()
     {
         try
@@ -29,17 +34,25 @@ public class StoreServiceInSQLite implements StoreService
             System.err.println(ex.getClass().getName() + ": " + ex.getMessage());
         }
     }
-
-    @Override
-    public List<Project> fetchAllProjects()
-    {
+    
+    private List<Project> fetchProjects(boolean recent, int count)
+    {   
         ArrayList<Project> projects = new ArrayList<>();
-
+        String sql;
         try
         {
             this.connection = DriverManager.getConnection("jdbc:sqlite:db.sqlite");
             Statement statement = connection.createStatement();
-            String sql = "select * from project";
+            if (recent)
+            {
+                sql = String.format("select * from project "
+                    + "where status = 'published' "
+                    + "order by dateCreated desc limit %d", count);
+            }
+            else
+            {
+                sql = "select * from project order by projectID";
+            }
             ResultSet resultset = statement.executeQuery(sql);
             while (resultset.next())
             {
@@ -68,6 +81,19 @@ public class StoreServiceInSQLite implements StoreService
         }
 
         return projects;
+    }
+    
+    
+    @Override
+    public List<Project> fetchAllProjects()
+    {
+        return this.fetchProjects(false, 0);
+    }
+    
+    @Override
+    public List<Project> fetchRecentProjects(int n)
+    {
+        return this.fetchProjects(true, n);
     }
 
     @Override
@@ -223,12 +249,6 @@ public class StoreServiceInSQLite implements StoreService
             System.err.println(ex.getClass().getName() + ": " + ex.getMessage());
         }
         return user;
-    }
-
-    @Override
-    public List<Project> fetchRecentProjects(int count)
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

@@ -30,7 +30,7 @@ public class Projects {
         return projects;
     }
 
-    public void setPhoneUsers(List<Project> projects)
+    public void setProjects(List<Project> projects)
     {
         this.projects = projects;
     }

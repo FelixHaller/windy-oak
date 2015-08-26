@@ -88,12 +88,6 @@ public class StoreServiceInMemory implements StoreService
     }
 
     @Override
-    public List<Project> fetchRecentProjects(int count)
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public List<Comment> fetchAllComments(int ProjectsID)
     {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -101,6 +95,12 @@ public class StoreServiceInMemory implements StoreService
 
     @Override
     public Comment getCommentByID(int commentID)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<Project> fetchRecentProjects(int n)
     {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
