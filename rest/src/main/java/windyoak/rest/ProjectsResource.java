@@ -5,7 +5,6 @@
  */
 package windyoak.rest;
 
-import java.util.Date;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
@@ -19,7 +18,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import windyoak.core.User;
 
 /**
  *
@@ -38,7 +36,7 @@ public interface ProjectsResource {
     public Response createProject(
             @Context UriInfo uriInfo,
             @FormParam("name") String name,
-            @FormParam("userID") int userID,
+            @FormParam("username") String username,
             @FormParam("description") String description,
             @FormParam("dateCreated") String dateCreated,
             @FormParam("status") String status
@@ -73,7 +71,7 @@ public interface ProjectsResource {
             @PathParam("projectid") int projectId,
             @Context UriInfo uriInfo,
             @FormParam("name") String name,
-            @FormParam("userID") int userID,
+            @FormParam("username") String username,
             @FormParam("description") String description,
             @FormParam("dateUpdated") String dateUpdated,
             @FormParam("status") String status

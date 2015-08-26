@@ -78,8 +78,8 @@ public class StoreServiceInMemory implements StoreService
     }
 
     @Override
-    public User getUser(int userID) {
-        return this.users.get(userID);
+    public User getUser(String username) {
+        return this.users.get(username);
     }
 
     @Override

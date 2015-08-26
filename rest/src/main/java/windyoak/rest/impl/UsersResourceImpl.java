@@ -28,8 +28,8 @@ public class UsersResourceImpl implements UsersResource {
     }
 
     @Override
-    public Response showUser(int userID) {
-       User user = storeService.getUser(userID);
+    public Response showUser(String username) {
+       User user = storeService.getUser(username);
         if (user == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }

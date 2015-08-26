@@ -39,14 +39,14 @@ public class ProjectsResourceImpl implements ProjectsResource {
     }
 
     @Override
-    public Response createProject(UriInfo uriInfo, String name, int userID, String description, String dateCreated, String status) {
+    public Response createProject(UriInfo uriInfo, String name, String username, String description, String dateCreated, String status) {
         Project project = new Project(name);
         if (name == null || name.isEmpty() || description == null
                 || description.isEmpty() || dateCreated == null || dateCreated.isEmpty() || status == null || status.isEmpty()) {
             return Response.status(Status.NOT_ACCEPTABLE).tag("Empty Parameter").build();
         }
 
-        User user = storeService.getUser(userID);
+        User user = storeService.getUser(username);
         if (user == null) {
             return Response.status(Status.UNAUTHORIZED).build();
         }
@@ -91,7 +91,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
     }
 
     @Override
-    public Response updateProject(int projectId, UriInfo uriInfo, String name, int userID, String description, String dateUpdated, String status) {
+    public Response updateProject(int projectId, UriInfo uriInfo, String name, String username, String description, String dateUpdated, String status) {
         Project project = storeService.getProjectByID(projectId);
         if (project == null) {
             return Response.status(Status.NOT_FOUND).build();
@@ -114,7 +114,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
                 return Response.status(Status.NOT_ACCEPTABLE).build();
             }
         }
-        User user = storeService.getUser(userID);
+        User user = storeService.getUser(username);
         if (project.getCreator() != user) {
             return Response.status(Status.UNAUTHORIZED).build();
         }

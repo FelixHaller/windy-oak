@@ -17,8 +17,8 @@ public interface StoreService
     Project deleteProject(int prjectID);
     
     //User
-    User getUser(int userID);
     List<User> fetchAllUsers();
+    User getUser(String username);
     
     //Project/Comments
     List<Comment> fetchAllComments(int ProjectsID);
