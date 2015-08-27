@@ -80,6 +80,28 @@ public class Comment {
     {
         this.dateUpdated = dateUpdated;
     }
+    
+    /**
+     * Setzt das Datum anhand der Zeit seit dem 01.01.1970 in Millisekunden.
+     * 
+     * 
+     * @param epochTime
+     */
+    public void setDateCreated(long epochTime)
+    {
+        this.dateCreated = new Date(epochTime);
+    }
+
+    /**
+     * Setzt das Datum anhand der Zeit seit dem 01.01.1970 in Millisekunden.
+     * 
+     * @param epochTime
+     */
+    public void setDateUpdated(long epochTime)
+    {
+        this.dateUpdated = new Date(epochTime);
+    }
+    
 
     public void setPublished(boolean published)
     {

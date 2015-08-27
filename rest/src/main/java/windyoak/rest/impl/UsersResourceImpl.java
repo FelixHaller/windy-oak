@@ -5,8 +5,11 @@
  */
 package windyoak.rest.impl;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import windyoak.core.OakCoreException;
 import windyoak.core.StoreService;
 import windyoak.core.User;
 import windyoak.core.Users;
@@ -23,13 +26,29 @@ public class UsersResourceImpl implements UsersResource {
 
     @Override
     public Response getUsers() {
-        Users users = new Users(storeService.fetchAllUsers());
+        Users users;
+        try
+        {
+            users = new Users(storeService.fetchAllUsers());
+        }
+        catch (OakCoreException ex)
+        {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
         return Response.status(Response.Status.OK).entity(users).build();
     }
 
     @Override
     public Response showUser(String username) {
-       User user = storeService.getUser(username);
+       User user;
+        try
+        {
+            user = storeService.getUser(username);
+        }
+        catch (OakCoreException ex)
+        {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
         if (user == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }

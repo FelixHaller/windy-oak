@@ -14,10 +14,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import windyoak.core.Project;
 import windyoak.core.Projects;
 import windyoak.core.User;
+import windyoak.core.OakCoreException;
 
 import windyoak.rest.ProjectsResource;
 
@@ -25,103 +25,198 @@ import windyoak.rest.ProjectsResource;
  *
  * @author fhaller1
  */
-public class ProjectsResourceImpl implements ProjectsResource {
+public class ProjectsResourceImpl implements ProjectsResource
+{
 
     @Context
     private StoreService storeService;
     DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.GERMANY);
 
-    public StoreService getStoreService() {
+    public StoreService getStoreService()
+    {
         return storeService;
     }
 
-    public void setStoreService(StoreService storeService) {
+    public void setStoreService(StoreService storeService)
+    {
         this.storeService = storeService;
     }
 
     @Override
-    public Response createProject(UriInfo uriInfo, String name, String username, String description, String dateCreated, String status) {
+    public Response createProject(UriInfo uriInfo, String name, String username, String description, String dateCreated, String status)
+    {
+        Project createdProject;
         Project project = new Project(name);
+        User user;
         if (name == null || name.isEmpty() || description == null
-                || description.isEmpty() || dateCreated == null || dateCreated.isEmpty() || status == null || status.isEmpty()) {
+            || description.isEmpty() || dateCreated == null || dateCreated.isEmpty() || status == null || status.isEmpty())
+        {
             return Response.status(Status.NOT_ACCEPTABLE).tag("Empty Parameter").build();
         }
 
-        User user = storeService.getUser(username);
-        if (user == null) {
+        try
+        {
+            user = storeService.getUser(username);
+        }
+        catch (OakCoreException ex)
+        {
+           return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
+        if (user == null)
+        {
             return Response.status(Status.UNAUTHORIZED).build();
         }
         project.setCreator(user);
 
         project.setDescription(description);
 
-        try {
+        try
+        {
             project.setDateCreated(format.parse(dateCreated));
-        } catch (ParseException ex) {
+        }
+        catch (ParseException ex)
+        {
             return Response.status(Status.NOT_ACCEPTABLE).build();
         }
 
-        this.storeService.createProject(project);
-        return Response.status(Status.OK).entity(project).build();
+        try
+        {
+            createdProject = this.storeService.createProject(project);
+        }
+        catch (OakCoreException ex)
+        {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
+        return Response.status(Status.OK).entity(createdProject).build();
     }
 
     @Override
-    public Response getProjects() {
-        
-        Projects projects = new Projects(storeService.fetchAllProjects());
+    public Response getProjects()
+    {
+
+        Projects projects;
+        try
+        {
+            projects = new Projects(storeService.fetchAllProjects());
+        }
+        catch (OakCoreException ex)
+        {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
 
         return Response.status(Status.OK).entity(projects).build();
     }
 
     @Override
-    public Response getProject(int projectId) {
-        Project project = storeService.getProjectByID(projectId);
-        if (project == null) {
+    public Response getProject(int projectId)
+    {
+        Project project;
+        try
+        {
+            project = storeService.getProjectByID(projectId);
+        }
+        catch (OakCoreException ex)
+        {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
+        if (project == null)
+        {
             return Response.status(Status.NOT_FOUND).build();
         }
         return Response.status(Status.OK).entity(project).build();
     }
 
     @Override
-    public Response deleteProject(int projectId) {
-        Project project = storeService.getProjectByID(projectId);
-        if (project == null) {
-            return Response.status(Status.NOT_FOUND).build();
+    public Response deleteProject(int projectId)
+    {
+        Project project;
+        try
+        {
+            if (storeService.getProjectByID(projectId) == null)
+            {
+                return Response.status(Status.NOT_FOUND).build();
+            }
         }
-        storeService.deleteProject(projectId);
+        catch (OakCoreException ex)
+        {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
+        try
+        {
+            project = storeService.deleteProject(projectId);
+        }
+        catch (OakCoreException ex)
+        {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
         return Response.status(Status.OK).entity(project).build();
     }
 
     @Override
-    public Response updateProject(int projectId, UriInfo uriInfo, String name, String username, String description, String dateUpdated, String status) {
-        Project project = storeService.getProjectByID(projectId);
-        if (project == null) {
+    public Response updateProject(int projectId, UriInfo uriInfo, String name, String username, String description, String dateUpdated, String status)
+    {
+        Project project;
+        try
+        {
+            project = storeService.getProjectByID(projectId);
+        }
+        catch (OakCoreException ex)
+        {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
+        if (project == null)
+        {
             return Response.status(Status.NOT_FOUND).build();
         }
-        if (!name.isEmpty()) {
+        if (!name.isEmpty())
+        {
             project.setTitle(name);
         }
-        if (!description.isEmpty()) {
+        if (!description.isEmpty())
+        {
             project.setDescription(description);
         }
-        if (!status.isEmpty()) {
+        if (!status.isEmpty())
+        {
             project.setStatus(status);
         }
-        if (dateUpdated.isEmpty()) {
+        if (dateUpdated.isEmpty())
+        {
             return Response.status(Status.NOT_ACCEPTABLE).build();
-        } else {
-            try {
+        }
+        else
+        {
+            try
+            {
                 project.setDateUpdated(format.parse(dateUpdated));
-            } catch (ParseException ex) {
+            }
+            catch (ParseException ex)
+            {
                 return Response.status(Status.NOT_ACCEPTABLE).build();
             }
         }
-        User user = storeService.getUser(username);
-        if (project.getCreator() != user) {
+        User user;
+        try
+        {
+            user = storeService.getUser(username);
+        }
+        catch (OakCoreException ex)
+        {
+           return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
+        if (project.getCreator() != user)
+        {
             return Response.status(Status.UNAUTHORIZED).build();
         }
-        
-        storeService.updateProject(projectId, project);
+
+        try
+        {
+            storeService.updateProject(projectId, project);
+        }
+        catch (OakCoreException ex)
+        {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
         return Response.status(Status.OK).entity(project).build();
     }
 

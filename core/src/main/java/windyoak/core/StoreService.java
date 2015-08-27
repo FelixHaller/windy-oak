@@ -17,7 +17,7 @@ public interface StoreService
      * 
      * @return Eine Liste mit allen Projekten
      */
-    List<Project> fetchAllProjects();
+    List<Project> fetchAllProjects() throws OakCoreException;
 
     /**
      * Gibt die letzten n Projekte absteigend geordnet nach dem 
@@ -31,7 +31,7 @@ public interface StoreService
      * @param n maxmimale Anzahl an Projekten, die zurückgeliefert werden soll
      * @return Eine Liste mit Projekten
      */
-    List<Project> fetchRecentProjects(int n);
+    List<Project> fetchRecentProjects(int n) throws OakCoreException;
 
     /**
      * Gibt alle verfügbaren Informationen zu einem bestimmten Projekt zurück.
@@ -42,7 +42,7 @@ public interface StoreService
      * @param projectID Die id des Projektes
      * @return Ein Projekt oder null, wenn id nicht vorhanden.
      */
-    Project getProjectByID(int projectID);
+    Project getProjectByID(int projectID) throws OakCoreException;
 
     /**
      * Erstellt ein neues Projekt und liefert das erstellte Projekt samt 
@@ -51,7 +51,7 @@ public interface StoreService
      * @param project Das Projekt-Objekt, das in die Datenbank eingetragen werden soll
      * @return Das angelegte Projekt.
      */
-    Project createProject(Project project);
+    Project createProject(Project project) throws OakCoreException;
 
     /**
      * Aktualisiert ein bestehendes Projekt.
@@ -59,7 +59,7 @@ public interface StoreService
      * @param projectID die id des zu aktualisierenden Projekts.
      * @param project Das überarbeitete Projekt-Objekt
      */
-    void updateProject(int projectID, Project project);
+    void updateProject(int projectID, Project project) throws OakCoreException;
 
     /**
      * Löscht ein bestehendes Projekt.
@@ -70,7 +70,7 @@ public interface StoreService
      * @param projectID ID des zu löschenden Projektes.
      * @return Den letzten Stand des gelöschten Projektes.
      */
-    Project deleteProject(int projectID);
+    Project deleteProject(int projectID) throws OakCoreException;
     
     //User
 
@@ -82,7 +82,7 @@ public interface StoreService
      * 
      * @return Liste alle Benutzer.
      */
-    List<User> fetchAllUsers();
+    List<User> fetchAllUsers() throws OakCoreException;
 
     /**
      * Gibt alle bekannten Daten für einen bestimmten Benutzer aus.
@@ -93,7 +93,7 @@ public interface StoreService
      * @param username
      * @return User Objekt.
      */
-    User getUser(String username);
+    User getUser(String username) throws OakCoreException;
     
     //Project/Comments
     
@@ -103,7 +103,7 @@ public interface StoreService
      * @param ProjectsID Die ID des Projektes
      * @return Liste mit Kommentar-Objekten.
      */
-    List<Comment> fetchAllComments(int ProjectsID);
+    List<Comment> fetchAllComments(int projectID) throws OakCoreException;
 
     /**
      * Ein einzelnes Kommentar mit allen Details abrufen.
@@ -111,6 +111,6 @@ public interface StoreService
      * @param commentID
      * @return Ein Kommentar-Objekt.
      */
-    Comment getCommentByID(int commentID);
+    Comment getCommentByID(int commentID) throws OakCoreException;
     
 }
