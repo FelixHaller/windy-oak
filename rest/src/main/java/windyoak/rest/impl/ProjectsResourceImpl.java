@@ -70,6 +70,7 @@ public class ProjectsResourceImpl implements ProjectsResource
         project.setCreator(user);
 
         project.setDescription(description);
+        project.setStatus(status);
 
         try
         {
