@@ -8,6 +8,7 @@ package windyoak.rest.impl;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 import windyoak.core.StoreService;
 import javax.ws.rs.core.Context;
@@ -15,9 +16,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import windyoak.core.Project;
-import windyoak.core.Projects;
 import windyoak.core.User;
 import windyoak.core.OakCoreException;
+import windyoak.core.Projects;
 
 import windyoak.rest.ProjectsResource;
 
@@ -93,18 +94,16 @@ public class ProjectsResourceImpl implements ProjectsResource
     @Override
     public Response getProjects()
     {
-
-        Projects projects;
         try
         {
-            projects = new Projects(storeService.fetchAllProjects());
+            return Response.status(Status.OK).entity(new Projects(storeService.fetchAllProjects())).build();
         }
         catch (OakCoreException ex)
         {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
 
-        return Response.status(Status.OK).entity(projects).build();
+        
     }
 
     @Override

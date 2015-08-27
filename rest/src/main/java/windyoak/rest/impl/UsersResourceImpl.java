@@ -5,8 +5,6 @@
  */
 package windyoak.rest.impl;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import windyoak.core.OakCoreException;
