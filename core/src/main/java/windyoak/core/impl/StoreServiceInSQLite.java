@@ -24,28 +24,58 @@ public class StoreServiceInSQLite implements StoreService
     Connection connection;
     Statement statement;
     String sql;
+    String errorMessage;
     
     public StoreServiceInSQLite()
+    {
+        
+    }
+    
+    private void establishConnection() throws OakCoreException
     {
         try
         {
             Class.forName("org.sqlite.JDBC");
+            this.connection = DriverManager.getConnection("jdbc:sqlite:db.sqlite");
+            statement = connection.createStatement();
         }
         catch (ClassNotFoundException ex)
         {
-            Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, "SQLite JDBC Treiber konnte nicht gefunden werden.", ex);
-            
+            errorMessage = "SQLite JDBC Treiber konnte nicht gefunden werden.";
+            Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, errorMessage, ex);
+            throw new OakCoreException(errorMessage);  
+        }
+        catch (SQLException ex)
+        {
+            errorMessage = "Verbindung zu Datenbank konnte nicht hergestellt werden.";
+            Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, errorMessage, ex);
+            throw new OakCoreException(errorMessage);
         }
         
     }
     
+    private void endConnection() throws OakCoreException
+    {
+        try
+            {
+                statement.close();
+                connection.close();
+            }
+            catch (SQLException ex)
+            {
+                errorMessage = "Fehler beim Schließen der Datenbankverbindung";
+                Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, errorMessage, ex);
+                throw new OakCoreException(errorMessage);
+            }
+    }
+    
+    
     private List<Project> fetchProjects(boolean recent, int count) throws OakCoreException
     {   
         ArrayList<Project> projects = new ArrayList<>();
+        this.establishConnection();
         try
         {
-            this.connection = DriverManager.getConnection("jdbc:sqlite:db.sqlite");
-            statement = connection.createStatement();
             if (recent)
             {
                 sql = String.format("select * from project "
@@ -86,16 +116,7 @@ public class StoreServiceInSQLite implements StoreService
         }        
         finally
         {
-            try
-            {
-                statement.close();
-                connection.close();
-            }
-            catch (SQLException ex)
-            {
-                Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, null, ex);
-                throw new OakCoreException("Fehler beim Schließen der Datenbankverbindung");
-            }
+            this.endConnection();
         }
 
         return projects;
@@ -118,17 +139,8 @@ public class StoreServiceInSQLite implements StoreService
     {
         Project project = new Project();
         ResultSet resultset;
-        try
-        {
-            /* Allgemeine Infos zum Projekt holen */
-            connection = DriverManager.getConnection("jdbc:sqlite:db.sqlite");
-            statement = connection.createStatement();
-        }
-        catch (SQLException ex)
-        {
-            Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, null, ex);
-            throw new OakCoreException("Fehler beim Verbinden zur Datenbank");
-        }
+        
+        this.establishConnection();
 
         try
         {
@@ -214,16 +226,7 @@ public class StoreServiceInSQLite implements StoreService
         }        
         finally
         {
-            try
-            {
-                statement.close();
-                connection.close();
-            }
-            catch (SQLException ex)
-            {
-                Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, null, ex);
-                throw new OakCoreException("Fehler beim Schließen der Datenbank-Verbindung");
-            }
+            this.endConnection();
         }
         return project;
     }
@@ -238,15 +241,7 @@ public class StoreServiceInSQLite implements StoreService
     public List<User> fetchAllUsers() throws OakCoreException
     {
         ArrayList<User> users = new ArrayList<>();
-        try
-        {
-            this.connection = DriverManager.getConnection("jdbc:sqlite:db.sqlite");
-            statement = connection.createStatement();
-        }
-        catch (SQLException ex)
-        {
-            throw new OakCoreException("Fehler beim Verbinden zur Datenbank");
-        }
+        this.establishConnection();
         try
         {
             sql = "select * from user";
@@ -268,16 +263,7 @@ public class StoreServiceInSQLite implements StoreService
         }
         finally
         {
-            try
-            {
-                statement.close();
-                connection.close();
-            }
-            catch (SQLException ex)
-            {
-                Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, null, ex);
-                throw new OakCoreException("Fehler beim Schließen der Datenbankverbindung");
-            }
+            this.endConnection();
         }
 
         return users;
@@ -287,11 +273,9 @@ public class StoreServiceInSQLite implements StoreService
     public User getUser(String username) throws OakCoreException
     {
         User user = new User();
-        
+        this.establishConnection();
         try
         {
-            this.connection = DriverManager.getConnection("jdbc:sqlite:db.sqlite");
-            statement = connection.createStatement();
             sql = String.format("select count(*) count, * from user where username='%s'", username);
             ResultSet resultset = statement.executeQuery(sql);
             if (resultset.getInt("count") == 0)
@@ -311,17 +295,7 @@ public class StoreServiceInSQLite implements StoreService
         }
         finally
         {
-            
-            try
-            {
-                statement.close();
-                connection.close();
-            }
-            catch (SQLException ex)
-            {
-                Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, null, ex);
-                throw new OakCoreException("Fehler beim schließen der Datenbankverbindung");
-            }
+            this.endConnection();
         }
 
         return user;
@@ -331,10 +305,9 @@ public class StoreServiceInSQLite implements StoreService
     @Override
     public Project deleteProject(int projectID) throws OakCoreException
     {
+        this.establishConnection();
         try
         {
-            this.connection = DriverManager.getConnection("jdbc:sqlite:db.sqlite");
-            statement = connection.createStatement();
             String sql = String.format( "update project set status = 'deleted' " +
                                         "where projectID = %d", projectID);
             statement.executeUpdate(sql);
@@ -346,24 +319,49 @@ public class StoreServiceInSQLite implements StoreService
         }
         finally
         {
-            try{
-                statement.close();
-                connection.close();
-            }
-            catch (SQLException ex)
-            {
-                
-                throw new OakCoreException("Fehler beim Schließen der Datenbankverbindung");
-            }
+            this.endConnection();
         }
         return this.getProject(projectID, true);
     }
-
+    
 
     @Override
     public Project createProject(Project project) throws OakCoreException
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.establishConnection();
+        
+        try
+        {
+            sql=    String.format(
+                    "INSERT INTO project " 
+                +   "(creator, title, description, dateCreated, status) " 
+                +   "VALUES("
+                +   "'%s',"
+                +   "'%s',"
+                +   "'%s',"
+                +   " %d, "
+                +   "'%s')",
+                project.getCreator().getUsername(),
+                project.getTitle(),
+                project.getDescription(),
+                project.getDateCreated().getTime(),
+                project.getStatus()
+            );
+            statement.executeUpdate(sql);
+            int newProjectID = statement.getGeneratedKeys().getInt(1);
+            
+            return this.getProjectByID(newProjectID);
+        }
+        catch (SQLException ex)
+        {
+            errorMessage = "Fehler bei Datenbankabfrage";
+            Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, errorMessage, ex);
+            throw new OakCoreException(errorMessage);
+        }        
+        finally
+        {
+            this.endConnection();
+        }
     }
 
     @Override
@@ -375,11 +373,9 @@ public class StoreServiceInSQLite implements StoreService
     public List<Comment> fetchAllComments(int projectID) throws OakCoreException
     {
         ArrayList<Comment> comments = new ArrayList<>();
-
+        this.establishConnection();
         try
         {
-            this.connection = DriverManager.getConnection("jdbc:sqlite:db.sqlite");
-            statement = connection.createStatement();
             sql =    String.format(
                             "select * from comment, user " +
                             "where projectID=%d " +
@@ -413,18 +409,8 @@ public class StoreServiceInSQLite implements StoreService
         }
         finally
         {
-            try
-            {
-                statement.close();
-                connection.close();
-            }
-            catch (SQLException ex)
-            {
-                Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, null, ex);
-                throw new OakCoreException("Fehler beim Schließen der Datenbankverbindung");
-            }
+            this.endConnection();
         }
-
 
         return comments;
         
