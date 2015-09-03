@@ -8,7 +8,6 @@ package windyoak.rest.impl;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Locale;
 import windyoak.core.StoreService;
 import javax.ws.rs.core.Context;
@@ -19,7 +18,6 @@ import windyoak.core.Project;
 import windyoak.core.User;
 import windyoak.core.OakCoreException;
 import windyoak.core.Projects;
-
 import windyoak.rest.ProjectsResource;
 
 /**
@@ -54,7 +52,6 @@ public class ProjectsResourceImpl implements ProjectsResource
         {
             return Response.status(Status.NOT_ACCEPTABLE).tag("Empty Parameter").build();
         }
-
         try
         {
             user = storeService.getUser(username);
@@ -153,7 +150,7 @@ public class ProjectsResourceImpl implements ProjectsResource
     }
 
     @Override
-    public Response updateProject(int projectId, UriInfo uriInfo, String name, String username, String description, String dateUpdated, String status)
+    public Response updateProject(int projectId, UriInfo uriInfo, String name, String username, String description, String status)
     {
         Project project;
         try
@@ -180,35 +177,8 @@ public class ProjectsResourceImpl implements ProjectsResource
         {
             project.setStatus(status);
         }
-        if (dateUpdated.isEmpty())
-        {
-            return Response.status(Status.NOT_ACCEPTABLE).build();
-        }
-        else
-        {
-            try
-            {
-                project.setDateUpdated(format.parse(dateUpdated));
-            }
-            catch (ParseException ex)
-            {
-                return Response.status(Status.NOT_ACCEPTABLE).build();
-            }
-        }
-        User user;
-        try
-        {
-            user = storeService.getUser(username);
-        }
-        catch (OakCoreException ex)
-        {
-           return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
-        }
-        if (project.getCreator() != user)
-        {
-            return Response.status(Status.UNAUTHORIZED).build();
-        }
 
+        project.setCreator(new User(username));
         try
         {
             storeService.updateProject(projectId, project);
