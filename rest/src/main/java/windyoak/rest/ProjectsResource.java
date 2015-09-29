@@ -94,12 +94,13 @@ public interface ProjectsResource {
             })
     @Path("{projectid}/comments")
     public Response createComment(
+            @PathParam("projectid") int projectid,
             @Context UriInfo uriInfo,
             @FormParam("title") String title,
             @FormParam("creator") String creator,
             @FormParam("content") String content,
-            @FormParam("published") Boolean published,
-            @FormParam("projectid") int projectid
+            @FormParam("published") Boolean published
+            
     );
 
     @GET

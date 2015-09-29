@@ -370,7 +370,42 @@ public class StoreServiceInSQLite implements StoreService {
 
     @Override
     public Comment getCommentByID(int commentID) throws OakCoreException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.establishConnection();
+        ResultSet resultset;
+        Comment comment = new Comment();
+        try {
+
+            sql = "select count(*) count, * from comment, user "
+                    + "where comment.creator = user.username "
+                    + "and comment.commentID = " + commentID;
+
+            resultset = statement.executeQuery(sql);
+            if (resultset.getInt("count") == 0) {
+                return null;
+            }
+            comment.setContent(resultset.getString("content"));
+            User creator = new User(resultset.getString("username"));
+            creator.setForename(resultset.getString("forename"));
+            creator.setSurname(resultset.getString("surname"));
+
+            comment.setCreator(creator);
+            comment.setDateCreated(resultset.getLong("dateCreated"));
+            if (resultset.getLong("dateUpdated") > 0) {
+                comment.setDateUpdated(resultset.getLong("dateUpdated"));
+            }
+            comment.setId(resultset.getInt("commentID"));
+            comment.setTitle(resultset.getString("title"));
+            comment.setProjectID(resultset.getInt("projectID"));
+
+        } catch (SQLException ex) {
+            errorMessage = "Fehler bei Datenbankabfrage";
+            Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, errorMessage, ex);
+            throw new OakCoreException(errorMessage);
+        } finally {
+            this.endConnection();
+        }
+        return comment;
+
     }
 
     @Override
@@ -386,29 +421,31 @@ public class StoreServiceInSQLite implements StoreService {
     @Override
     public Comment createComment(Comment comment) throws OakCoreException {
         this.establishConnection();
-        
+
         int publish;
         if (comment.isPublished()) {
             publish = 1;
         } else {
             publish = 0;
         }
-        
+
         try {
             sql = String.format(
                     "INSERT INTO comment "
-                    + "(creator, title, content, dateCreated, published) "
+                    + "(creator, title, content, dateCreated, published, projectID) "
                     + "VALUES("
                     + "'%s',"
                     + "'%s',"
                     + "'%s',"
                     + " %d, "
-                    + "'%d')",
+                    + " %d, "
+                    + " %d)",
                     comment.getCreator().getUsername(),
                     comment.getTitle(),
                     comment.getContent(),
                     new Date().getTime(),
-                    publish
+                    publish,
+                    comment.getProjectID()
             );
             //while(project.getMembers())
             statement.executeUpdate(sql);

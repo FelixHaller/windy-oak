@@ -222,8 +222,35 @@ public class ProjectsResourceImpl implements ProjectsResource {
     }
 
     @Override
-    public Response createComment(UriInfo uriInfo, String title, String creator, String content, Boolean published, int projectid) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Response createComment(int projectid,UriInfo uriInfo, String title, String creator, String content, Boolean published) {
+        Comment createdComment;
+        Comment comment = new Comment();
+        User user;
+        if (title == null || title.isEmpty() || content == null
+                || content.isEmpty() || published == null) {
+            return Response.status(Status.NOT_ACCEPTABLE).entity("Empty Parameter").build();
+        }
+        try {
+            user = storeService.getUser(creator);
+        } catch (OakCoreException ex) {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
+        if (user == null) {
+            return Response.status(Status.NOT_FOUND).entity("Creator not found in Database!").build();
+        }
+        comment.setTitle(title);
+        comment.setCreator(user);
+        comment.setContent(content);
+        comment.setPublished(published);
+        comment.setProjectID(projectid);
+
+        try {
+            createdComment = this.storeService.createComment(comment);
+        } catch (OakCoreException ex) {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
+
+        return Response.status(Status.CREATED).entity(createdComment).build();
     }
 
     @Override
