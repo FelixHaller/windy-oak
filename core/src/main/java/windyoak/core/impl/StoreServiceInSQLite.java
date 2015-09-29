@@ -345,7 +345,7 @@ public class StoreServiceInSQLite implements StoreService
                 project.getCreator().getUsername(),
                 project.getTitle(),
                 project.getDescription(),
-                project.getDateCreated().getTime(),
+                new Date().getTime(),
                 project.getStatus()
             );
             statement.executeUpdate(sql);
