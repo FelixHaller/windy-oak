@@ -38,9 +38,8 @@ public interface ProjectsResource {
             @FormParam("name") String name,
             @FormParam("username") String username,
             @FormParam("description") String description,
-            @FormParam("dateCreated") String dateCreated,
-            @FormParam("status") String status,
-            @FormParam("members") String members
+            @FormParam("members") String members,
+            @FormParam("status") String status
     );
 
     @GET

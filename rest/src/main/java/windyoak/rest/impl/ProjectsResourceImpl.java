@@ -46,12 +46,12 @@ public class ProjectsResourceImpl implements ProjectsResource
     }
 
     @Override
-    public Response createProject(UriInfo uriInfo, String name, String username, String description, String dateCreated, String status, String members) {
+    public Response createProject(UriInfo uriInfo, String name, String username,String status, String description,  String members) {
         Project createdProject;
         Project project = new Project(name);
         User user;
         if (name == null || name.isEmpty() || description == null
-                || description.isEmpty() || dateCreated == null || dateCreated.isEmpty() || status == null || status.isEmpty()) {
+                || description.isEmpty()  || status == null || status.isEmpty()) {
             return Response.status(Status.NOT_ACCEPTABLE).entity("Empty Parameter").build();
         }
         try
@@ -66,13 +66,9 @@ public class ProjectsResourceImpl implements ProjectsResource
         project.setCreator(user);
 
         project.setDescription(description);
+        if (status ==)
         project.setStatus(status);
 
-        try {
-            project.setDateCreated(format.parse(dateCreated));
-        } catch (ParseException ex) {
-            return Response.status(Status.NOT_ACCEPTABLE).entity(ex.getMessage()).build();
-        }
 
         List<User> memberList = new ArrayList<>(); //= Arrays.asList(ts)
         String[] arrayMembers = members.split(";");
