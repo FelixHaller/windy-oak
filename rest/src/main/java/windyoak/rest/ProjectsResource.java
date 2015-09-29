@@ -39,7 +39,8 @@ public interface ProjectsResource {
             @FormParam("username") String username,
             @FormParam("description") String description,
             @FormParam("dateCreated") String dateCreated,
-            @FormParam("status") String status
+            @FormParam("status") String status,
+            @FormParam("members") String members
     );
 
     @GET
@@ -74,9 +75,9 @@ public interface ProjectsResource {
             @FormParam("username") String username,
             @FormParam("description") String description,
             @FormParam("dateUpdated") String dateUpdated,
-            @FormParam("status") String status
+            @FormParam("status") String status,
+            @FormParam("members") String members
     );
-    
 
     @DELETE
     @Produces({
@@ -86,6 +87,69 @@ public interface ProjectsResource {
     @Path("{projectid}")
     public Response deleteProject(@PathParam("projectid") int projectId);
 
+//comments!!!!
+    @POST
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(
+            {
+                MediaType.APPLICATION_XML,
+                MediaType.APPLICATION_JSON
+            })
+    @Path("{projectid}/comments")
+    public Response createComment(
+            @Context UriInfo uriInfo,
+            @FormParam("title") String title,
+            @FormParam("creator") String creator,
+            @FormParam("content") String content,
+            @FormParam("dateCreated") String dateCreated,
+            @FormParam("published") Boolean published,
+            @FormParam("projectid") int projectid
+    );
+
+    @GET
+    @Produces(
+            {
+                MediaType.APPLICATION_XML,
+                MediaType.APPLICATION_JSON
+            })
+    @Path("{projectid}/comments")
+    public Response getComments(@FormParam("projectid") int projectid);
+
+    @GET
+    @Produces(
+            {
+                MediaType.APPLICATION_XML,
+                MediaType.APPLICATION_JSON
+            })
+    @Path("{projectid}/comments/{commentid}")
+    public Response getComment(@PathParam("commentid") int commentid);
+
+    @PUT
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(
+            {
+                MediaType.APPLICATION_XML,
+                MediaType.APPLICATION_JSON
+            })
+    @Path("{projectid}/comments/{commentid}")
+    public Response updateComment(
+            @PathParam("commentid") int commentid,
+            @Context UriInfo uriInfo,
+            @FormParam("title") String title,
+            @FormParam("content") String content,
+            @FormParam("dateUpdated") String dateUpdated,
+            @FormParam("published") Boolean published
+    );
+
+    @DELETE
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(
+            {
+                MediaType.APPLICATION_XML,
+                MediaType.APPLICATION_JSON
+            })
+    @Path("{projectid}/comments/{commentid}")
+    public Response deleteComment(@PathParam("commentid") int commentid);
 //    @GET
 //    @Produces(
 //        {

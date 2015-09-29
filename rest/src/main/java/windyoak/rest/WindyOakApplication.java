@@ -9,6 +9,7 @@ import windyoak.core.StoreService;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import windyoak.core.impl.StoreServiceInSQLite;
 import windyoak.rest.impl.ProjectsResourceImpl;
+import windyoak.rest.impl.RecentResourceImpl;
 import windyoak.rest.impl.UsersResourceImpl;
 
 
@@ -30,6 +31,6 @@ public class WindyOakApplication extends org.glassfish.jersey.server.ResourceCon
             }
         });
         register(UsersResourceImpl.class);
-        
+        register(RecentResourceImpl.class);
     }
 }
