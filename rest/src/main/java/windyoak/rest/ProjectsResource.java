@@ -98,7 +98,6 @@ public interface ProjectsResource {
             @FormParam("title") String title,
             @FormParam("creator") String creator,
             @FormParam("content") String content,
-            @FormParam("dateCreated") String dateCreated,
             @FormParam("published") Boolean published,
             @FormParam("projectid") int projectid
     );

@@ -59,11 +59,11 @@ public class ProjectsResourceImpl implements ProjectsResource {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
         if (user == null) {
-            return Response.status(Status.UNAUTHORIZED).build();
+            return Response.status(Status.NOT_FOUND).entity("User not found in Database!").build();
         }
         project.setCreator(user);
         project.setDescription(description);
-        
+
         if ("new".equals(status) || "published".equals(status) || "closed".equals(status)) {
             project.setStatus(status);
         } else {
@@ -92,7 +92,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
 
-        return Response.status(Status.OK).entity(createdProject).build();
+        return Response.status(Status.CREATED).entity(createdProject).build();
     }
 
     @Override
@@ -140,6 +140,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
     @Override
     public Response updateProject(int projectId, UriInfo uriInfo, String name, String username, String description, String status) {
         Project project;
+        User newUser;
         try {
             project = storeService.getProjectByID(projectId);
         } catch (OakCoreException ex) {
@@ -148,17 +149,33 @@ public class ProjectsResourceImpl implements ProjectsResource {
         if (project == null) {
             return Response.status(Status.NOT_FOUND).build();
         }
-        if (!name.isEmpty()) {
-            project.setTitle(name);
+
+        if (!(name == null || name.isEmpty())) {
+            project.setTitle(name);//nur Ausführen, wenn der name nicht null und auch nicht empty ist. Schreibweise muss so sein um die NullPointerException vorzugreifen!
         }
-        if (!description.isEmpty()) {
+        if (!(description == null || description.isEmpty())) {
             project.setDescription(description);
         }
-        if (!status.isEmpty()) {
-            project.setStatus(status);
+        if (!(status == null || status.isEmpty())) {
+            if ("new".equals(status) || "published".equals(status) || "closed".equals(status)) {
+                project.setStatus(status);
+            } else {
+                return Response.status(Status.NOT_ACCEPTABLE).entity("Unknown Status").build();
+            }
+        }
+        if (!(username == null || username.isEmpty())) {
+            try {
+                newUser = storeService.getUser(username);
+            } catch (OakCoreException ex) {
+                return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+            }
+            if (newUser == null) {
+                return Response.status(Status.NOT_FOUND).entity("User not found in Database!").build();
+            }
+            project.setCreator(newUser);
+
         }
 
-        project.setCreator(new User(username));
         try {
             storeService.updateProject(projectId, project);
         } catch (OakCoreException ex) {
@@ -205,7 +222,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
     }
 
     @Override
-    public Response createComment(UriInfo uriInfo, String title, String creator, String content, String dateCreated, Boolean published, int projectid) {
+    public Response createComment(UriInfo uriInfo, String title, String creator, String content, Boolean published, int projectid) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
