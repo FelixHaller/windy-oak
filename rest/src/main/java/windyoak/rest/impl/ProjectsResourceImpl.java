@@ -8,6 +8,8 @@ package windyoak.rest.impl;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,7 +30,8 @@ import windyoak.rest.ProjectsResource;
  *
  * @author fhaller1
  */
-public class ProjectsResourceImpl implements ProjectsResource {
+public class ProjectsResourceImpl implements ProjectsResource 
+{
 
     @Context
     private StoreService storeService;
@@ -160,27 +163,19 @@ public class ProjectsResourceImpl implements ProjectsResource {
             project.setStatus(status);
         }
         
-	try
+        project.setCreator(new User(username));
+        try
         {
             storeService.updateProject(projectId, project);
         }
-        if (comment == null) {
-            return Response.status(Status.NOT_FOUND).build();
+        catch (OakCoreException ex)
+        {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
-
-        return Response.status(Status.OK).entity(comment).build();
+        return Response.status(Status.OK).entity(project).build();
     }
 
-    @Override
-    public Response getComments(int projectid) {
-//        try {
-//
-//            return Response.status(Status.OK).entity(new Comments(storeService.fetchAllComments(projectid))).build();
-//        } catch (OakCoreException ex) {
-//            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
-//        }
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    
 
     @Override
     public Response updateComment(int commentid, UriInfo uriInfo, String title, String content, String dateUpdated, Boolean published) {
@@ -216,6 +211,29 @@ public class ProjectsResourceImpl implements ProjectsResource {
 
     @Override
     public Response deleteComment(int commentid) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Response createComment(UriInfo uriInfo, String title, String creator, String content, String dateCreated, Boolean published, int projectid)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Response getComments(int projectid) {
+//        try {
+//
+//            return Response.status(Status.OK).entity(new Comments(storeService.fetchAllComments(projectid))).build();
+//        } catch (OakCoreException ex) {
+//            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+//        }
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override
+    public Response getComment(int commentid)
+    {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

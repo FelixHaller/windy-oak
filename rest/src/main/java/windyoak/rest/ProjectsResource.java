@@ -111,7 +111,7 @@ public interface ProjectsResource {
                 MediaType.APPLICATION_JSON
             })
     @Path("{projectid}/comments")
-    public Response getComments(@FormParam("projectid") int projectid);
+    public Response getComments(@PathParam("projectid") int projectid);
 
     @GET
     @Produces(

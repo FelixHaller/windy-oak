@@ -150,7 +150,18 @@ public class Project
     {
         this.dateUpdated = new Date(epochTime);
     }
-
+    
+    /**
+     * Setze Status des Projektes
+     * 
+     * Mögliche Status sind: new, published, closed
+     * 
+     * new: Erstellt, aber noch nicht veröffentlicht
+     * published: veröffentlicht
+     * closed: abgeschlossen
+     * 
+     * @param status
+     */
     public void setStatus(String status)
     {
         this.status = status;

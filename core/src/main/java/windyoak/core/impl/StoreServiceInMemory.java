@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import windyoak.core.Comment;
+import windyoak.core.OakCoreException;
 import windyoak.core.Project;
 import windyoak.core.User;
 
@@ -101,6 +102,24 @@ public class StoreServiceInMemory implements StoreService
 
     @Override
     public List<Project> fetchRecentProjects(int n)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Comment deleteComment(int commentID) throws OakCoreException
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Comment updateComment(int commentID, Comment comment) throws OakCoreException
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Comment createComment(Comment comment) throws OakCoreException
     {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

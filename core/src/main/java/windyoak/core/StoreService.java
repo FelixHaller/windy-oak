@@ -113,4 +113,11 @@ public interface StoreService
      */
     Comment getCommentByID(int commentID) throws OakCoreException;
     
+    
+    Comment deleteComment(int commentID) throws OakCoreException;
+    
+    Comment updateComment(int commentID, Comment comment) throws OakCoreException;
+    
+    Comment createComment(Comment comment) throws OakCoreException;
+    
 }
