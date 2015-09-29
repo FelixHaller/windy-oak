@@ -8,10 +8,6 @@ package windyoak.rest.impl;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,7 +22,6 @@ import windyoak.core.Project;
 import windyoak.core.User;
 import windyoak.core.OakCoreException;
 import windyoak.core.Projects;
-
 import windyoak.rest.ProjectsResource;
 
 /**
@@ -56,8 +51,8 @@ public class ProjectsResourceImpl implements ProjectsResource {
                 || description.isEmpty() || dateCreated == null || dateCreated.isEmpty() || status == null || status.isEmpty()) {
             return Response.status(Status.NOT_ACCEPTABLE).entity("Empty Parameter").build();
         }
-
-        try {
+        try
+        {
             user = storeService.getUser(username);
         } catch (OakCoreException ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
@@ -144,7 +139,8 @@ public class ProjectsResourceImpl implements ProjectsResource {
     }
 
     @Override
-    public Response updateProject(int projectId, UriInfo uriInfo, String name, String username, String description, String dateUpdated, String status, String members) {
+    public Response updateProject(int projectId, UriInfo uriInfo, String name, String username, String description, String status)
+    {
         Project project;
         try {
             project = storeService.getProjectByID(projectId);
@@ -163,63 +159,10 @@ public class ProjectsResourceImpl implements ProjectsResource {
         if (!status.isEmpty()) {
             project.setStatus(status);
         }
-        if (dateUpdated.isEmpty()) {
-            return Response.status(Status.NOT_ACCEPTABLE).entity("No Update-Date was given.").build();
-        } else {
-            try {
-                project.setDateUpdated(format.parse(dateUpdated));
-            } catch (ParseException ex) {
-                return Response.status(Status.NOT_ACCEPTABLE).entity(ex.getMessage()).build();
-            }
-        }
-        try {
+        
+	try
+        {
             storeService.updateProject(projectId, project);
-        } catch (OakCoreException ex) {
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
-        }
-        return Response.status(Status.OK).entity(project).build();
-    }
-//comments
-
-    @Override
-    public Response createComment(UriInfo uriInfo, String title, String creator, String content, String dateCreated, Boolean published, int projectid) {
-        Comment comment = new Comment();
-        User user;
-        if (title == null || title.isEmpty() || content == null
-                || content.isEmpty() || dateCreated == null || dateCreated.isEmpty()) {
-            return Response.status(Status.NOT_ACCEPTABLE).entity("Empty Parameter").build();
-        }
-        try {
-            user = storeService.getUser(creator);
-            if (user == null) {
-                return Response.status(Status.NOT_ACCEPTABLE).entity("creator not found in Database!").build();
-            }
-        } catch (OakCoreException ex) {
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
-        }
-        try {
-            comment.setDateUpdated(format.parse(dateCreated));
-        } catch (ParseException ex) {
-            return Response.status(Status.NOT_ACCEPTABLE).entity(ex.getMessage()).build();
-        }
-        comment.setCreator(user);
-        comment.setPublished(published);
-        comment.setContent(content);
-        comment.setTitle(title);
-        //comment.setProjectId(projectid);
-        //comment=storeService.createComment(comment);
-        //return Response.status(Status.OK).entity(comment).build();
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Response getComment(int commentid) {
-        Comment comment;
-        try {
-            comment = storeService.getCommentByID(commentid);
-
-        } catch (OakCoreException ex) {
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
         if (comment == null) {
             return Response.status(Status.NOT_FOUND).build();

@@ -2,6 +2,7 @@ package windyoak.core.impl;
 
 import java.util.List;
 import java.sql.*;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -367,7 +368,38 @@ public class StoreServiceInSQLite implements StoreService
     @Override
     public void updateProject(int projectID, Project project) throws OakCoreException
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.establishConnection();
+        
+        try
+        {
+            sql=    String.format(
+                    "UPDATE project " 
+                +   "SET "
+                +   "creator='%s', "
+                +   "title='%s', "
+                +   "description='%s', "
+                +   "dateUpdated=%d, "
+                +   "status='%s' "
+                +   "WHERE projectID = %d",
+                project.getCreator().getUsername(),
+                project.getTitle(),
+                project.getDescription(),
+                new Date().getTime(),
+                project.getStatus(),
+                project.getId()
+            );
+            statement.executeUpdate(sql);
+        }
+        catch (SQLException ex)
+        {
+            errorMessage = "Fehler bei Datenbankabfrage";
+            Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, errorMessage, ex);
+            throw new OakCoreException(errorMessage);
+        }        
+        finally
+        {
+            this.endConnection();
+        }
     }
     @Override
     public List<Comment> fetchAllComments(int projectID) throws OakCoreException
