@@ -30,8 +30,7 @@ import windyoak.rest.ProjectsResource;
  *
  * @author fhaller1
  */
-public class ProjectsResourceImpl implements ProjectsResource 
-{
+public class ProjectsResourceImpl implements ProjectsResource {
 
     @Context
     private StoreService storeService;
@@ -46,16 +45,15 @@ public class ProjectsResourceImpl implements ProjectsResource
     }
 
     @Override
-    public Response createProject(UriInfo uriInfo, String name, String username,String status, String description,  String members) {
+    public Response createProject(UriInfo uriInfo, String name, String username, String status, String description, String members) {
         Project createdProject;
         Project project = new Project(name);
         User user;
         if (name == null || name.isEmpty() || description == null
-                || description.isEmpty()  || status == null || status.isEmpty()) {
+                || description.isEmpty() || status == null || status.isEmpty()) {
             return Response.status(Status.NOT_ACCEPTABLE).entity("Empty Parameter").build();
         }
-        try
-        {
+        try {
             user = storeService.getUser(username);
         } catch (OakCoreException ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
@@ -64,11 +62,13 @@ public class ProjectsResourceImpl implements ProjectsResource
             return Response.status(Status.UNAUTHORIZED).build();
         }
         project.setCreator(user);
-
         project.setDescription(description);
-        if (status ==)
-        project.setStatus(status);
-
+        
+        if ("new".equals(status) || "published".equals(status) || "closed".equals(status)) {
+            project.setStatus(status);
+        } else {
+            return Response.status(Status.NOT_ACCEPTABLE).entity("Unknown Status").build();
+        }
 
         List<User> memberList = new ArrayList<>(); //= Arrays.asList(ts)
         String[] arrayMembers = members.split(";");
@@ -138,8 +138,7 @@ public class ProjectsResourceImpl implements ProjectsResource
     }
 
     @Override
-    public Response updateProject(int projectId, UriInfo uriInfo, String name, String username, String description, String status)
-    {
+    public Response updateProject(int projectId, UriInfo uriInfo, String name, String username, String description, String status) {
         Project project;
         try {
             project = storeService.getProjectByID(projectId);
@@ -158,26 +157,21 @@ public class ProjectsResourceImpl implements ProjectsResource
         if (!status.isEmpty()) {
             project.setStatus(status);
         }
-        
+
         project.setCreator(new User(username));
-        try
-        {
+        try {
             storeService.updateProject(projectId, project);
-        }
-        catch (OakCoreException ex)
-        {
+        } catch (OakCoreException ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
         return Response.status(Status.OK).entity(project).build();
     }
 
-    
-
     @Override
     public Response updateComment(int commentid, UriInfo uriInfo, String title, String content, String dateUpdated, Boolean published) {
-         Comment comment;
+        Comment comment;
         try {
-           comment = storeService.getCommentByID(commentid);
+            comment = storeService.getCommentByID(commentid);
         } catch (OakCoreException ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
@@ -211,8 +205,7 @@ public class ProjectsResourceImpl implements ProjectsResource
     }
 
     @Override
-    public Response createComment(UriInfo uriInfo, String title, String creator, String content, String dateCreated, Boolean published, int projectid)
-    {
+    public Response createComment(UriInfo uriInfo, String title, String creator, String content, String dateCreated, Boolean published, int projectid) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -226,10 +219,9 @@ public class ProjectsResourceImpl implements ProjectsResource
 //        }
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     @Override
-    public Response getComment(int commentid)
-    {
+    public Response getComment(int commentid) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
