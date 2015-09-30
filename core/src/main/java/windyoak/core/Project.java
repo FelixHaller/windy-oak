@@ -1,5 +1,6 @@
 package windyoak.core;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -29,10 +30,22 @@ public class Project
     private String status;
     private List<User> members;
     private ArrayList<Tag> tags;
+    private URL postsURL;
+
 
     public Project()
     {
 
+    }
+    
+    public URL getPostsURL()
+    {
+        return postsURL;
+    }
+
+    public void setPostsURL(URL postsURL)
+    {
+        this.postsURL = postsURL;
     }
 
     public Project(String title)
