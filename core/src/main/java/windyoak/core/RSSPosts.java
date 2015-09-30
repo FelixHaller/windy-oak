@@ -32,5 +32,10 @@ public class RSSPosts
     {
         this.rssPosts = rssPosts;
     }
+    
+    public void addRSSPost(RSSPost rssPost)
+    {
+        this.rssPosts.add(rssPost);
+    }
 
 }
