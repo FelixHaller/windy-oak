@@ -1,5 +1,5 @@
 apply plugin: 'application'
-mainClassName = "windyoak.client.Test"
+mainClassName = "windyoak.client.Client"
 
 dependencies {
     compile project(':core')
