@@ -94,13 +94,13 @@ public interface ProjectsResource {
             })
     @Path("{projectid}/comments")
     public Response createComment(
+            @PathParam("projectid") int projectid,
             @Context UriInfo uriInfo,
             @FormParam("title") String title,
             @FormParam("creator") String creator,
             @FormParam("content") String content,
-            @FormParam("dateCreated") String dateCreated,
-            @FormParam("published") Boolean published,
-            @FormParam("projectid") int projectid
+            @FormParam("status") String status
+            
     );
 
     @GET
@@ -134,8 +134,7 @@ public interface ProjectsResource {
             @Context UriInfo uriInfo,
             @FormParam("title") String title,
             @FormParam("content") String content,
-            @FormParam("dateUpdated") String dateUpdated,
-            @FormParam("published") Boolean published
+            @FormParam("status") String  status
     );
 
     @DELETE
