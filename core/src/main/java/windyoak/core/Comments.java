@@ -2,11 +2,13 @@ package windyoak.core;
 
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Felix Haller
  */
+@XmlRootElement(name = "comments")
 public class Comments {
     
     private List<Comment> comments;

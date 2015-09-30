@@ -49,31 +49,27 @@ public class ProjectsResourceImpl implements ProjectsResource {
         Project createdProject;
         Project project = new Project(name);
         User user;
-        if (name == null || name.isEmpty() || description == null
-                || description.isEmpty() || status == null || status.isEmpty()) {
-            return Response.status(Status.NOT_ACCEPTABLE).entity("Empty Parameter").build();
-        }
         try {
+            if (name == null || name.isEmpty() || description == null
+                    || description.isEmpty() || status == null || status.isEmpty()) {
+                return Response.status(Status.NOT_ACCEPTABLE).entity("Empty Parameter").build();
+            }
             user = storeService.getUser(username);
-        } catch (OakCoreException ex) {
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
-        }
-        if (user == null) {
-            return Response.status(Status.NOT_FOUND).entity("User not found in Database!").build();
-        }
-        project.setCreator(user);
-        project.setDescription(description);
+            if (user == null) {
+                return Response.status(Status.NOT_FOUND).entity("User not found in Database!").build();
+            }
+            project.setCreator(user);
+            project.setDescription(description);
 
-        if ("new".equals(status) || "published".equals(status) || "closed".equals(status)) {
-            project.setStatus(status);
-        } else {
-            return Response.status(Status.NOT_ACCEPTABLE).entity("Unknown Status").build();
-        }
+            if ("new".equals(status) || "published".equals(status) || "closed".equals(status)) {
+                project.setStatus(status);
+            } else {
+                return Response.status(Status.NOT_ACCEPTABLE).entity("Unknown Status").build();
+            }
 
-        List<User> memberList = new ArrayList<>(); //= Arrays.asList(ts)
-        String[] arrayMembers = members.split(";");
-        for (int i = 0; arrayMembers.length > i; i++) {
-            try {
+            List<User> memberList = new ArrayList<>(); //= Arrays.asList(ts)
+            String[] arrayMembers = members.split(";");
+            for (int i = 0; arrayMembers.length > i; i++) {
                 String testuser = arrayMembers[i];
                 User newMember = storeService.getUser(testuser);
 
@@ -81,12 +77,8 @@ public class ProjectsResourceImpl implements ProjectsResource {
                     return Response.status(Status.NOT_ACCEPTABLE).entity("User " + testuser + " not in Database!").build();
                 }
                 memberList.add(newMember);
-            } catch (OakCoreException ex) {
-                return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
             }
-        }
-        project.setMembers(memberList);
-        try {
+            project.setMembers(memberList);
             createdProject = this.storeService.createProject(project);
         } catch (OakCoreException ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
@@ -126,10 +118,6 @@ public class ProjectsResourceImpl implements ProjectsResource {
             if (storeService.getProjectByID(projectId) == null) {
                 return Response.status(Status.NOT_FOUND).build();
             }
-        } catch (OakCoreException ex) {
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
-        }
-        try {
             project = storeService.deleteProject(projectId);
         } catch (OakCoreException ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
@@ -143,41 +131,36 @@ public class ProjectsResourceImpl implements ProjectsResource {
         User newUser;
         try {
             project = storeService.getProjectByID(projectId);
-        } catch (OakCoreException ex) {
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
-        }
-        if (project == null) {
-            return Response.status(Status.NOT_FOUND).build();
-        }
 
-        if (!(name == null || name.isEmpty())) {
-            project.setTitle(name);//nur Ausführen, wenn der name nicht null und auch nicht empty ist. Schreibweise muss so sein um die NullPointerException vorzugreifen!
-        }
-        if (!(description == null || description.isEmpty())) {
-            project.setDescription(description);
-        }
-        if (!(status == null || status.isEmpty())) {
-            if ("new".equals(status) || "published".equals(status) || "closed".equals(status)) {
-                project.setStatus(status);
-            } else {
-                return Response.status(Status.NOT_ACCEPTABLE).entity("Unknown Status").build();
+            if (project == null) {
+                return Response.status(Status.NOT_FOUND).build();
             }
-        }
-        if (!(username == null || username.isEmpty())) {
-            try {
+
+            if (!(name == null || name.isEmpty())) {
+                project.setTitle(name);//nur Ausführen, wenn der name nicht null und auch nicht empty ist. Schreibweise muss so sein um die NullPointerException vorzugreifen!
+            }
+            if (!(description == null || description.isEmpty())) {
+                project.setDescription(description);
+            }
+            if (!(status == null || status.isEmpty())) {
+                if ("new".equals(status) || "published".equals(status) || "closed".equals(status)) {
+                    project.setStatus(status);
+                } else {
+                    return Response.status(Status.NOT_ACCEPTABLE).entity("Unknown Status").build();
+                }
+            }
+            if (!(username == null || username.isEmpty())) {
+
                 newUser = storeService.getUser(username);
-            } catch (OakCoreException ex) {
-                return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
-            }
-            if (newUser == null) {
-                return Response.status(Status.NOT_FOUND).entity("User not found in Database!").build();
-            }
-            project.setCreator(newUser);
 
-        }
+                if (newUser == null) {
+                    return Response.status(Status.NOT_FOUND).entity("User not found in Database!").build();
+                }
+                project.setCreator(newUser);
 
-        try {
-            storeService.updateProject(projectId, project);
+            }
+
+            storeService.updateProject(project);
         } catch (OakCoreException ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
@@ -185,35 +168,30 @@ public class ProjectsResourceImpl implements ProjectsResource {
     }
 
     @Override
-    public Response updateComment(int commentid, UriInfo uriInfo, String title, String content, String dateUpdated, Boolean published) {
+    public Response updateComment(int commentid, UriInfo uriInfo, String title, String content, Boolean published) {
         Comment comment;
         try {
             comment = storeService.getCommentByID(commentid);
+
+            if (comment == null) {
+                return Response.status(Status.NOT_FOUND).build();
+            }
+            if (!(title == null || title.isEmpty())) {
+                comment.setTitle(title);
+            }
+            if (!(content == null || content.isEmpty())) {
+                comment.setContent(content);
+            }
+            if (published != null) {
+                comment.setPublished(published);
+            }
+
+            storeService.updateComment(comment);
         } catch (OakCoreException ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
-        if (comment == null) {
-            return Response.status(Status.NOT_FOUND).build();
-        }
-        if (!title.isEmpty()) {
-            comment.setTitle(title);
-        }
-        if (!content.isEmpty()) {
-            comment.setContent(content);
-        }
-        comment.setPublished(published);
-        if (dateUpdated.isEmpty()) {
-            return Response.status(Status.NOT_ACCEPTABLE).entity("No Update-Date was given.").build();
-        } else {
-            try {
-                comment.setDateUpdated(format.parse(dateUpdated));
-            } catch (ParseException ex) {
-                return Response.status(Status.NOT_ACCEPTABLE).entity(ex.getMessage()).build();
-            }
-        }
-        //comment=storeService.updateComment(comment);
-        //
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return Response.status(Status.OK).entity(comment).build();
+
     }
 
     @Override
@@ -222,51 +200,68 @@ public class ProjectsResourceImpl implements ProjectsResource {
     }
 
     @Override
-    public Response createComment(int projectid,UriInfo uriInfo, String title, String creator, String content, Boolean published) {
+    public Response createComment(int projectid, UriInfo uriInfo, String title, String creator, String content, Boolean published) {
         Comment createdComment;
         Comment comment = new Comment();
+
         User user;
-        if (title == null || title.isEmpty() || content == null
-                || content.isEmpty() || published == null) {
-            return Response.status(Status.NOT_ACCEPTABLE).entity("Empty Parameter").build();
-        }
         try {
+            if (storeService.getProjectByID(projectid) == null) {
+                return Response.status(Status.NOT_FOUND).entity("Project not in Database!").build();
+            }
+            if (title == null || title.isEmpty() || content == null
+                    || content.isEmpty() || published == null) {
+                return Response.status(Status.NOT_ACCEPTABLE).entity("Empty Parameter").build();
+            }
+
             user = storeService.getUser(creator);
-        } catch (OakCoreException ex) {
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
-        }
-        if (user == null) {
-            return Response.status(Status.NOT_FOUND).entity("Creator not found in Database!").build();
-        }
-        comment.setTitle(title);
-        comment.setCreator(user);
-        comment.setContent(content);
-        comment.setPublished(published);
-        comment.setProjectID(projectid);
 
-        try {
+            if (user == null) {
+                return Response.status(Status.NOT_FOUND).entity("Creator not found in Database!").build();
+            }
+            comment.setTitle(title);
+            comment.setCreator(user);
+            comment.setContent(content);
+            comment.setPublished(published);
+            comment.setProjectID(projectid);
+
             createdComment = this.storeService.createComment(comment);
+
         } catch (OakCoreException ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
 
-        return Response.status(Status.CREATED).entity(createdComment).build();
+        return Response.status(Status.CREATED)
+                .entity(createdComment).build();
     }
 
     @Override
     public Response getComments(int projectid) {
-//        try {
-//
-//            return Response.status(Status.OK).entity(new Comments(storeService.fetchAllComments(projectid))).build();
-//        } catch (OakCoreException ex) {
-//            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
-//        }
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            List<Comment> comments = storeService.fetchAllComments(projectid);
+            if (comments == null) {
+                return Response.status(Status.NOT_FOUND).entity("Project have no Comments in Database!").build();
+            }
+
+            return Response.status(Status.OK).entity(new Comments(comments)).build();
+        } catch (OakCoreException ex) {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
+
     }
 
     @Override
     public Response getComment(int commentid) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Comment comment;
+        try {
+            comment = storeService.getCommentByID(commentid);
+            if (comment == null) {
+                return Response.status(Status.NOT_FOUND).entity("Comment not found in Database!").build();
+            }
+        } catch (OakCoreException ex) {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
+        return Response.status(Status.OK).entity(comment).build();
     }
 
 }

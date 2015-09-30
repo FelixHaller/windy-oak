@@ -134,7 +134,6 @@ public interface ProjectsResource {
             @Context UriInfo uriInfo,
             @FormParam("title") String title,
             @FormParam("content") String content,
-            @FormParam("dateUpdated") String dateUpdated,
             @FormParam("published") Boolean published
     );
 

@@ -298,9 +298,9 @@ public class StoreServiceInSQLite implements StoreService {
     }
 
     @Override
-    public void updateProject(int projectID, Project project) throws OakCoreException {
+    public Project updateProject(Project project) throws OakCoreException {
         this.establishConnection();
-
+        project.setDateUpdated(new Date().getTime());
         try {
             sql = String.format(
                     "UPDATE project "
@@ -314,7 +314,7 @@ public class StoreServiceInSQLite implements StoreService {
                     project.getCreator().getUsername(),
                     project.getTitle(),
                     project.getDescription(),
-                    new Date().getTime(),
+                    project.getDateUpdated().getTime(),
                     project.getStatus(),
                     project.getId()
             );
@@ -326,6 +326,7 @@ public class StoreServiceInSQLite implements StoreService {
         } finally {
             this.endConnection();
         }
+        return project;
     }
 
     @Override
@@ -340,7 +341,12 @@ public class StoreServiceInSQLite implements StoreService {
                     + "and published=1", projectID);
 
             ResultSet resultset = statement.executeQuery(sql);
-            while (resultset.next()) {
+            if (!resultset.next()) {
+                this.endConnection();
+                return null;
+            }
+            do {
+
                 Comment comment = new Comment();
                 comment.setContent(resultset.getString("content"));
 
@@ -353,9 +359,11 @@ public class StoreServiceInSQLite implements StoreService {
                 comment.setDateUpdated(resultset.getLong("dateUpdated"));
                 comment.setId(resultset.getInt("commentID"));
                 comment.setTitle(resultset.getString("title"));
+                comment.setProjectID(resultset.getInt("projectID"));
 
                 comments.add(comment);
-            }
+            } while (resultset.next());
+
             resultset.close();
         } catch (SQLException ex) {
             Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, null, ex);
@@ -396,6 +404,11 @@ public class StoreServiceInSQLite implements StoreService {
             comment.setId(resultset.getInt("commentID"));
             comment.setTitle(resultset.getString("title"));
             comment.setProjectID(resultset.getInt("projectID"));
+            if (resultset.getInt("published") == 1) {
+                comment.setPublished(true);
+            } else {
+                comment.setPublished(false);
+            }
 
         } catch (SQLException ex) {
             errorMessage = "Fehler bei Datenbankabfrage";
@@ -414,8 +427,43 @@ public class StoreServiceInSQLite implements StoreService {
     }
 
     @Override
-    public Comment updateComment(int commentID, Comment comment) throws OakCoreException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Comment updateComment(Comment comment) throws OakCoreException {
+        this.establishConnection();
+        int publish;
+        if (comment.isPublished()) {
+            publish = 1;
+        } else {
+            publish = 0;
+        }
+        comment.setDateUpdated(new Date().getTime());
+        try {
+            sql = String.format(
+                    "UPDATE comment "
+                    + "SET "
+                    + "creator='%s', "
+                    + "title='%s', "
+                    + "content='%s', "
+                    + "dateUpdated=%d, "
+                    + "published=%d, "
+                    + "projectID=%d "
+                    + "WHERE commentID = %d",
+                    comment.getCreator().getUsername(),
+                    comment.getTitle(),
+                    comment.getContent(),
+                    comment.getDateUpdated().getTime(),
+                    publish,
+                    comment.getProjectID(),
+                    comment.getId()
+            );
+            statement.executeUpdate(sql);
+        } catch (SQLException ex) {
+            errorMessage = "Fehler bei Datenbankabfrage";
+            Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, errorMessage, ex);
+            throw new OakCoreException(errorMessage);
+        } finally {
+            this.endConnection();
+        }
+        return comment;
     }
 
     @Override

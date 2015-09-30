@@ -57,10 +57,7 @@ public class StoreServiceInMemory implements StoreService
         return this.projects.get(projectID);
     }
 
-    @Override
-    public void updateProject(int projectID, Project project) {
-        this.projects.put(projectID,project);
-    }
+   
 
     @Override
     public Project createProject(Project project) {
@@ -112,17 +109,24 @@ public class StoreServiceInMemory implements StoreService
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public Comment updateComment(int commentID, Comment comment) throws OakCoreException
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+   
 
     @Override
     public Comment createComment(Comment comment) throws OakCoreException
     {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public Project updateProject(Project project) throws OakCoreException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Comment updateComment(Comment comment) throws OakCoreException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 
     
     
