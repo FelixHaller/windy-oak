@@ -338,7 +338,7 @@ public class StoreServiceInSQLite implements StoreService {
                     "select * from comment, user "
                     + "where projectID=%d "
                     + "and creator=user.username "
-                    + "and published=1", projectID);
+                    + "and status != 'deleted'", projectID);
 
             ResultSet resultset = statement.executeQuery(sql);
             if (!resultset.next()) {
@@ -360,6 +360,7 @@ public class StoreServiceInSQLite implements StoreService {
                 comment.setId(resultset.getInt("commentID"));
                 comment.setTitle(resultset.getString("title"));
                 comment.setProjectID(resultset.getInt("projectID"));
+                comment.setStatus(resultset.getString("status"));
 
                 comments.add(comment);
             } while (resultset.next());
@@ -404,11 +405,7 @@ public class StoreServiceInSQLite implements StoreService {
             comment.setId(resultset.getInt("commentID"));
             comment.setTitle(resultset.getString("title"));
             comment.setProjectID(resultset.getInt("projectID"));
-            if (resultset.getInt("published") == 1) {
-                comment.setPublished(true);
-            } else {
-                comment.setPublished(false);
-            }
+            comment.setStatus(resultset.getString("status"));
 
         } catch (SQLException ex) {
             errorMessage = "Fehler bei Datenbankabfrage";
@@ -423,18 +420,67 @@ public class StoreServiceInSQLite implements StoreService {
 
     @Override
     public Comment deleteComment(int commentID) throws OakCoreException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.establishConnection();
+        try {
+            String sql = String.format("update comment set status = 'deleted' "
+                    + "where commentID = %d", commentID);
+            statement.executeUpdate(sql);
+        } catch (SQLException ex) {
+            Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, null, ex);
+            throw new OakCoreException("Fehler bei der Datenbankabfrage");
+        } finally {
+            this.endConnection();
+        }
+        return this.getComment(commentID, true);
+    }
+
+    private Comment getComment(int commentID, boolean showDeleted) throws OakCoreException {
+        Comment comment = new Comment();
+        ResultSet resultset;
+
+        this.establishConnection();
+
+        if (showDeleted) {
+            sql = "select count(*) count, * from comment, user "
+                    + "where comment.creator = user.username "
+                    + "and comment.commentID = " + commentID;
+        } else {
+            sql = "select count(*) count, * from commentID, user "
+                    + "where comment.creator = user.username "
+                    + "and status != 'deleted' "
+                    + "and comment.commentID = " + commentID;
+        }
+
+        try {
+            resultset = statement.executeQuery(sql);
+
+            if (resultset.getInt("count") == 0) {
+                return null;
+            }
+            comment.setContent(resultset.getString("content"));
+            User creator = new User(resultset.getString("username"));
+            creator.setForename(resultset.getString("forename"));
+            creator.setSurname(resultset.getString("surname"));
+
+            comment.setCreator(creator);
+            comment.setDateCreated(resultset.getLong("dateCreated"));
+            if (resultset.getLong("dateUpdated") > 0) {
+                comment.setDateUpdated(resultset.getLong("dateUpdated"));
+            }
+            comment.setId(resultset.getInt("commentID"));
+            comment.setTitle(resultset.getString("title"));
+            comment.setProjectID(resultset.getInt("projectID"));
+            comment.setStatus(resultset.getString("status"));
+        } catch (SQLException ex) {
+            Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return comment;
     }
 
     @Override
     public Comment updateComment(Comment comment) throws OakCoreException {
         this.establishConnection();
         int publish;
-        if (comment.isPublished()) {
-            publish = 1;
-        } else {
-            publish = 0;
-        }
         comment.setDateUpdated(new Date().getTime());
         try {
             sql = String.format(
@@ -444,14 +490,14 @@ public class StoreServiceInSQLite implements StoreService {
                     + "title='%s', "
                     + "content='%s', "
                     + "dateUpdated=%d, "
-                    + "published=%d, "
+                    + "status='%s', "
                     + "projectID=%d "
                     + "WHERE commentID = %d",
                     comment.getCreator().getUsername(),
                     comment.getTitle(),
                     comment.getContent(),
                     comment.getDateUpdated().getTime(),
-                    publish,
+                    comment.getStatus(),
                     comment.getProjectID(),
                     comment.getId()
             );
@@ -470,13 +516,6 @@ public class StoreServiceInSQLite implements StoreService {
     public Comment createComment(Comment comment) throws OakCoreException {
         this.establishConnection();
 
-        int publish;
-        if (comment.isPublished()) {
-            publish = 1;
-        } else {
-            publish = 0;
-        }
-
         try {
             sql = String.format(
                     "INSERT INTO comment "
@@ -486,13 +525,13 @@ public class StoreServiceInSQLite implements StoreService {
                     + "'%s',"
                     + "'%s',"
                     + " %d, "
-                    + " %d, "
+                    + "'%s', "
                     + " %d)",
                     comment.getCreator().getUsername(),
                     comment.getTitle(),
                     comment.getContent(),
                     new Date().getTime(),
-                    publish,
+                    comment.getStatus(),
                     comment.getProjectID()
             );
             //while(project.getMembers())

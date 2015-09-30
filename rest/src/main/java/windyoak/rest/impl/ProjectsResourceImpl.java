@@ -168,7 +168,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
     }
 
     @Override
-    public Response updateComment(int commentid, UriInfo uriInfo, String title, String content, Boolean published) {
+    public Response updateComment(int commentid, UriInfo uriInfo, String title, String content, String status) {
         Comment comment;
         try {
             comment = storeService.getCommentByID(commentid);
@@ -182,8 +182,12 @@ public class ProjectsResourceImpl implements ProjectsResource {
             if (!(content == null || content.isEmpty())) {
                 comment.setContent(content);
             }
-            if (published != null) {
-                comment.setPublished(published);
+            if (!(status == null|| status.isEmpty())) {
+                if ("new".equals(status) || "published".equals(status) || "closed".equals(status)) {
+                    comment.setStatus(status);
+                } else {
+                    return Response.status(Status.NOT_ACCEPTABLE).entity("Unknown Status").build();
+                }
             }
 
             storeService.updateComment(comment);
@@ -196,11 +200,20 @@ public class ProjectsResourceImpl implements ProjectsResource {
 
     @Override
     public Response deleteComment(int commentid) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+         Comment comment;
+        try {
+            if (storeService.getCommentByID(commentid) == null) {
+                return Response.status(Status.NOT_FOUND).build();
+            }
+           comment = storeService.deleteComment(commentid);
+        } catch (OakCoreException ex) {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
+        return Response.status(Status.OK).entity(comment).build();
     }
 
     @Override
-    public Response createComment(int projectid, UriInfo uriInfo, String title, String creator, String content, Boolean published) {
+    public Response createComment(int projectid, UriInfo uriInfo, String title, String creator, String content,  String status) {
         Comment createdComment;
         Comment comment = new Comment();
 
@@ -210,7 +223,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
                 return Response.status(Status.NOT_FOUND).entity("Project not in Database!").build();
             }
             if (title == null || title.isEmpty() || content == null
-                    || content.isEmpty() || published == null) {
+                    || content.isEmpty() || status == null||status.isEmpty()) {
                 return Response.status(Status.NOT_ACCEPTABLE).entity("Empty Parameter").build();
             }
 
@@ -222,8 +235,12 @@ public class ProjectsResourceImpl implements ProjectsResource {
             comment.setTitle(title);
             comment.setCreator(user);
             comment.setContent(content);
-            comment.setPublished(published);
             comment.setProjectID(projectid);
+             if ("new".equals(status) || "published".equals(status) || "closed".equals(status)) {
+                    comment.setStatus(status);
+                } else {
+                    return Response.status(Status.NOT_ACCEPTABLE).entity("Unknown Status").build();
+                }
 
             createdComment = this.storeService.createComment(comment);
 

@@ -17,7 +17,15 @@ public class Comment {
     private String content;
     private Date dateCreated;
     private Date dateUpdated;
-    private boolean published;
+    private String status;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
     private int projectID;
 
     public int getProjectID() {
@@ -53,9 +61,6 @@ public class Comment {
         return dateUpdated;
     }
 
-    public boolean isPublished() {
-        return published;
-    }
 
     public void setId(int id) {
         this.id = id;
@@ -100,8 +105,6 @@ public class Comment {
         this.dateUpdated = new Date(epochTime);
     }
 
-    public void setPublished(boolean published) {
-        this.published = published;
-    }
+    
 
 }

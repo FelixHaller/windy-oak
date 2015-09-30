@@ -99,7 +99,7 @@ public interface ProjectsResource {
             @FormParam("title") String title,
             @FormParam("creator") String creator,
             @FormParam("content") String content,
-            @FormParam("published") Boolean published
+            @FormParam("status") String status
             
     );
 
@@ -134,7 +134,7 @@ public interface ProjectsResource {
             @Context UriInfo uriInfo,
             @FormParam("title") String title,
             @FormParam("content") String content,
-            @FormParam("published") Boolean published
+            @FormParam("status") String  status
     );
 
     @DELETE
