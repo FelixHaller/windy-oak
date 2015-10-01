@@ -6,8 +6,6 @@
 package windyoak.rest.impl;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import windyoak.core.OakCoreException;
@@ -42,8 +40,9 @@ public class RecentResourceImpl implements RecentResource {
     }
 
     @Override
-    public Response getRecentRSSPosts() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Response getRecentRSSPosts() 
+    {
+        throw new UnsupportedOperationException("Nicht Teil des Belegs. Für die Zukunft geplant. Bitte /projects/{id}/posts testen.");
     }
 
 }

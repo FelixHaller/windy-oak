@@ -148,6 +148,28 @@ public interface ProjectsResource {
             })
     @Path("{projectid}/comments/{commentid}")
     public Response deleteComment(@PathParam("commentid") int commentid);
+    
+    
+    @GET
+    @Produces(
+            {
+                MediaType.APPLICATION_XML,
+                MediaType.APPLICATION_JSON
+            })
+    @Path("{projectid}/posts")
+    public Response getPosts(@PathParam("projectid") int projectid);
+    
+    @GET
+    @Produces(
+            {
+                MediaType.APPLICATION_XML,
+                MediaType.APPLICATION_JSON
+            })
+    @Path("{projectid}/posts/{postid}")
+    public Response getPost(@PathParam("projectid") int projectid, @PathParam("postid") String postid);
+    
+    
+    
 //    @GET
 //    @Produces(
 //        {

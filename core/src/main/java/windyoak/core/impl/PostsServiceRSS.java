@@ -1,4 +1,5 @@
 package windyoak.core.impl;
+
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.FeedException;
@@ -17,23 +18,35 @@ import windyoak.core.PostsService;
 import windyoak.core.RSSPost;
 import windyoak.core.RSSPosts;
 
-
-
 /**
  *
  * @author Felix Haller
  */
 public class PostsServiceRSS implements PostsService
 {
+
     String errormsg;
-    
+
     @Override
-    public RSSPosts getPosts(URL url) throws OakCoreException
+    public RSSPosts getAllPosts(URL url) throws OakCoreException
+    {
+        return this.getPosts(url, false, 0);
+    }
+
+    @Override
+    public RSSPosts getRecentPosts(URL url, int n) throws OakCoreException
+    {
+        return this.getPosts(url, true, n);
+    }
+
+    @Override
+    public RSSPosts getPosts(URL url, boolean recent, int count) throws OakCoreException
     {
         RSSPosts rssPosts = new RSSPosts();
-        
+
         SyndFeedInput input = new SyndFeedInput();
         SyndFeed feed;
+        int i;
         
         try
         {
@@ -46,8 +59,19 @@ public class PostsServiceRSS implements PostsService
             throw new OakCoreException(errormsg);
         }
         
-        for (SyndEntry entry : feed.getEntries())
+        if (recent)
         {
+            i = count;
+        }
+        else
+        {
+            i = feed.getEntries().size();
+        }
+        
+        
+        for (int x = 0; x<i; x++)
+        {
+            SyndEntry entry = feed.getEntries().get(x);
             RSSPost post = new RSSPost();
             post.setId(getSHA1HashFromString(entry.getUri()));
             post.setTitle(entry.getTitle().trim());
@@ -62,7 +86,7 @@ public class PostsServiceRSS implements PostsService
                 errormsg = "URL ungültig";
                 Logger.getLogger(PostsServiceRSS.class.getName()).log(Level.WARNING, errormsg, ex);
             }
-            
+
             if (entry.getUpdatedDate() != null)
             {
                 post.setPubDate(entry.getPublishedDate());
@@ -71,7 +95,7 @@ public class PostsServiceRSS implements PostsService
             {
                 post.setPubDate(entry.getUpdatedDate());
             }
-            
+
             try
             {
                 post.setCommentsURL(new URL(entry.getComments()));
@@ -81,19 +105,19 @@ public class PostsServiceRSS implements PostsService
                 errormsg = "Kommentar URL ungültig";
                 Logger.getLogger(PostsServiceRSS.class.getName()).log(Level.WARNING, errormsg, ex);
             }
-            
-            rssPosts.addRSSPost(post);            
+
+            rssPosts.addRSSPost(post);
         }
-        
+
         return rssPosts;
-        
+
     }
 
     @Override
     public RSSPost getPostByID(URL url, String id) throws OakCoreException
     {
-        RSSPosts rssPosts = this.getPosts(url);
-        
+        RSSPosts rssPosts = this.getAllPosts(url);
+
         for (RSSPost post : rssPosts.getRSSPosts())
         {
             if (post.getId().equals(id))
@@ -103,32 +127,31 @@ public class PostsServiceRSS implements PostsService
         }
         return null;
     }
-    
-    private String getSHA1HashFromString(String message) throws OakCoreException
-	{
-		/* Berechnung */
-		MessageDigest md;
-		try
-		{
-			md = MessageDigest.getInstance("SHA1");
-		}
-		catch (NoSuchAlgorithmException ex)
-		{
-			errormsg = "Verschlüsselungsalgorithmus nicht gefunden";
-			Logger.getLogger(PostsServiceRSS.class.getName()).log(Level.SEVERE, errormsg, ex);
-			throw new OakCoreException((errormsg));
-		}
-		md.reset();
-		md.update(message.getBytes());
-		byte[] result = md.digest();
 
-		StringBuilder hexString = new StringBuilder();
-		for (int i = 0; i < result.length; i++)
-		{
-			hexString.append(Integer.toHexString(0xFF & result[i]));
-		}
-		return hexString.toString();
-	}
-    
+    private String getSHA1HashFromString(String message) throws OakCoreException
+    {
+        /* Berechnung */
+        MessageDigest md;
+        try
+        {
+            md = MessageDigest.getInstance("SHA1");
+        }
+        catch (NoSuchAlgorithmException ex)
+        {
+            errormsg = "Verschlüsselungsalgorithmus nicht gefunden";
+            Logger.getLogger(PostsServiceRSS.class.getName()).log(Level.SEVERE, errormsg, ex);
+            throw new OakCoreException((errormsg));
+        }
+        md.reset();
+        md.update(message.getBytes());
+        byte[] result = md.digest();
+
+        StringBuilder hexString = new StringBuilder();
+        for (int i = 0; i < result.length; i++)
+        {
+            hexString.append(Integer.toHexString(0xFF & result[i]));
+        }
+        return hexString.toString();
+    }
 
 }
