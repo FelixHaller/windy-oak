@@ -37,9 +37,9 @@ public interface ProjectsResource {
             @Context UriInfo uriInfo,
             @FormParam("name") String name,
             @FormParam("username") String username,
-            @FormParam("status") String status,
             @FormParam("description") String description,
-            @FormParam("members") String members
+            @FormParam("members") String members,
+            @FormParam("status") String status
             
     );
 
