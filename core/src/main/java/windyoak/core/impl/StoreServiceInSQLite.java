@@ -4,11 +4,13 @@ import java.util.List;
 import java.sql.*;
 import java.util.Date;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import windyoak.core.Comment;
 import windyoak.core.OakCoreException;
 import windyoak.core.Project;
+import windyoak.core.ProjectMember;
 import windyoak.core.StoreService;
 import windyoak.core.Tag;
 import windyoak.core.User;
@@ -151,18 +153,23 @@ public class StoreServiceInSQLite implements StoreService {
             project.setCreator(user);
 
             /* Informationen zu Projektmitgliedern holen */
-            sql = "select user.* from user,project, projectmember "
+            sql = "select user.*, projectmember.role from user,project, projectmember "
                     + "where project.projectID = projectmember.projectID "
                     + "and projectmember.username = user.username "
                     + "and project.projectID= " + projectID;
 
             resultset = statement.executeQuery(sql);
 
-            ArrayList<User> members = new ArrayList<>();
+            ArrayList<ProjectMember> members = new ArrayList<>();
             while (resultset.next()) {
-                User member = new User(resultset.getString("username"));
-                member.setForename(resultset.getString("forename"));
-                member.setSurname(resultset.getString("surname"));
+                ProjectMember member = new ProjectMember();
+
+                User nuser = new User(resultset.getString("username"));
+                nuser.setForename(resultset.getString("forename"));
+                nuser.setSurname(resultset.getString("surname"));
+
+                member.setUser(nuser);
+                member.setRole(resultset.getString("role"));
                 members.add(member);
             }
             project.setMembers(members);
@@ -266,7 +273,7 @@ public class StoreServiceInSQLite implements StoreService {
     @Override
     public Project createProject(Project project) throws OakCoreException {
         this.establishConnection();
-
+        int newProjectID;
         try {
             sql = String.format(
                     "INSERT INTO project "
@@ -285,9 +292,26 @@ public class StoreServiceInSQLite implements StoreService {
             );
             //while(project.getMembers())
             statement.executeUpdate(sql);
-            int newProjectID = statement.getGeneratedKeys().getInt(1);
+            newProjectID = statement.getGeneratedKeys().getInt(1);
 
-            return this.getProjectByID(newProjectID);
+            List<ProjectMember> memberList = project.getMembers();
+            Iterator<ProjectMember> itMember = memberList.iterator();
+            while (itMember.hasNext()) {
+                ProjectMember member = itMember.next();
+                sql = String.format(
+                        "INSERT INTO projectmember "
+                        + "(projectID, username, role) "
+                        + "VALUES("
+                        + "'%d',"
+                        + "'%s',"
+                        + "'%s')",
+                        newProjectID,
+                        member.getUser().getUsername(),
+                        member.getRole()
+                );
+                statement.executeUpdate(sql);
+            }
+
         } catch (SQLException ex) {
             errorMessage = "Fehler bei Datenbankabfrage";
             Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, errorMessage, ex);
@@ -295,36 +319,76 @@ public class StoreServiceInSQLite implements StoreService {
         } finally {
             this.endConnection();
         }
+        return this.getProjectByID(newProjectID);
+
     }
 
     @Override
     public Project updateProject(Project project) throws OakCoreException {
         this.establishConnection();
         project.setDateUpdated(new Date().getTime());
+        PreparedStatement deleteOldMembers = null;
+        PreparedStatement updateProject = null;
+        PreparedStatement createNewMembers = null;
+        ProjectMember member;
+        String newMember;
+        String delete;
         try {
-            sql = String.format(
-                    "UPDATE project "
+            statement.close();//wird nicht benötigt.
+            connection.setAutoCommit(false); //Auto Commit aus zum Schutz der Datenintegrität.
+
+            sql = "UPDATE project "
                     + "SET "
-                    + "creator='%s', "
-                    + "title='%s', "
-                    + "description='%s', "
-                    + "dateUpdated=%d, "
-                    + "status='%s' "
-                    + "WHERE projectID = %d",
-                    project.getCreator().getUsername(),
-                    project.getTitle(),
-                    project.getDescription(),
-                    project.getDateUpdated().getTime(),
-                    project.getStatus(),
-                    project.getId()
-            );
-            statement.executeUpdate(sql);
+                    + "creator= '" + project.getCreator().getUsername() + "', "
+                    + "title='" + project.getTitle() + "', "
+                    + "description='" + project.getDescription() + "', "
+                    + "dateUpdated=" + project.getDateUpdated().getTime() + ", "
+                    + "status='" + project.getStatus() + "' "
+                    + "WHERE projectID = " + project.getId() + "";
+
+            delete = "DELETE FROM "
+                    + "projectmember "
+                    + "WHERE projectID=" + project.getId();
+            newMember = "INSERT INTO projectmember "
+                    + "(projectID, username, role) "
+                    + "VALUES(?, ?, ?)";
+            List<ProjectMember> memberList = project.getMembers();
+            Iterator<ProjectMember> itMember = memberList.iterator();
+
+            deleteOldMembers = connection.prepareStatement(delete);
+            deleteOldMembers.executeUpdate();
+            createNewMembers = connection.prepareStatement(newMember);
+
+            while (itMember.hasNext()) {
+                member = itMember.next();
+                createNewMembers.setInt(1, project.getId());
+                createNewMembers.setString(2, member.getUser().getUsername());
+                createNewMembers.setString(3, member.getRole());
+                createNewMembers.executeUpdate();
+            }
+
+            updateProject = connection.prepareStatement(sql);
+            updateProject.executeUpdate();
+
+            connection.commit();
+            
         } catch (SQLException ex) {
             errorMessage = "Fehler bei Datenbankabfrage";
             Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, errorMessage, ex);
             throw new OakCoreException(errorMessage);
         } finally {
+            try {
+                deleteOldMembers.close();
+                updateProject.close();
+                createNewMembers.close();
+                connection.setAutoCommit(true);
+            } catch (SQLException ex) {
+                errorMessage = "Fehler bei Datenbankabfrage";
+                Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, errorMessage, ex);
+                throw new OakCoreException(errorMessage);
+            }
             this.endConnection();
+            
         }
         return project;
     }

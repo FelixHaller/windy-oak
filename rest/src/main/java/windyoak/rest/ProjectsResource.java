@@ -37,9 +37,10 @@ public interface ProjectsResource {
             @Context UriInfo uriInfo,
             @FormParam("name") String name,
             @FormParam("username") String username,
+            @FormParam("status") String status,
             @FormParam("description") String description,
-            @FormParam("members") String members,
-            @FormParam("status") String status
+            @FormParam("members") String members
+            
     );
 
     @GET
@@ -73,7 +74,8 @@ public interface ProjectsResource {
             @FormParam("name") String name,
             @FormParam("username") String username,
             @FormParam("description") String description,
-            @FormParam("status") String status
+            @FormParam("status") String status,
+            @FormParam("members") String members
     );
 
     @DELETE
