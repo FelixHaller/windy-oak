@@ -1,20 +1,24 @@
 package windyoak.core;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Felix Haller
  */
+@XmlRootElement(name = "rssposts")
 public class RSSPosts
 {
 
     private List<RSSPost> rssPosts;
 
-    // Diesen Konstruktor ist nötig, da das XML Framework ihn voraussetzt.
+    // Dieser Konstruktor ist nötig, da das XML Framework ihn voraussetzt.
     public RSSPosts()
     {
+        rssPosts = new ArrayList<>();
     }
 
     public RSSPosts(List<RSSPost> rssPosts)

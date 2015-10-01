@@ -8,14 +8,37 @@ import java.net.URL;
  */
 public interface PostsService
 {
-
+    
+    /**
+     * Liefert alle Posts zu einem bestimmten Projekt, sofern eine RSS- oder ATOM-URL eingetragen ist.
+     * 
+     * 
+     * @param url
+     * @return
+     * @throws OakCoreException
+     */
+    public RSSPosts getAllPosts(URL url) throws OakCoreException;
+    
+    /**
+     * Wie getAllPosts(), liefert aber nur die letzten n Posts zurück.
+     * 
+     * Kann für den /recent/posts Pfad verwendet werden, welcher aber nicht Teil des Belegs ist.
+     * 
+     * 
+     * @param url
+     * @param n
+     * @return
+     * @throws OakCoreException
+     */
+    public RSSPosts getRecentPosts(URL url, int n) throws OakCoreException;
+    
     /**
      * Gibt eine Liste mit allen kompletten Posts zurück.
      * 
      * @param url
      * @return
      */
-    public RSSPosts getPosts(URL url) throws OakCoreException;
+    public RSSPosts getPosts(URL url, boolean recent, int count) throws OakCoreException;
     
     /**
      * Gibt einen einzelnen kompletten Post mit bestimmter ID zurück.

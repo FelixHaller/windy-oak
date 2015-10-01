@@ -5,14 +5,12 @@
  */
 package windyoak.rest.impl;
 
+import java.net.URL;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import windyoak.core.StoreService;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -23,7 +21,10 @@ import windyoak.core.Comments;
 import windyoak.core.Project;
 import windyoak.core.User;
 import windyoak.core.OakCoreException;
+import windyoak.core.PostsService;
 import windyoak.core.Projects;
+import windyoak.core.RSSPost;
+import windyoak.core.RSSPosts;
 import windyoak.rest.ProjectsResource;
 
 /**
@@ -34,6 +35,8 @@ public class ProjectsResourceImpl implements ProjectsResource {
 
     @Context
     private StoreService storeService;
+    @Context
+    private PostsService postsService;
     DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.GERMANY);
 
     public StoreService getStoreService() {
@@ -43,9 +46,20 @@ public class ProjectsResourceImpl implements ProjectsResource {
     public void setStoreService(StoreService storeService) {
         this.storeService = storeService;
     }
+    
+    public PostsService getPostsService() {
+        return postsService;
+    }
+
+    public void setPostsService(PostsService postsService) {
+        this.postsService = postsService;
+    }
+    
+    
+    
 
     @Override
-    public Response createProject(UriInfo uriInfo, String name, String username, String status, String description, String members) {
+    public Response createProject(UriInfo uriInfo, String name, String username, String description, String members, String status) {
         Project createdProject;
         Project project = new Project(name);
         User user;
@@ -279,6 +293,84 @@ public class ProjectsResourceImpl implements ProjectsResource {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
         return Response.status(Status.OK).entity(comment).build();
+    }
+
+    @Override
+    public Response getPosts(int projectid)
+    {
+        Project project;
+        RSSPosts rssPosts;
+        
+        try
+        {
+            project = storeService.getProjectByID(projectid);
+            if (project == null) 
+            {
+                return Response.status(Status.NOT_FOUND).entity("Project not found in Database!").build();
+            }
+        }
+        catch (OakCoreException ex)
+        {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
+        
+        URL postsURL = project.getPostsURL();
+        
+        if (postsURL == null)
+        {
+            return Response.status(Status.NO_CONTENT).entity("No Posts (RSS, ATOM, ...) URL defined for Project.").build();
+        }
+        
+        try
+        {
+            rssPosts = postsService.getAllPosts(project.getPostsURL());
+        }
+        catch (OakCoreException ex)
+        {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
+        return Response.status(Status.OK).entity(rssPosts).build();
+    }
+
+    @Override
+    public Response getPost(int projectid, String postid)
+    {
+        Project project;
+        RSSPost rssPost;
+        
+        try
+        {
+            project = storeService.getProjectByID(projectid);
+            if (project == null) 
+            {
+                return Response.status(Status.NOT_FOUND).entity("Project not found in Database!").build();
+            }
+        }
+        catch (OakCoreException ex)
+        {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
+        
+        URL postsURL = project.getPostsURL();
+        
+        if (postsURL == null)
+        {
+            return Response.status(Status.NO_CONTENT).entity("No Posts (RSS, ATOM, ...) URL defined for Project.").build();
+        }
+        
+        try
+        {
+            rssPost = postsService.getPostByID(project.getPostsURL(), postid);
+            if (rssPost == null)
+            {
+                return Response.status(Status.NOT_FOUND).entity("Post ID nicht gefunden.").build();
+            }
+        }
+        catch (OakCoreException ex)
+        {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
+        return Response.status(Status.OK).entity(rssPost).build();
     }
 
 }

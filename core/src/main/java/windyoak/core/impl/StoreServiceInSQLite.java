@@ -1,5 +1,7 @@
 package windyoak.core.impl;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.sql.*;
 import java.util.Date;
@@ -26,7 +28,8 @@ public class StoreServiceInSQLite implements StoreService {
     String sql;
     String errorMessage;
 
-    public StoreServiceInSQLite() {
+    public StoreServiceInSQLite() 
+    {
 
     }
 
@@ -144,6 +147,18 @@ public class StoreServiceInSQLite implements StoreService {
                 project.setDateUpdated(resultset.getLong("dateUpdated"));
             }
             project.setStatus(resultset.getString("status"));
+            
+
+            try
+            {
+                project.setPostsURL(new URL(resultset.getString("postsURL")));
+            }
+            catch (MalformedURLException ex)
+            {   
+                Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.WARNING, "URL für Posts aus Datenbank ungültig.", ex);
+            }
+            
+            
 
             User user = new User(resultset.getString("creator"));
             user.setForename(resultset.getString("forename"));
@@ -183,10 +198,14 @@ public class StoreServiceInSQLite implements StoreService {
             project.setTags(tags);
             resultset.close();
 
-        } catch (SQLException ex) {
-            Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, null, ex);
-            throw new OakCoreException("Fehler bei Datenbankabfrage.");
-        } finally {
+        } catch (SQLException ex) 
+        {
+            errorMessage = "Fehler bei Datenbankabfrage.";
+            Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, errorMessage, ex);
+            throw new OakCoreException(errorMessage);
+        }
+        finally 
+        {
             this.endConnection();
         }
         return project;

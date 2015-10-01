@@ -2,11 +2,13 @@ package windyoak.core;
 
 import java.net.URL;
 import java.util.Date;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Felix Haller
  */
+@XmlRootElement(name = "rsspost")
 public class RSSPost {
     
     private String title;
