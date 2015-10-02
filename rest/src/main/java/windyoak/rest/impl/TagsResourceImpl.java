@@ -46,18 +46,19 @@ public class TagsResourceImpl implements TagsResource {
     }
 
     @Override
-    public Response getTag(int tagId) {
+    public Response getTag(String tagName) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Response updateTag(int tagId, UriInfo uriInfo, String tagName, String description) {
+    public Response updateTag(int tagName, UriInfo uriInfo, String description) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Response deleteTag(int tagId) {
+    public Response deleteTag(String tagName) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
 
 }
