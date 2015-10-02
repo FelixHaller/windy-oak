@@ -30,8 +30,7 @@ public class StoreServiceInSQLite implements StoreService {
     String sql;
     String errorMessage;
 
-    public StoreServiceInSQLite() 
-    {
+    public StoreServiceInSQLite() {
 
     }
 
@@ -64,7 +63,7 @@ public class StoreServiceInSQLite implements StoreService {
     }
 
     private List<Project> fetchProjects(boolean recent, int count) throws OakCoreException {
-        ArrayList<Project> projects = new ArrayList<>();
+        List<Project> projects = new ArrayList<>();
         this.establishConnection();
         try {
             if (recent) {
@@ -81,7 +80,6 @@ public class StoreServiceInSQLite implements StoreService {
             while (resultset.next()) {
                 Project project = new Project(resultset.getString("title"));
                 project.setId(resultset.getInt("projectID"));
-
                 project.setDateCreated(resultset.getLong("dateCreated"));
                 // Wir nehmen an, dass kein Projekt 1970 aktualisiert wurde
                 // Diese Ausnahme ist möglich, da SQLite einen leeren Wert als 0
@@ -94,6 +92,30 @@ public class StoreServiceInSQLite implements StoreService {
                 projects.add(project);
             }
             resultset.close();
+            Iterator<Project> projectIterator = projects.iterator();
+            while (projectIterator.hasNext()) {
+                Project nextProject = projectIterator.next();
+                sql = "select user.*, projectmember.role from user,project, projectmember "
+                        + "where project.projectID = projectmember.projectID "
+                        + "and projectmember.username = user.username "
+                        + "and project.projectID= " + nextProject.getId();
+
+                resultset = statement.executeQuery(sql);
+
+                ArrayList<ProjectMember> members = new ArrayList<>();
+                while (resultset.next()) {
+                    ProjectMember member = new ProjectMember();
+
+                    User nuser = new User(resultset.getString("username"));
+                    nuser.setForename(resultset.getString("forename"));
+                    nuser.setSurname(resultset.getString("surname"));
+
+                    member.setUser(nuser);
+                    member.setRole(resultset.getString("role"));
+                    members.add(member);
+                }
+                nextProject.setMembers(members);
+            }
         } catch (SQLException ex) {
             Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, null, ex);
             throw new OakCoreException("Fehler bei der Datenbankabfrage");
@@ -149,18 +171,12 @@ public class StoreServiceInSQLite implements StoreService {
                 project.setDateUpdated(resultset.getLong("dateUpdated"));
             }
             project.setStatus(resultset.getString("status"));
-            
 
-            try
-            {
+            try {
                 project.setPostsURL(new URL(resultset.getString("postsURL")));
-            }
-            catch (MalformedURLException ex)
-            {   
+            } catch (MalformedURLException ex) {
                 Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.WARNING, "URL für Posts aus Datenbank ungültig.", ex);
             }
-            
-            
 
             User user = new User(resultset.getString("creator"));
             user.setForename(resultset.getString("forename"));
@@ -205,14 +221,11 @@ public class StoreServiceInSQLite implements StoreService {
             project.setTags(tags);
             resultset.close();
 
-        } catch (SQLException ex) 
-        {
+        } catch (SQLException ex) {
             errorMessage = "Fehler bei Datenbankabfrage.";
             Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, errorMessage, ex);
             throw new OakCoreException(errorMessage);
-        }
-        finally 
-        {
+        } finally {
             this.endConnection();
         }
         return project;
@@ -390,7 +403,7 @@ public class StoreServiceInSQLite implements StoreService {
             updateProject.executeUpdate();
 
             connection.commit();
-            
+
         } catch (SQLException ex) {
             errorMessage = "Fehler bei Datenbankabfrage";
             Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, errorMessage, ex);
@@ -407,7 +420,7 @@ public class StoreServiceInSQLite implements StoreService {
                 throw new OakCoreException(errorMessage);
             }
             this.endConnection();
-            
+
         }
         return project;
     }
