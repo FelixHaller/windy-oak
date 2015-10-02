@@ -13,12 +13,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class RSSPosts
 {
 
-    private List<RSSPost> rssPosts;
+    private List<RSSPost> rssPosts = new ArrayList<>();
 
     // Dieser Konstruktor ist nötig, da das XML Framework ihn voraussetzt.
     public RSSPosts()
     {
-        rssPosts = new ArrayList<>();
+        
     }
 
     public RSSPosts(List<RSSPost> rssPosts)

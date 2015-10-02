@@ -19,6 +19,9 @@ public class WindyOakApplication extends org.glassfish.jersey.server.ResourceCon
     public WindyOakApplication()
     {
         register(ProjectsResourceImpl.class);
+        register(RecentResourceImpl.class);
+        register(UsersResourceImpl.class);
+        
         register(new AbstractBinder()
         {
             @Override
@@ -28,7 +31,5 @@ public class WindyOakApplication extends org.glassfish.jersey.server.ResourceCon
                 bind(new PostsServiceRSS()).to(PostsService.class);
             }
         });
-        register(UsersResourceImpl.class);
-        register(RecentResourceImpl.class);
     }
 }

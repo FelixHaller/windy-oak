@@ -9,6 +9,11 @@ public class Tag
     private String name;
     private String description;
     
+    public Tag()
+    {
+        
+    }
+    
     public Tag(String name)
     {
         this.name = name;

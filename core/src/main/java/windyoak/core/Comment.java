@@ -18,7 +18,12 @@ public class Comment {
     private Date dateCreated;
     private Date dateUpdated;
     private String status;
-
+    
+    public Comment()
+    {
+        
+    }
+    
     public String getStatus() {
         return status;
     }

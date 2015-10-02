@@ -11,4 +11,9 @@ package windyoak.core;
  */
 public class ProjectMember {
     
+    public ProjectMember()
+    {
+            
+    }
+    
 }

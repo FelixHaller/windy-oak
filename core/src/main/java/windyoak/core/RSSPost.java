@@ -19,6 +19,11 @@ public class RSSPost {
     private String id;
     private String description;
 
+    public RSSPost()
+    {
+        
+    }
+    
     public String getTitle()
     {
         return title;
