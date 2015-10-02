@@ -95,6 +95,21 @@ public class StoreServiceInSQLite implements StoreService {
             Iterator<Project> projectIterator = projects.iterator();
             while (projectIterator.hasNext()) {
                 Project nextProject = projectIterator.next();
+                //ProjectTags abrufen
+                sql = "select tag.* from project, projecttag, tag "
+                        + "where project.projectID = projecttag.projectID "
+                        + "and projecttag.tagName = tag.tagName "
+                        + "and project.projectID= " + nextProject.getId();
+                resultset = statement.executeQuery(sql);
+
+                ArrayList<Tag> tags = new ArrayList<>();
+                while (resultset.next()) {
+                    Tag tag = new Tag(resultset.getString("tagName"),
+                            resultset.getString("description"));
+                    tags.add(tag);
+                }
+                nextProject.setTags(tags);
+                //ProjectMember abrufen
                 sql = "select user.*, projectmember.role from user,project, projectmember "
                         + "where project.projectID = projectmember.projectID "
                         + "and projectmember.username = user.username "
