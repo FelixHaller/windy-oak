@@ -119,11 +119,17 @@ public class ProjectsResourceImpl implements ProjectsResource {
     @Override
     public Response getProjects(String projectSearch) {
         try {
+            System.out.println(projectSearch);
             if (projectSearch == null || projectSearch.isEmpty()) {
                 return Response.status(Status.OK).entity(new Projects(storeService.fetchAllProjects())).build();
             } else {
-                //Datenbankabfrage muss noch erstellt werden
-                return Response.status(Status.NOT_IMPLEMENTED).build();
+                Pattern p = Pattern.compile("\'+");
+                Matcher m = p.matcher(projectSearch);
+                if (!m.matches()) {
+                    return Response.status(Status.OK).entity(new Projects(storeService.searchProjectByName(projectSearch, false))).build();
+                } else {
+                    return Response.status(Status.NOT_ACCEPTABLE).entity("\' not allowed!").build();
+                }
             }
         } catch (OakCoreException ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();

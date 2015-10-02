@@ -50,7 +50,7 @@ public interface ProjectsResource {
                 MediaType.APPLICATION_XML,
                 MediaType.APPLICATION_JSON
             })
-    public Response getProjects(@QueryParam("q") String projectSearch);
+    public Response getProjects(@QueryParam("searchByTitle") String projectSearch);
 
     @GET
     @Produces(
