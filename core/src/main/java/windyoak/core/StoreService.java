@@ -118,4 +118,5 @@ public interface StoreService {
 
     Comment createComment(Comment comment) throws OakCoreException;
 
+    List<Project> searchProjectByName(String SearchEx, boolean recent) throws OakCoreException;
 }
