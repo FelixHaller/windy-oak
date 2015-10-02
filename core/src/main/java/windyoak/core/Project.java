@@ -29,7 +29,7 @@ public class Project
     private Date dateCreated;
     private Date dateUpdated;
     private String status;
-    private List<User> members;
+    private List<ProjectMember> members;
     private ArrayList<Tag> tags;
     private URL postsURL;
 
@@ -69,12 +69,12 @@ public class Project
 
     @XmlElement(name = "member")
     @XmlElementWrapper(name = "members")
-    public List<User> getMembers()
+    public List<ProjectMember> getMembers()
     {
         return members;
     }
 
-    public void setMembers(List<User> members)
+    public void setMembers(List<ProjectMember> members)
     {
         this.members = members;
     }

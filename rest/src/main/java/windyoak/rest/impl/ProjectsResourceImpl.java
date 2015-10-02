@@ -11,6 +11,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import windyoak.core.StoreService;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -21,6 +26,7 @@ import windyoak.core.Comments;
 import windyoak.core.Project;
 import windyoak.core.User;
 import windyoak.core.OakCoreException;
+import windyoak.core.ProjectMember;
 import windyoak.core.PostsService;
 import windyoak.core.Projects;
 import windyoak.core.RSSPost;
@@ -46,7 +52,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
     public void setStoreService(StoreService storeService) {
         this.storeService = storeService;
     }
-    
+
     public PostsService getPostsService() {
         return postsService;
     }
@@ -54,9 +60,6 @@ public class ProjectsResourceImpl implements ProjectsResource {
     public void setPostsService(PostsService postsService) {
         this.postsService = postsService;
     }
-    
-    
-    
 
     @Override
     public Response createProject(UriInfo uriInfo, String name, String username, String description, String members, String status) {
@@ -80,19 +83,31 @@ public class ProjectsResourceImpl implements ProjectsResource {
             } else {
                 return Response.status(Status.NOT_ACCEPTABLE).entity("Unknown Status").build();
             }
+            Pattern p = Pattern.compile("^([\\w\\s]+,[\\w\\s]*;)+$");
+            Matcher m = p.matcher(members);
+            if (m.matches()) {
+                List<ProjectMember> memberList = new ArrayList<>(); //= Arrays.asList(ts)
+                String[] MembersAndRole = members.split(";");
+                for (int i = 0; MembersAndRole.length > i;) {
+                    ProjectMember member = new ProjectMember();
+                    String[] paar = MembersAndRole[i].split(",");
+                    member.setUser(storeService.getUser(paar[0]));
+                    if (paar.length == 1) {
+                        member.setRole("");
+                    } else {
+                        member.setRole(paar[1]);
+                    }
 
-            List<User> memberList = new ArrayList<>(); //= Arrays.asList(ts)
-            String[] arrayMembers = members.split(";");
-            for (int i = 0; arrayMembers.length > i; i++) {
-                String testuser = arrayMembers[i];
-                User newMember = storeService.getUser(testuser);
-
-                if (newMember == null) {
-                    return Response.status(Status.NOT_ACCEPTABLE).entity("User " + testuser + " not in Database!").build();
+                    if (member.getUser() == null) {
+                        return Response.status(Status.NOT_ACCEPTABLE).entity("Member " + paar[0] + " not in Database!").build();
+                    }
+                    memberList.add(member);
+                    i++;
                 }
-                memberList.add(newMember);
+                project.setMembers(memberList);
+            } else {
+                return Response.status(Status.NOT_ACCEPTABLE).entity("No Match in RegEx Member").build();
             }
-            project.setMembers(memberList);
             createdProject = this.storeService.createProject(project);
         } catch (OakCoreException ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
@@ -102,9 +117,20 @@ public class ProjectsResourceImpl implements ProjectsResource {
     }
 
     @Override
-    public Response getProjects() {
+    public Response getProjects(String projectSearch) {
         try {
-            return Response.status(Status.OK).entity(new Projects(storeService.fetchAllProjects())).build();
+            System.out.println(projectSearch);
+            if (projectSearch == null || projectSearch.isEmpty()) {
+                return Response.status(Status.OK).entity(new Projects(storeService.fetchAllProjects())).build();
+            } else {
+                Pattern p = Pattern.compile("\'+");
+                Matcher m = p.matcher(projectSearch);
+                if (!m.matches()) {
+                    return Response.status(Status.OK).entity(new Projects(storeService.searchProjectByName(projectSearch, false))).build();
+                } else {
+                    return Response.status(Status.NOT_ACCEPTABLE).entity("\' not allowed!").build();
+                }
+            }
         } catch (OakCoreException ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
@@ -140,7 +166,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
     }
 
     @Override
-    public Response updateProject(int projectId, UriInfo uriInfo, String name, String username, String description, String status) {
+    public Response updateProject(int projectId, UriInfo uriInfo, String name, String username, String description, String status, String members) {
         Project project;
         User newUser;
         try {
@@ -173,7 +199,33 @@ public class ProjectsResourceImpl implements ProjectsResource {
                 project.setCreator(newUser);
 
             }
+            if (!(members == null || members.isEmpty())) {
+                Pattern p = Pattern.compile("^([\\w\\s]+,[\\w\\s]*;)+$");
+                Matcher m = p.matcher(members);
+                if (m.matches()) {
+                    List<ProjectMember> memberList = new ArrayList<>(); //= Arrays.asList(ts)
+                    String[] MembersAndRole = members.split(";");
+                    for (int i = 0; MembersAndRole.length > i;) {
+                        ProjectMember member = new ProjectMember();
+                        String[] paar = MembersAndRole[i].split(",");
+                        member.setUser(storeService.getUser(paar[0]));
+                        if (paar.length == 1) {
+                            member.setRole("");
+                        } else {
+                            member.setRole(paar[1]);
+                        }
 
+                        if (member.getUser() == null) {
+                            return Response.status(Status.NOT_ACCEPTABLE).entity("Member " + paar[0] + " not in Database!").build();
+                        }
+                        memberList.add(member);
+                        i++;
+                    }
+                    project.setMembers(memberList);
+                } else {
+                    return Response.status(Status.NOT_ACCEPTABLE).entity("No Match in RegEx Member").build();
+                }
+            }
             storeService.updateProject(project);
         } catch (OakCoreException ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
@@ -196,7 +248,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
             if (!(content == null || content.isEmpty())) {
                 comment.setContent(content);
             }
-            if (!(status == null|| status.isEmpty())) {
+            if (!(status == null || status.isEmpty())) {
                 if ("new".equals(status) || "published".equals(status) || "closed".equals(status)) {
                     comment.setStatus(status);
                 } else {
@@ -214,12 +266,12 @@ public class ProjectsResourceImpl implements ProjectsResource {
 
     @Override
     public Response deleteComment(int commentid) {
-         Comment comment;
+        Comment comment;
         try {
             if (storeService.getCommentByID(commentid) == null) {
                 return Response.status(Status.NOT_FOUND).build();
             }
-           comment = storeService.deleteComment(commentid);
+            comment = storeService.deleteComment(commentid);
         } catch (OakCoreException ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
@@ -227,7 +279,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
     }
 
     @Override
-    public Response createComment(int projectid, UriInfo uriInfo, String title, String creator, String content,  String status) {
+    public Response createComment(int projectid, UriInfo uriInfo, String title, String creator, String content, String status) {
         Comment createdComment;
         Comment comment = new Comment();
 
@@ -237,7 +289,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
                 return Response.status(Status.NOT_FOUND).entity("Project not in Database!").build();
             }
             if (title == null || title.isEmpty() || content == null
-                    || content.isEmpty() || status == null||status.isEmpty()) {
+                    || content.isEmpty() || status == null || status.isEmpty()) {
                 return Response.status(Status.NOT_ACCEPTABLE).entity("Empty Parameter").build();
             }
 
@@ -250,11 +302,11 @@ public class ProjectsResourceImpl implements ProjectsResource {
             comment.setCreator(user);
             comment.setContent(content);
             comment.setProjectID(projectid);
-             if ("new".equals(status) || "published".equals(status) || "closed".equals(status)) {
-                    comment.setStatus(status);
-                } else {
-                    return Response.status(Status.NOT_ACCEPTABLE).entity("Unknown Status").build();
-                }
+            if ("new".equals(status) || "published".equals(status) || "closed".equals(status)) {
+                comment.setStatus(status);
+            } else {
+                return Response.status(Status.NOT_ACCEPTABLE).entity("Unknown Status").build();
+            }
 
             createdComment = this.storeService.createComment(comment);
 
@@ -296,81 +348,61 @@ public class ProjectsResourceImpl implements ProjectsResource {
     }
 
     @Override
-    public Response getPosts(int projectid)
-    {
+    public Response getPosts(int projectid) {
         Project project;
         RSSPosts rssPosts;
-        
-        try
-        {
+
+        try {
             project = storeService.getProjectByID(projectid);
-            if (project == null) 
-            {
+            if (project == null) {
                 return Response.status(Status.NOT_FOUND).entity("Project not found in Database!").build();
             }
-        }
-        catch (OakCoreException ex)
-        {
+        } catch (OakCoreException ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
-        
+
         URL postsURL = project.getPostsURL();
-        
-        if (postsURL == null)
-        {
+
+        if (postsURL == null) {
             return Response.status(Status.NO_CONTENT).entity("No Posts (RSS, ATOM, ...) URL defined for Project.").build();
         }
-        
-        try
-        {
+
+        try {
             rssPosts = postsService.getAllPosts(project.getPostsURL());
-        }
-        catch (OakCoreException ex)
-        {
+        } catch (OakCoreException ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
         return Response.status(Status.OK).entity(rssPosts).build();
     }
 
     @Override
-    public Response getPost(int projectid, String postid)
-    {
+    public Response getPost(int projectid, String postid) {
         Project project;
         RSSPost rssPost;
-        
-        try
-        {
+
+        try {
             project = storeService.getProjectByID(projectid);
-            if (project == null) 
-            {
+            if (project == null) {
                 return Response.status(Status.NOT_FOUND).entity("Project not found in Database!").build();
             }
-        }
-        catch (OakCoreException ex)
-        {
+        } catch (OakCoreException ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
-        
+
         URL postsURL = project.getPostsURL();
-        
-        if (postsURL == null)
-        {
+
+        if (postsURL == null) {
             return Response.status(Status.NO_CONTENT).entity("No Posts (RSS, ATOM, ...) URL defined for Project.").build();
         }
-        
-        try
-        {
+
+        try {
             rssPost = postsService.getPostByID(project.getPostsURL(), postid);
-            if (rssPost == null)
-            {
+            if (rssPost == null) {
                 return Response.status(Status.NOT_FOUND).entity("Post ID nicht gefunden.").build();
             }
-        }
-        catch (OakCoreException ex)
-        {
+        } catch (OakCoreException ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
         return Response.status(Status.OK).entity(rssPost).build();
     }
-
 }

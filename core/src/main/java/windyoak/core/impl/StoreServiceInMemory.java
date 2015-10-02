@@ -7,6 +7,7 @@ import java.util.List;
 import windyoak.core.Comment;
 import windyoak.core.OakCoreException;
 import windyoak.core.Project;
+import windyoak.core.Projects;
 import windyoak.core.User;
 
 /**
@@ -124,6 +125,11 @@ public class StoreServiceInMemory implements StoreService
 
     @Override
     public Comment updateComment(Comment comment) throws OakCoreException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<Project> searchProjectByName(String ProjectName, boolean recent) throws OakCoreException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
