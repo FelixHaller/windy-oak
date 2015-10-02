@@ -740,21 +740,77 @@ public class StoreServiceInSQLite implements StoreService {
         }
 
         return projects;
-    
-}
+
+    }
 
     @Override
     public Tag getTagByName(String tagName) throws OakCoreException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Tag newTag = new Tag();
+        newTag.setName(tagName);
+        this.establishConnection();
+        try {
+            sql = String.format("SELECT count(*) count, * "
+                    + "FROM tag "
+                    + "WHERE tagName='%s'", tagName);
+
+            ResultSet resultset = statement.executeQuery(sql);
+            if (resultset.getInt("count") == 0) {
+                return null;
+            }
+            newTag.setDescription(resultset.getString("description"));
+        } catch (SQLException ex) {
+            errorMessage = "Fehler bei Datenbankabfrage";
+            Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, errorMessage, ex);
+            throw new OakCoreException(errorMessage);
+        }
+        return newTag;
     }
 
     @Override
     public List<Tag> getTags() throws OakCoreException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<Tag> tags = new ArrayList<>();
+        try {
+            sql = "SELECT count(*) count, * "
+                    + "FROM tag ";
+
+            ResultSet resultset = statement.executeQuery(sql);
+            if (resultset.getInt("count") == 0) {
+                return null;
+            }
+            while (resultset.next()) {
+                Tag newTag = new Tag();
+                newTag.setName("tagName");
+                newTag.setDescription(resultset.getString("description"));
+                tags.add(newTag);
+            }
+
+        } catch (SQLException ex) {
+            errorMessage = "Fehler bei Datenbankabfrage";
+            Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, errorMessage, ex);
+            throw new OakCoreException(errorMessage);
+        }
+        return tags;
     }
 
     @Override
-    public Tag updateTag(Tag newtag) throws OakCoreException {
+    public Tag updateTagDescription(Tag newtag) throws OakCoreException {
+        this.establishConnection();
+        try {
+            sql = String.format("UPDATE tag "
+                    + "SET"
+                    + "description='%s'"
+                    + "WHERE tagName='%s'",
+                    newtag.getDescription(),
+                    newtag.getName()
+            );
+
+            statement.executeUpdate(sql);
+
+        } catch (SQLException ex) {
+            errorMessage = "Fehler bei Datenbankabfrage";
+            Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, errorMessage, ex);
+            throw new OakCoreException(errorMessage);
+        }
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

@@ -15,30 +15,28 @@ import windyoak.core.User;
  *
  * @author fhaller1
  */
-public class StoreServiceInMemory implements StoreService
-{
+public class StoreServiceInMemory implements StoreService {
+
     private HashMap<Integer, Project> projects;
     private int lastProjectID;
-    
+
     private HashMap<Integer, User> users;
 
-    public StoreServiceInMemory()
-    {
+    public StoreServiceInMemory() {
         this.lastProjectID = 0;
         this.projects = new HashMap<>();
-        
+
         this.users = new HashMap<>();
-        
+
         //Test
-        
-        User testuser=new User();
-             testuser.setForename("Konstantin");
-             testuser.setSurname("Lorenz");
-             testuser.setUsername("klorenz1");
-        User testuser2=new User();
-             testuser2.setForename("Felix");
-             testuser2.setSurname("Haller");
-             testuser2.setUsername("fhaller1");
+        User testuser = new User();
+        testuser.setForename("Konstantin");
+        testuser.setSurname("Lorenz");
+        testuser.setUsername("klorenz1");
+        User testuser2 = new User();
+        testuser2.setForename("Felix");
+        testuser2.setSurname("Haller");
+        testuser2.setUsername("fhaller1");
         this.users.put(0, testuser);
         this.users.put(1, testuser2);
         Project myproject = new Project("FooBar");
@@ -48,24 +46,20 @@ public class StoreServiceInMemory implements StoreService
     }
 
     @Override
-    public List<Project> fetchAllProjects()
-    {
+    public List<Project> fetchAllProjects() {
         return new ArrayList(projects.values());
     }
 
     @Override
-    public Project getProjectByID(int projectID)
-    {
+    public Project getProjectByID(int projectID) {
         return this.projects.get(projectID);
     }
 
-   
-
     @Override
     public Project createProject(Project project) {
-        Project _project = project; 
-               
-                _project.setId(lastProjectID);
+        Project _project = project;
+
+        _project.setId(lastProjectID);
         this.projects.put(lastProjectID++, _project);
         return _project;
     }
@@ -88,34 +82,27 @@ public class StoreServiceInMemory implements StoreService
     }
 
     @Override
-    public List<Comment> fetchAllComments(int ProjectsID)
-    {
+    public List<Comment> fetchAllComments(int ProjectsID) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Comment getCommentByID(int commentID)
-    {
+    public Comment getCommentByID(int commentID) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<Project> fetchRecentProjects(int n)
-    {
+    public List<Project> fetchRecentProjects(int n) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Comment deleteComment(int commentID) throws OakCoreException
-    {
+    public Comment deleteComment(int commentID) throws OakCoreException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-   
-
     @Override
-    public Comment createComment(Comment comment) throws OakCoreException
-    {
+    public Comment createComment(Comment comment) throws OakCoreException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -145,7 +132,7 @@ public class StoreServiceInMemory implements StoreService
     }
 
     @Override
-    public Tag updateTag(Tag newtag) throws OakCoreException {
+    public Tag updateTagDescription(Tag newtag) throws OakCoreException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -154,8 +141,4 @@ public class StoreServiceInMemory implements StoreService
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-
-    
-    
-    
 }
