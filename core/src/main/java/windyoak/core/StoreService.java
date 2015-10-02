@@ -122,6 +122,8 @@ public interface StoreService {
 
     Tag getTagByName(String tagName) throws OakCoreException;
 
+    Tag createTag(Tag tag) throws OakCoreException;
+    
     List<Tag> getTags() throws OakCoreException;
 
     Tag updateTagDescription(Tag newtag) throws OakCoreException;

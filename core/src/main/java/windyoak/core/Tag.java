@@ -1,9 +1,12 @@
 package windyoak.core;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  *
  * @author Felix Haller
  */
+@XmlRootElement(name = "tag")
 public class Tag
 {
     private String name;

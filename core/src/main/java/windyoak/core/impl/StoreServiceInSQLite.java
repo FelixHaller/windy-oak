@@ -173,6 +173,7 @@ public class StoreServiceInSQLite implements StoreService {
             resultset = statement.executeQuery(sql);
 
             if (resultset.getInt("count") == 0) {
+                this.endConnection();
                 return null;
             }
 
@@ -285,6 +286,7 @@ public class StoreServiceInSQLite implements StoreService {
             sql = String.format("select count(*) count, * from user where username='%s'", username);
             ResultSet resultset = statement.executeQuery(sql);
             if (resultset.getInt("count") == 0) {
+                this.endConnection();
                 return null;
             }
             user.setUsername(resultset.getString("username"));
@@ -502,6 +504,7 @@ public class StoreServiceInSQLite implements StoreService {
 
             resultset = statement.executeQuery(sql);
             if (resultset.getInt("count") == 0) {
+                this.endConnection();
                 return null;
             }
             comment.setContent(resultset.getString("content"));
@@ -567,6 +570,7 @@ public class StoreServiceInSQLite implements StoreService {
             resultset = statement.executeQuery(sql);
 
             if (resultset.getInt("count") == 0) {
+                this.endConnection();
                 return null;
             }
             comment.setContent(resultset.getString("content"));
@@ -755,31 +759,33 @@ public class StoreServiceInSQLite implements StoreService {
 
             ResultSet resultset = statement.executeQuery(sql);
             if (resultset.getInt("count") == 0) {
+                this.endConnection();
                 return null;
             }
             newTag.setDescription(resultset.getString("description"));
+            resultset.close();
         } catch (SQLException ex) {
             errorMessage = "Fehler bei Datenbankabfrage";
             Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, errorMessage, ex);
             throw new OakCoreException(errorMessage);
         }
+        this.endConnection();
         return newTag;
     }
 
     @Override
     public List<Tag> getTags() throws OakCoreException {
         List<Tag> tags = new ArrayList<>();
+        this.establishConnection();
         try {
-            sql = "SELECT count(*) count, * "
+            sql = "SELECT * "
                     + "FROM tag ";
 
             ResultSet resultset = statement.executeQuery(sql);
-            if (resultset.getInt("count") == 0) {
-                return null;
-            }
+            
             while (resultset.next()) {
                 Tag newTag = new Tag();
-                newTag.setName("tagName");
+                newTag.setName(resultset.getString("tagName"));
                 newTag.setDescription(resultset.getString("description"));
                 tags.add(newTag);
             }
@@ -789,6 +795,7 @@ public class StoreServiceInSQLite implements StoreService {
             Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, errorMessage, ex);
             throw new OakCoreException(errorMessage);
         }
+        this.endConnection();
         return tags;
     }
 
@@ -797,7 +804,7 @@ public class StoreServiceInSQLite implements StoreService {
         this.establishConnection();
         try {
             sql = String.format("UPDATE tag "
-                    + "SET"
+                    + "SET "
                     + "description='%s'"
                     + "WHERE tagName='%s'",
                     newtag.getDescription(),
@@ -811,12 +818,53 @@ public class StoreServiceInSQLite implements StoreService {
             Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, errorMessage, ex);
             throw new OakCoreException(errorMessage);
         }
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.endConnection();
+        return newtag;
     }
 
     @Override
     public Tag deleteTag(String tagName) throws OakCoreException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.establishConnection();
+        Tag tag;
+        tag = getTagByName(tagName);
+        try {
+            sql = String.format("DELETE "
+                    + "FROM tag "
+                    + "WHERE tagName='%s'",
+                    tag.getName()
+            );
+
+            statement.executeUpdate(sql);
+        } catch (SQLException ex) {
+           errorMessage = "Fehler bei Datenbankabfrage";
+            Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, errorMessage, ex);
+            throw new OakCoreException(errorMessage);
+        }
+        this.endConnection();
+        return tag;
+    }
+
+    @Override
+    public Tag createTag(Tag tag) throws OakCoreException {
+        this.establishConnection();
+        try {
+            sql = String.format("INSERT INTO "
+                    + "tag (tagName, description) "
+                    + "VALUES("
+                    + "'%s', "
+                    + "'%s')",
+                    tag.getName(),
+                    tag.getDescription()
+            );
+
+            statement.executeUpdate(sql);
+        } catch (SQLException ex) {
+            errorMessage = "Fehler bei Datenbankabfrage";
+            Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, errorMessage, ex);
+            throw new OakCoreException(errorMessage);
+        }
+        this.endConnection();
+        return tag;
     }
 
 }

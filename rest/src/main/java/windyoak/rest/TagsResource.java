@@ -65,7 +65,7 @@ public interface TagsResource {
             })
     @Path("{tagName}")
     public Response updateTag(
-            @PathParam("tagName") int tagName,
+            @PathParam("tagName") String tagName,
             @Context UriInfo uriInfo,
             @FormParam("description") String description
     );
@@ -75,7 +75,7 @@ public interface TagsResource {
         MediaType.APPLICATION_XML,
         MediaType.APPLICATION_JSON
     })
-    @Path("{projectid}")
+    @Path("{tagName}")
     public Response deleteTag(@PathParam("tagName") String tagName);
 
 }
