@@ -14,6 +14,8 @@ import javax.xml.bind.Unmarshaller;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.json.JSONException;
+import org.json.JSONObject;
 import windyoak.core.Comment;
 import windyoak.core.Comments;
 import windyoak.core.Project;
@@ -61,10 +63,11 @@ public class Client
         return unmarshaller.unmarshal(in);
     }
 
-    public Project addProject(Project project)
+    public int addProject(Project project)
     {
         String response = null;
-        Project newProject = null;
+        Project newProject;
+        JSONObject jsonObject;
         PostMethod postMethod = new PostMethod(getBaseUri() + "/projects");
         
         postMethod.addParameter("name", project.getTitle());
@@ -72,9 +75,7 @@ public class Client
         postMethod.addParameter("description", project.getDescription());
         postMethod.addParameter("members", "tester");
         postMethod.addParameter("status", project.getStatus());
-        postMethod.setRequestHeader("Accept", xml);
-
-        
+        postMethod.setRequestHeader("Accept", json);
 
         try
         {
@@ -86,6 +87,18 @@ public class Client
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, "Fehler bei Ausführung", ex);
             System.exit(-1);
         }
+        try
+        {
+            jsonObject = new JSONObject(response);
+        }
+        catch (JSONException ex)
+        {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, "Rückgabe fehlerhaft", ex);
+            System.exit(-1);
+        }
+        
+        
+        
         System.out.println(postMethod.getStatusCode() + ": " + response);
         
         return newProject;
