@@ -325,6 +325,7 @@ public class StoreServiceInSQLite implements StoreService {
         this.establishConnection();
         int newProjectID;
         try {
+            connection.setAutoCommit(false);
             sql = String.format(
                     "INSERT INTO project "
                     + "(creator, title, description, dateCreated, status) "
@@ -362,6 +363,23 @@ public class StoreServiceInSQLite implements StoreService {
                 statement.executeUpdate(sql);
             }
 
+            List<Tag> tagList = project.getTags();
+            Iterator<Tag> itTag = tagList.iterator();
+            while (itTag.hasNext()) {
+                Tag newTag = itTag.next();
+                sql = String.format("INSERT INTO projecttag "
+                        + "(projectID,tagName)"
+                        + "VALUES("
+                        + "%d,"
+                        + "'%s')",
+                        newProjectID,
+                        newTag.getName()
+                );
+                statement.executeUpdate(sql);
+            }
+
+            connection.commit();
+            connection.setAutoCommit(true);
         } catch (SQLException ex) {
             errorMessage = "Fehler bei Datenbankabfrage";
             Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, errorMessage, ex);
@@ -380,9 +398,16 @@ public class StoreServiceInSQLite implements StoreService {
         PreparedStatement deleteOldMembers = null;
         PreparedStatement updateProject = null;
         PreparedStatement createNewMembers = null;
+        PreparedStatement deleteTags = null;
+        PreparedStatement createTags = null;
+
         ProjectMember member;
+
         String newMember;
         String delete;
+        String deleteTagsSt;
+        String createTagsSt;
+
         try {
             statement.close();//wird nicht benötigt.
             connection.setAutoCommit(false); //Auto Commit aus zum Schutz der Datenintegrität.
@@ -399,9 +424,21 @@ public class StoreServiceInSQLite implements StoreService {
             delete = "DELETE FROM "
                     + "projectmember "
                     + "WHERE projectID=" + project.getId();
+
             newMember = "INSERT INTO projectmember "
                     + "(projectID, username, role) "
                     + "VALUES(?, ?, ?)";
+
+            deleteTagsSt = "DELETE FROM "
+                    + "projecttag "
+                    + "WHERE projectID="
+                    + project.getId();
+
+            createTagsSt = "INSERT "
+                    + "INTO projecttag "
+                    + "(projectID, tagName) "
+                    + "VALUES(?,?)";
+
             List<ProjectMember> memberList = project.getMembers();
             Iterator<ProjectMember> itMember = memberList.iterator();
 
@@ -419,6 +456,19 @@ public class StoreServiceInSQLite implements StoreService {
 
             updateProject = connection.prepareStatement(sql);
             updateProject.executeUpdate();
+
+            deleteTags = connection.prepareStatement(deleteTagsSt);
+            deleteTags.executeUpdate();
+
+            List<Tag> tagList = project.getTags();
+            Iterator<Tag> itTag = tagList.iterator();
+            createTags = connection.prepareStatement(createTagsSt);
+            while (itTag.hasNext()) {
+                Tag newTag = itTag.next();
+                createTags.setInt(1, project.getId());
+                createTags.setString(2, newTag.getName());
+                createTags.executeUpdate();
+            }
 
             connection.commit();
 
@@ -782,7 +832,7 @@ public class StoreServiceInSQLite implements StoreService {
                     + "FROM tag ";
 
             ResultSet resultset = statement.executeQuery(sql);
-            
+
             while (resultset.next()) {
                 Tag newTag = new Tag();
                 newTag.setName(resultset.getString("tagName"));
@@ -827,7 +877,7 @@ public class StoreServiceInSQLite implements StoreService {
         Tag tag;
         tag = getTagByName(tagName);
         this.establishConnection();
-        
+
         try {
             sql = String.format("DELETE "
                     + "FROM tag "
@@ -837,7 +887,7 @@ public class StoreServiceInSQLite implements StoreService {
 
             statement.executeUpdate(sql);
         } catch (SQLException ex) {
-           errorMessage = "Fehler bei Datenbankabfrage";
+            errorMessage = "Fehler bei Datenbankabfrage";
             Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, errorMessage, ex);
             throw new OakCoreException(errorMessage);
         }

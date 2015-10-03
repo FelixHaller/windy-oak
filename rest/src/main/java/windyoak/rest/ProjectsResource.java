@@ -35,7 +35,8 @@ public interface ProjectsResource {
             @FormParam("username") String username,
             @FormParam("description") String description,
             @FormParam("members") String members,
-            @FormParam("status") String status
+            @FormParam("status") String status,
+            @FormParam("tagNames") String tagNames
             
     );
 
@@ -71,7 +72,8 @@ public interface ProjectsResource {
             @FormParam("username") String username,
             @FormParam("description") String description,
             @FormParam("status") String status,
-            @FormParam("members") String members
+            @FormParam("members") String members,
+            @FormParam("tagNames") String tagNames 
     );
 
     @DELETE

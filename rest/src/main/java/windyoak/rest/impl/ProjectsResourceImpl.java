@@ -31,6 +31,7 @@ import windyoak.core.PostsService;
 import windyoak.core.Projects;
 import windyoak.core.RSSPost;
 import windyoak.core.RSSPosts;
+import windyoak.core.Tag;
 import windyoak.rest.ProjectsResource;
 
 /**
@@ -62,13 +63,13 @@ public class ProjectsResourceImpl implements ProjectsResource {
     }
 
     @Override
-    public Response createProject(UriInfo uriInfo, String name, String username, String description, String members, String status) {
+    public Response createProject(UriInfo uriInfo, String name, String username, String description, String members, String status, String tagNames) {
         Project createdProject;
         Project project = new Project(name);
         User user;
         try {
             if (name == null || name.isEmpty() || description == null
-                    || description.isEmpty() || status == null || status.isEmpty()) {
+                    || description.isEmpty() || status == null || status.isEmpty() || tagNames == null || tagNames.isEmpty()) {
                 return Response.status(Status.NOT_ACCEPTABLE).entity("Empty Parameter").build();
             }
             user = storeService.getUser(username);
@@ -83,6 +84,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
             } else {
                 return Response.status(Status.NOT_ACCEPTABLE).entity("Unknown Status").build();
             }
+            //MEMBERS
             Pattern p = Pattern.compile("^([\\w\\s]+,[\\w\\s]*;)+$");
             Matcher m = p.matcher(members);
             if (m.matches()) {
@@ -106,9 +108,30 @@ public class ProjectsResourceImpl implements ProjectsResource {
                 }
                 project.setMembers(memberList);
             } else {
-                return Response.status(Status.NOT_ACCEPTABLE).entity("No Match in RegEx Member").build();
+                return Response.status(Status.NOT_ACCEPTABLE).entity("No valid members Specification!").build();
             }
+            //TAG
+            Pattern pt = Pattern.compile("^[\\w+,]*\\w$");
+            Matcher mt = pt.matcher(tagNames);
+            ArrayList<Tag> tagList = new ArrayList<>();
+            Tag newTag;
+            if (mt.matches()) {
+                String[] tagArray = tagNames.split(",");
+                for (int i = 0; tagArray.length > i; i++) {
+                    newTag = storeService.getTagByName(tagArray[i]);
+                    if (newTag == null) {
+                        return Response.status(Status.NOT_ACCEPTABLE).entity("Tag " + tagArray[i] + " not in Database!").build();
+                    } else {
+                        tagList.add(newTag);
+                    }
+                }
+            } else {
+                return Response.status(Status.NOT_ACCEPTABLE).entity("No valid tagName Specification!").build();
+            }
+
+            project.setTags(tagList);
             createdProject = this.storeService.createProject(project);
+
         } catch (OakCoreException ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
@@ -166,7 +189,8 @@ public class ProjectsResourceImpl implements ProjectsResource {
     }
 
     @Override
-    public Response updateProject(int projectId, UriInfo uriInfo, String name, String username, String description, String status, String members) {
+    public Response updateProject(int projectId, UriInfo uriInfo, String name, String username,
+            String description, String status, String members, String tagNames) {
         Project project;
         User newUser;
         try {
@@ -225,6 +249,27 @@ public class ProjectsResourceImpl implements ProjectsResource {
                 } else {
                     return Response.status(Status.NOT_ACCEPTABLE).entity("No Match in RegEx Member").build();
                 }
+            }
+            //TAG
+            if (!(tagNames == null || tagNames.isEmpty())) {
+                Pattern pt = Pattern.compile("^[\\w+,]*\\w$");
+                Matcher mt = pt.matcher(tagNames);
+                ArrayList<Tag> tagList = new ArrayList<>();
+                Tag newTag;
+                if (mt.matches()) {
+                    String[] tagArray = tagNames.split(",");
+                    for (int i = 0; tagArray.length > i; i++) {
+                        newTag = storeService.getTagByName(tagArray[i]);
+                        if (newTag == null) {
+                            return Response.status(Status.NOT_ACCEPTABLE).entity("Tag " + tagArray[i] + " not in Database!").build();
+                        } else {
+                            tagList.add(newTag);
+                        }
+                    }
+                } else {
+                    return Response.status(Status.NOT_ACCEPTABLE).entity("No valid tagName Specification!").build();
+                }
+                project.setTags(tagList);
             }
             storeService.updateProject(project);
         } catch (OakCoreException ex) {

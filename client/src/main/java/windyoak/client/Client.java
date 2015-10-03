@@ -101,7 +101,7 @@ public class Client
         
         System.out.println(postMethod.getStatusCode() + ": " + response);
         
-        return newProject;
+        return 0;
     }
     
     public Project getProjectByID(int id)
