@@ -7,6 +7,7 @@ import windyoak.core.impl.PostsServiceRSS;
 import windyoak.core.impl.StoreServiceInSQLite;
 import windyoak.rest.impl.ProjectsResourceImpl;
 import windyoak.rest.impl.RecentResourceImpl;
+import windyoak.rest.impl.TagsResourceImpl;
 import windyoak.rest.impl.UsersResourceImpl;
 
 
@@ -21,7 +22,7 @@ public class WindyOakApplication extends org.glassfish.jersey.server.ResourceCon
         register(ProjectsResourceImpl.class);
         register(RecentResourceImpl.class);
         register(UsersResourceImpl.class);
-        
+        register(TagsResourceImpl.class);
         register(new AbstractBinder()
         {
             @Override

@@ -119,4 +119,15 @@ public interface StoreService {
     Comment createComment(Comment comment) throws OakCoreException;
 
     List<Project> searchProjectByName(String SearchEx, boolean recent) throws OakCoreException;
+
+    Tag getTagByName(String tagName) throws OakCoreException;
+
+    Tag createTag(Tag tag) throws OakCoreException;
+    
+    List<Tag> getTags() throws OakCoreException;
+
+    Tag updateTagDescription(Tag newtag) throws OakCoreException;
+    
+    Tag deleteTag(String tagName) throws OakCoreException;
+    
 }

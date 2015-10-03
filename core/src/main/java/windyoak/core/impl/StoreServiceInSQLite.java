@@ -173,6 +173,7 @@ public class StoreServiceInSQLite implements StoreService {
             resultset = statement.executeQuery(sql);
 
             if (resultset.getInt("count") == 0) {
+                this.endConnection();
                 return null;
             }
 
@@ -285,6 +286,7 @@ public class StoreServiceInSQLite implements StoreService {
             sql = String.format("select count(*) count, * from user where username='%s'", username);
             ResultSet resultset = statement.executeQuery(sql);
             if (resultset.getInt("count") == 0) {
+                this.endConnection();
                 return null;
             }
             user.setUsername(resultset.getString("username"));
@@ -502,6 +504,7 @@ public class StoreServiceInSQLite implements StoreService {
 
             resultset = statement.executeQuery(sql);
             if (resultset.getInt("count") == 0) {
+                this.endConnection();
                 return null;
             }
             comment.setContent(resultset.getString("content"));
@@ -567,6 +570,7 @@ public class StoreServiceInSQLite implements StoreService {
             resultset = statement.executeQuery(sql);
 
             if (resultset.getInt("count") == 0) {
+                this.endConnection();
                 return null;
             }
             comment.setContent(resultset.getString("content"));
@@ -740,7 +744,128 @@ public class StoreServiceInSQLite implements StoreService {
         }
 
         return projects;
-    
-}
+
+    }
+
+    @Override
+    public Tag getTagByName(String tagName) throws OakCoreException {
+        Tag newTag = new Tag();
+        newTag.setName(tagName);
+        this.establishConnection();
+        try {
+            sql = String.format("SELECT count(*) count, * "
+                    + "FROM tag "
+                    + "WHERE tagName='%s'", tagName);
+
+            ResultSet resultset = statement.executeQuery(sql);
+            if (resultset.getInt("count") == 0) {
+                this.endConnection();
+                return null;
+            }
+            newTag.setDescription(resultset.getString("description"));
+            resultset.close();
+        } catch (SQLException ex) {
+            errorMessage = "Fehler bei Datenbankabfrage";
+            Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, errorMessage, ex);
+            throw new OakCoreException(errorMessage);
+        }
+        this.endConnection();
+        return newTag;
+    }
+
+    @Override
+    public List<Tag> getTags() throws OakCoreException {
+        List<Tag> tags = new ArrayList<>();
+        this.establishConnection();
+        try {
+            sql = "SELECT * "
+                    + "FROM tag ";
+
+            ResultSet resultset = statement.executeQuery(sql);
+            
+            while (resultset.next()) {
+                Tag newTag = new Tag();
+                newTag.setName(resultset.getString("tagName"));
+                newTag.setDescription(resultset.getString("description"));
+                tags.add(newTag);
+            }
+
+        } catch (SQLException ex) {
+            errorMessage = "Fehler bei Datenbankabfrage";
+            Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, errorMessage, ex);
+            throw new OakCoreException(errorMessage);
+        }
+        this.endConnection();
+        return tags;
+    }
+
+    @Override
+    public Tag updateTagDescription(Tag newtag) throws OakCoreException {
+        this.establishConnection();
+        try {
+            sql = String.format("UPDATE tag "
+                    + "SET "
+                    + "description='%s'"
+                    + "WHERE tagName='%s'",
+                    newtag.getDescription(),
+                    newtag.getName()
+            );
+
+            statement.executeUpdate(sql);
+
+        } catch (SQLException ex) {
+            errorMessage = "Fehler bei Datenbankabfrage";
+            Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, errorMessage, ex);
+            throw new OakCoreException(errorMessage);
+        }
+        this.endConnection();
+        return newtag;
+    }
+
+    @Override
+    public Tag deleteTag(String tagName) throws OakCoreException {
+        Tag tag;
+        tag = getTagByName(tagName);
+        this.establishConnection();
+        
+        try {
+            sql = String.format("DELETE "
+                    + "FROM tag "
+                    + "WHERE tagName='%s'",
+                    tag.getName()
+            );
+
+            statement.executeUpdate(sql);
+        } catch (SQLException ex) {
+           errorMessage = "Fehler bei Datenbankabfrage";
+            Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, errorMessage, ex);
+            throw new OakCoreException(errorMessage);
+        }
+        this.endConnection();
+        return tag;
+    }
+
+    @Override
+    public Tag createTag(Tag tag) throws OakCoreException {
+        this.establishConnection();
+        try {
+            sql = String.format("INSERT INTO "
+                    + "tag (tagName, description) "
+                    + "VALUES("
+                    + "'%s', "
+                    + "'%s')",
+                    tag.getName(),
+                    tag.getDescription()
+            );
+
+            statement.executeUpdate(sql);
+        } catch (SQLException ex) {
+            errorMessage = "Fehler bei Datenbankabfrage";
+            Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, errorMessage, ex);
+            throw new OakCoreException(errorMessage);
+        }
+        this.endConnection();
+        return tag;
+    }
 
 }
