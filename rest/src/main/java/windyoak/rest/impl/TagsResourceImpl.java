@@ -8,6 +8,8 @@ package windyoak.rest.impl;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -42,6 +44,11 @@ public class TagsResourceImpl implements TagsResource {
             if (tagName == null || tagName.isEmpty() || description == null
                     || description.isEmpty()) {
                 return Response.status(Response.Status.NOT_ACCEPTABLE).entity("Empty Parameter").build();
+            }
+            Pattern tp = Pattern.compile("^\\w+");
+            Matcher tm = tp.matcher(tagName);
+            if (!tm.matches()){
+              return Response.status(Response.Status.NOT_ACCEPTABLE).entity("Only whole words possible without special characters!").build();
             }
             if (storeService.getTagByName(tagName) == null) {
                 tag.setName(tagName);
@@ -95,6 +102,13 @@ public class TagsResourceImpl implements TagsResource {
             if (tagName == null || tagName.isEmpty()) {
                 return Response.status(Response.Status.NOT_ACCEPTABLE).entity("Empty Parameter!").build();
             }
+            
+            Pattern tp = Pattern.compile("^\\w+");
+            Matcher tm = tp.matcher(tagName);
+            if (!tm.matches()){
+              return Response.status(Response.Status.NOT_ACCEPTABLE).entity("Only whole words possible without special characters!").build();
+            }
+            
             newTag = storeService.getTagByName(tagName);
             if (newTag == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Can't found Tagname!").build();
