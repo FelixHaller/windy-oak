@@ -47,6 +47,8 @@ public class TagsResourceImpl implements TagsResource {
                 tag.setName(tagName);
                 tag.setDescription(description);
                 storeService.createTag(tag);
+            }else{
+            return Response.status(Response.Status.NOT_ACCEPTABLE).entity("Tag "+tagName+" already exists!").build();
             }
 
         } catch (OakCoreException ex) {

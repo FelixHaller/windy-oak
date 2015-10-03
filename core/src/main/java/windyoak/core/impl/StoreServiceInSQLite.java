@@ -824,9 +824,10 @@ public class StoreServiceInSQLite implements StoreService {
 
     @Override
     public Tag deleteTag(String tagName) throws OakCoreException {
-        this.establishConnection();
         Tag tag;
         tag = getTagByName(tagName);
+        this.establishConnection();
+        
         try {
             sql = String.format("DELETE "
                     + "FROM tag "
