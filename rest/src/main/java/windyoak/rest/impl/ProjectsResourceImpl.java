@@ -163,6 +163,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
                 if (!m.matches()) {
                     Projects newPro = new Projects(storeService.searchProjectByName(projectSearch, false));
                     if (newPro.getProjects().isEmpty()) {
+                        
                         return Response.status(Status.NOT_FOUND).entity("No Project with this expression!").build();
                     }
                     return Response.status(Status.OK).entity(newPro.getProjects()).build();
