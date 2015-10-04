@@ -89,6 +89,8 @@ public class StoreServiceInSQLite implements StoreService {
                     project.setDateUpdated(resultset.getLong("dateUpdated"));
                 }
                 project.setStatus(resultset.getString("status"));
+                project.setDescription(resultset.getString("description"));
+                project.setCreator(null);
 
                 projects.add(project);
             }
@@ -924,20 +926,22 @@ public class StoreServiceInSQLite implements StoreService {
         this.establishConnection();
 
         try {
-            connection.setAutoCommit(false);
+           
             if (recent) {
-                sql = "SELECT project.* "
-                        + "FROM  project, projecttag "
+                sql = "SELECT project.*, user.* "
+                        + "FROM  project, projecttag, user "
                         + "WHERE project.projectID = projecttag.projectID "
+                        + "and user.username=project.creator "
                         + "and project.status='published' "
                         + "and tagName LIKE '" + SearchEx + "' "
                         + "order by dateCreated desc";
             } else {
-                sql = "SELECT project.* "
-                        + "FROM  project, projecttag "
+                sql = "SELECT project.*, user.* "
+                        + "FROM  project, projecttag, user "
                         + "WHERE project.projectID = projecttag.projectID "
+                        + "and user.username=project.creator "
                         + "and (project.status='published' or project.status='closed') "
-                        + "and tagName LIKE 'Java' "
+                        + "and tagName LIKE '"+ SearchEx +"' "
                         + "order by projectID;";
             }
             ResultSet resultset = statement.executeQuery(sql);
@@ -952,14 +956,20 @@ public class StoreServiceInSQLite implements StoreService {
                     project.setDateUpdated(resultset.getLong("dateUpdated"));
                 }
                 project.setStatus(resultset.getString("status"));
+                User user = new User(resultset.getString("creator"));
+                user.setForename(resultset.getString("forename"));
+                user.setSurname(resultset.getString("surname"));
+                project.setCreator(user);
 
                 projects.add(project);
             }
-
             resultset.close();
+            
             Iterator<Project> projectIterator = projects.iterator();
             while (projectIterator.hasNext()) {
+               
                 Project nextProject = projectIterator.next();
+                 //creater abrufen
                 //ProjectTags abrufen
                 sql = "select tag.* from project, projecttag, tag "
                         + "where project.projectID = projecttag.projectID "
@@ -995,9 +1005,7 @@ public class StoreServiceInSQLite implements StoreService {
                     members.add(member);
                 }
                 nextProject.setMembers(members);
-               
-                connection.commit();
-                connection.setAutoCommit(true);
+
             }
         } catch (SQLException ex) {
             Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, null, ex);

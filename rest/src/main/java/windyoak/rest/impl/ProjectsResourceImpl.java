@@ -140,13 +140,25 @@ public class ProjectsResourceImpl implements ProjectsResource {
     }
 
     @Override
-    public Response getProjects(String projectSearch) {
+    public Response getProjects(String projectSearch, String searchByTag) {
         try {
-            System.out.println(projectSearch);
+            boolean bsearchByProjectEmpty = false;
+            boolean bsearchByTagEmpty = false;
+            Pattern p = Pattern.compile("\'+");
+            
             if (projectSearch == null || projectSearch.isEmpty()) {
+                bsearchByProjectEmpty = true;
+            }
+            if (searchByTag == null || searchByTag.isEmpty()) {
+                bsearchByTagEmpty = true;
+            }
+            
+            //Beide Leer
+            if (bsearchByTagEmpty & bsearchByProjectEmpty) {
                 return Response.status(Status.OK).entity(new Projects(storeService.fetchAllProjects())).build();
-            } else {
-                Pattern p = Pattern.compile("\'+");
+            }
+            //Nur Tag leer. Project vorhanden
+            if (bsearchByTagEmpty & !bsearchByProjectEmpty){
                 Matcher m = p.matcher(projectSearch);
                 if (!m.matches()) {
                     return Response.status(Status.OK).entity(new Projects(storeService.searchProjectByName(projectSearch, false))).build();
@@ -154,10 +166,24 @@ public class ProjectsResourceImpl implements ProjectsResource {
                     return Response.status(Status.NOT_ACCEPTABLE).entity("\' not allowed!").build();
                 }
             }
+            // Nur Tag
+            if (!bsearchByTagEmpty & bsearchByProjectEmpty){
+            Matcher m = p.matcher(searchByTag);
+            if (!m.matches()) {
+                    return Response.status(Status.OK).entity(new Projects(storeService.searchProjectByTag(searchByTag, false))).build();
+                } else {
+                    return Response.status(Status.NOT_ACCEPTABLE).entity("\' not allowed!").build();
+                }
+            }
+            //Beide vorhanden
+            if (!bsearchByTagEmpty & !bsearchByProjectEmpty){
+            return Response.status(Status.NOT_ACCEPTABLE).entity("You can not use both search-parameters at the same time!").build();
+            }
         } catch (OakCoreException ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
-
+        //Es wurden alle möglichen Szenarien abgefangen!
+        return null;
     }
 
     @Override
