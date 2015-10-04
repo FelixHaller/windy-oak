@@ -683,6 +683,7 @@ public class StoreServiceInSQLite implements StoreService {
     @Override
     public Comment createComment(Comment comment) throws OakCoreException {
         this.establishConnection();
+        int newCommentID=0;
 
         try {
             sql = String.format(
@@ -704,9 +705,9 @@ public class StoreServiceInSQLite implements StoreService {
             );
             //while(project.getMembers())
             statement.executeUpdate(sql);
-            int newCommentID = statement.getGeneratedKeys().getInt(1);
+            newCommentID = statement.getGeneratedKeys().getInt(1);
 
-            return this.getCommentByID(newCommentID);
+            
         } catch (SQLException ex) {
             errorMessage = "Fehler bei Datenbankabfrage";
             Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, errorMessage, ex);
@@ -714,6 +715,7 @@ public class StoreServiceInSQLite implements StoreService {
         } finally {
             this.endConnection();
         }
+        return this.getCommentByID(newCommentID);
     }
 
     @Override
