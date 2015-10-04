@@ -918,4 +918,94 @@ public class StoreServiceInSQLite implements StoreService {
         return tag;
     }
 
+    @Override
+    public List<Project> searchProjectByTag(String SearchEx, boolean recent) throws OakCoreException {
+        List<Project> projects = new ArrayList<>();
+        this.establishConnection();
+
+        try {
+            connection.setAutoCommit(false);
+            if (recent) {
+                sql = "SELECT project.* "
+                        + "FROM  project, projecttag "
+                        + "WHERE project.projectID = projecttag.projectID "
+                        + "and project.status='published' "
+                        + "and tagName LIKE '" + SearchEx + "' "
+                        + "order by dateCreated desc";
+            } else {
+                sql = "SELECT project.* "
+                        + "FROM  project, projecttag "
+                        + "WHERE project.projectID = projecttag.projectID "
+                        + "and (project.status='published' or project.status='closed') "
+                        + "and tagName LIKE 'Java' "
+                        + "order by projectID;";
+            }
+            ResultSet resultset = statement.executeQuery(sql);
+            while (resultset.next()) {
+                Project project = new Project(resultset.getString("title"));
+                project.setId(resultset.getInt("projectID"));
+                project.setDateCreated(resultset.getLong("dateCreated"));
+                // Wir nehmen an, dass kein Projekt 1970 aktualisiert wurde
+                // Diese Ausnahme ist möglich, da SQLite einen leeren Wert als 0
+                // ausgibt und nicht als NULL
+                if (resultset.getLong("dateUpdated") > 0) {
+                    project.setDateUpdated(resultset.getLong("dateUpdated"));
+                }
+                project.setStatus(resultset.getString("status"));
+
+                projects.add(project);
+            }
+
+            resultset.close();
+            Iterator<Project> projectIterator = projects.iterator();
+            while (projectIterator.hasNext()) {
+                Project nextProject = projectIterator.next();
+                //ProjectTags abrufen
+                sql = "select tag.* from project, projecttag, tag "
+                        + "where project.projectID = projecttag.projectID "
+                        + "and projecttag.tagName = tag.tagName "
+                        + "and project.projectID= " + nextProject.getId();
+                resultset = statement.executeQuery(sql);
+
+                ArrayList<Tag> tags = new ArrayList<>();
+                while (resultset.next()) {
+                    Tag tag = new Tag(resultset.getString("tagName"),
+                            resultset.getString("description"));
+                    tags.add(tag);
+                }
+                nextProject.setTags(tags);
+                //ProjectMember abrufen
+                sql = "select user.*, projectmember.role from user,project, projectmember "
+                        + "where project.projectID = projectmember.projectID "
+                        + "and projectmember.username = user.username "
+                        + "and project.projectID= " + nextProject.getId();
+
+                resultset = statement.executeQuery(sql);
+
+                ArrayList<ProjectMember> members = new ArrayList<>();
+                while (resultset.next()) {
+                    ProjectMember member = new ProjectMember();
+
+                    User nuser = new User(resultset.getString("username"));
+                    nuser.setForename(resultset.getString("forename"));
+                    nuser.setSurname(resultset.getString("surname"));
+
+                    member.setUser(nuser);
+                    member.setRole(resultset.getString("role"));
+                    members.add(member);
+                }
+                nextProject.setMembers(members);
+               
+                connection.commit();
+                connection.setAutoCommit(true);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, null, ex);
+            throw new OakCoreException("Fehler bei der Datenbankabfrage");
+        } finally {
+            this.endConnection();
+        }
+        return projects;
+    }
+
 }

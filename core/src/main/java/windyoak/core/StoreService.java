@@ -130,4 +130,6 @@ public interface StoreService {
     
     Tag deleteTag(String tagName) throws OakCoreException;
     
+    List<Project> searchProjectByTag(String SearchEx, boolean recent) throws OakCoreException;
+    
 }

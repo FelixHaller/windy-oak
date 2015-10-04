@@ -146,4 +146,9 @@ public class StoreServiceInMemory implements StoreService {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public List<Project> searchProjectByTag(String SearchEx, boolean recent) throws OakCoreException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }
