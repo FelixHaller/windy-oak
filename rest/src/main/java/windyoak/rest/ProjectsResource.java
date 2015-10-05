@@ -28,6 +28,7 @@ public interface ProjectsResource {
             {
                 MediaType.APPLICATION_XML,
                 MediaType.APPLICATION_JSON
+                
             })
     public Response createProject(
             @Context UriInfo uriInfo,
@@ -36,8 +37,8 @@ public interface ProjectsResource {
             @FormParam("description") String description,
             @FormParam("members") String members,
             @FormParam("status") String status,
-            @FormParam("tagNames") String tagNames
-            
+            @FormParam("tagNames") String tagNames,
+            @FormParam("postsURL") String postsURL
     );
 
     @GET
@@ -76,7 +77,8 @@ public interface ProjectsResource {
             @FormParam("description") String description,
             @FormParam("status") String status,
             @FormParam("members") String members,
-            @FormParam("tagNames") String tagNames 
+            @FormParam("tagNames") String tagNames, 
+            @FormParam("postsURL") String postsURL
     );
 
     @DELETE

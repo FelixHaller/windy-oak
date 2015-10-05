@@ -5,6 +5,7 @@
  */
 package windyoak.rest.impl;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -45,7 +46,9 @@ public class ProjectsResourceImpl implements ProjectsResource {
     @Context
     private PostsService postsService;
     DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.GERMANY);
-
+    String errormsg;
+    
+    
     public StoreService getStoreService() {
         return storeService;
     }
@@ -63,7 +66,15 @@ public class ProjectsResourceImpl implements ProjectsResource {
     }
 
     @Override
-    public Response createProject(UriInfo uriInfo, String name, String username, String description, String members, String status, String tagNames) {
+
+    public Response createProject(  UriInfo uriInfo, 
+                                    String name, 
+                                    String username, 
+                                    String description, 
+                                    String members, 
+                                    String status,
+                                    String tagNames,
+                                    String postsURL) {
         Project createdProject;
         Project project = new Project(name);
         User user;
@@ -84,27 +95,36 @@ public class ProjectsResourceImpl implements ProjectsResource {
             } else {
                 return Response.status(Status.NOT_ACCEPTABLE).entity("Unknown Status").build();
             }
-            //MEMBERS
+
+            try
+            {
+                project.setPostsURL(new URL(postsURL));
+            }
+            catch (MalformedURLException ex)
+            {
+                errormsg = "keine gültige Feed-URL angegeben";
+                Logger.getLogger(ProjectsResourceImpl.class.getName()).log(Level.SEVERE, errormsg, ex);
+                return Response.status(Status.BAD_REQUEST).entity(errormsg).build();
+            }
             Pattern p = Pattern.compile("^([\\w\\s]+,[\\w\\s]*;)+$");
             Matcher m = p.matcher(members);
             if (m.matches()) {
                 List<ProjectMember> memberList = new ArrayList<>(); //= Arrays.asList(ts)
-                String[] MembersAndRole = members.split(";");
-                for (int i = 0; MembersAndRole.length > i;) {
+                String[] MembersAndRoles = members.split(";");
+                for (String MemberAndRole : MembersAndRoles)
+                {
                     ProjectMember member = new ProjectMember();
-                    String[] paar = MembersAndRole[i].split(",");
+                    String[] paar = MemberAndRole.split(",");
                     member.setUser(storeService.getUser(paar[0]));
                     if (paar.length == 1) {
                         member.setRole("");
                     } else {
                         member.setRole(paar[1]);
                     }
-
                     if (member.getUser() == null) {
                         return Response.status(Status.NOT_ACCEPTABLE).entity("Member " + paar[0] + " not in Database!").build();
                     }
                     memberList.add(member);
-                    i++;
                 }
                 project.setMembers(memberList);
             } else {
@@ -224,8 +244,16 @@ public class ProjectsResourceImpl implements ProjectsResource {
     }
 
     @Override
-    public Response updateProject(int projectId, UriInfo uriInfo, String name, String username,
-            String description, String status, String members, String tagNames) {
+
+    public Response updateProject(  int projectId, 
+                                    UriInfo uriInfo, 
+                                    String name, 
+                                    String username, 
+                                    String description, 
+                                    String status, 
+                                    String members,
+                                    String tagNames,
+                                    String postsURL) {
         Project project;
         User newUser;
         try {
@@ -256,15 +284,26 @@ public class ProjectsResourceImpl implements ProjectsResource {
                     return Response.status(Status.NOT_FOUND).entity("User not found in Database!").build();
                 }
                 project.setCreator(newUser);
-
             }
+            
+            try
+            {
+                project.setPostsURL(new URL(postsURL));
+            }
+            catch (MalformedURLException ex)
+            {
+                errormsg = "keine gültige Feed-URL angegeben";
+                Logger.getLogger(ProjectsResourceImpl.class.getName()).log(Level.SEVERE, errormsg, ex);
+                return Response.status(Status.BAD_REQUEST).entity(errormsg).build();
+            }
+            
             if (!(members == null || members.isEmpty())) {
                 Pattern p = Pattern.compile("^([\\w\\s]+,[\\w\\s]*;)+$");
                 Matcher m = p.matcher(members);
                 if (m.matches()) {
                     List<ProjectMember> memberList = new ArrayList<>(); //= Arrays.asList(ts)
                     String[] MembersAndRole = members.split(";");
-                    for (int i = 0; MembersAndRole.length > i;) {
+                    for (int i = 0; i < MembersAndRole.length;i++) {
                         ProjectMember member = new ProjectMember();
                         String[] paar = MembersAndRole[i].split(",");
                         member.setUser(storeService.getUser(paar[0]));
@@ -278,7 +317,6 @@ public class ProjectsResourceImpl implements ProjectsResource {
                             return Response.status(Status.NOT_ACCEPTABLE).entity("Member " + paar[0] + " not in Database!").build();
                         }
                         memberList.add(member);
-                        i++;
                     }
                     project.setMembers(memberList);
                 } else {

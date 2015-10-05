@@ -3,8 +3,6 @@ package windyoak.client;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXBContext;
@@ -22,7 +20,6 @@ import windyoak.core.Project;
 import windyoak.core.Projects;
 import windyoak.core.RSSPosts;
 import windyoak.core.Tag;
-import windyoak.core.User;
 
 /**
  * Der Testclient für den WindyOak REST-Service.
@@ -63,45 +60,53 @@ public class Client
         return unmarshaller.unmarshal(in);
     }
 
-    public int addProject(Project project)
+    public int addProject(  String title, 
+                            String creator, 
+                            String description, 
+                            String members,
+                            String status,
+                            String postsURL)
     {
-        String response = null;
-        Project newProject;
+        String response;
         JSONObject jsonObject;
+        int projectID;
         PostMethod postMethod = new PostMethod(getBaseUri() + "/projects");
         
-        postMethod.addParameter("name", project.getTitle());
-        postMethod.addParameter("username", project.getCreator().getUsername());
-        postMethod.addParameter("description", project.getDescription());
-        postMethod.addParameter("members", "tester");
-        postMethod.addParameter("status", project.getStatus());
+        //Request auf Charset UTF-8 (das Charset der Datenbank) setzen
+        postMethod.addRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+        
+        postMethod.addParameter("name", title);
+        postMethod.addParameter("username", creator);
+        postMethod.addParameter("description", description);
+        postMethod.addParameter("members", members);
+        postMethod.addParameter("status", status);
+        postMethod.addParameter("postsURL", postsURL);
         postMethod.setRequestHeader("Accept", json);
 
         try
         {
             int responseCode = httpClient.executeMethod(postMethod);
-            response = postMethod.getResponseBodyAsString();
+            response = new String(postMethod.getResponseBody(),"UTF-8");
+
         }
         catch (IOException ex)
         {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, "Fehler bei Ausführung", ex);
-            System.exit(-1);
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, "Fehler bei Ausführung");
+            throw new RuntimeException(ex);
         }
         try
         {
             jsonObject = new JSONObject(response);
+            System.out.println(jsonObject.toString(4));
+            projectID = jsonObject.getInt("id");
         }
         catch (JSONException ex)
         {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, "Rückgabe fehlerhaft", ex);
-            System.exit(-1);
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, "Rückgabe fehlerhaft");
+            throw new RuntimeException(ex);
         }
-        
-        
-        
-        System.out.println(postMethod.getStatusCode() + ": " + response);
-        
-        return 0;
+
+        return projectID;
     }
     
     public Project getProjectByID(int id)
@@ -109,16 +114,16 @@ public class Client
         String response;
         GetMethod getMethod = new GetMethod(getBaseUri() + "/projects/"+id);
         getMethod.setRequestHeader("Accept", xml);
-        JAXBContext jaxbContext = null;
-        Project newProject = null;
+        JAXBContext jaxbContext;
+        Project newProject;
         try
         {
             jaxbContext = JAXBContext.newInstance(Project.class);
         }
         catch (JAXBException ex)
         {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, "JAXB Error", ex);
-            System.exit(-1);
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, "JAXB Error");
+            throw new RuntimeException(ex);
         }
         try
         {
@@ -128,13 +133,13 @@ public class Client
         }
         catch (UnmarshalException ex)
         {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, "Fehler beim Unmarshalling", ex);
-            System.exit(-1);
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, "Fehler beim Unmarshalling");
+            throw new RuntimeException(ex);
         }
         catch (IOException | JAXBException ex)
         {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, "JAXB Fehler", ex);
-            System.exit(-1);
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, "JAXB Fehler");
+            throw new RuntimeException(ex);
         }
         return newProject;
         
@@ -241,54 +246,23 @@ public class Client
      * - Erstellen eines Kommentars zu einem Projekt
      * - Anzeigen der RSS-Posts
      * - Anzeigen der letzten Posts/angelegten Projekte
+     * - Projekt löschen
+     * - Projekt erneut versuchen anzuzeigen
      * 
      * @param args
      * @throws JAXBException
      * @throws IOException
      */
-    public static void main(String[] args) throws JAXBException, IOException
+    public static void main(String[] args)
     {
         Client client = new Client("http://localhost:8080");
         
-        Logger.getLogger(Client.class.getName()).log(Level.INFO, "Lege neues Projekt \"FooBar\" an");
+        System.out.println("========================DEMO startet========================");
+        System.out.println("Lege neues Projekt an...");
+        System.out.println("Ausgabe: ");
+        int projectID = client.addProject("Windy-Oak", "Tutnix", "Unser Beleg für das Modul Verteilte Systeme", "Tutnix,Chef;GMine,Chefin;","new","https://github.com/FelixHaller/windy-oak/commits/master.atom");
         
-        Project project = new Project("FooBar");
-        Tag tag1 = new Tag("Java", "Eine Sprache");
-        Tag tag2 = new Tag("The Foo", "Der Foo eben. Der Bruder vom Bar");
-        
-        project.setTags(new ArrayList<>(Arrays.asList(tag1,tag2)));
-        project.setDescription("Das ist die Beschreibung.");
-        project.setCreator(new User("Tutnix"));
-        project.setStatus("new");
-        
-        client.addProject(project);
-        
-        //System.out.println(client.getProjectByID(2).getTitle());
-
-        //User anlegen
-//        Logger.getLogger(Client.class.getName()).log(Level.INFO, "Lege user Dagobert an");
-//        PhoneUser dagobert = client.addUser("Dagobert");
-//        
-//        Logger.getLogger(Client.class.getName()).log(Level.INFO, "füge privatnummer hinzu");
-//        client.addNumberToUser(dagobert.getId(), new PhoneNumber("0190666666", "Privatnummer"));
-//        
-//        Logger.getLogger(Client.class.getName()).log(Level.INFO, "füge Mobilnummer hinzu");
-//        client.addNumberToUser(dagobert.getId(),new PhoneNumber("0162424242", "Mobil"));
-//        
-//        Logger.getLogger(Client.class.getName()).log(Level.INFO, "Lege user Donald an");
-//        PhoneUser donald = client.addUser("Donald");
-//        
-//        Logger.getLogger(Client.class.getName()).log(Level.INFO, "Lege user Goofy an");
-//        PhoneUser goofy = client.addUser("Goofy");
-//        
-//        Logger.getLogger(Client.class.getName()).log(Level.INFO, "lösche Dagobert");
-//        client.deleteUser(dagobert.getId());
-//        
-//        PhoneUser existingUser = client.getUser(42);
-        
-        
-        
-        
+        System.out.println("Die ID des angelegten Projektes ist: " + projectID);
         
         
         
