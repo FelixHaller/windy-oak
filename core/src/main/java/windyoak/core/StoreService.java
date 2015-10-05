@@ -112,24 +112,112 @@ public interface StoreService {
      */
     Comment getCommentByID(int commentID) throws OakCoreException;
 
+    /**
+     * Es wird ein einzelner Kommentar über die commentID gelöscht.
+     *
+     * @param commentID
+     * @return Ein Kommentar-Objekt.
+     * @throws OakCoreException Falls SQL Exceptions auftreten, oder andere
+     * Exceptions.
+     */
     Comment deleteComment(int commentID) throws OakCoreException;
 
+    /**
+     * Es erfolgt eine Aktualisierung des Kommentars. Dazu wird ein neues
+     * Kommentar-Objekt übergeben.
+     *
+     * @param comment
+     * @return Ein Kommentar-Objekt.
+     * @throws OakCoreException Falls SQL Exceptions auftreten, oder andere
+     * Exceptions.
+     */
     Comment updateComment(Comment comment) throws OakCoreException;
 
+    /**
+     * Es wird ein neues Kommentar-Objekt in der Datenbank angelegt.
+     *
+     * @param comment
+     * @return Das erstellte Kommentar-Objekt.
+     * @throws OakCoreException Falls SQL Exceptions auftreten, oder andere
+     * Exceptions.
+     */
     Comment createComment(Comment comment) throws OakCoreException;
 
+    /**
+     * Es wird ein Such-String übergeben, der die Platzhalter der verwendeten
+     * Datenbank benutzt. Es werden alle Projekte zurückgegeben die den
+     * angebenen Such-String im Projekttitle enthalten.
+     *
+     * @param SearchEx
+     * @param recent Wenn wahr, dann werden nur 'published' Projekte angezeigt
+     * und nach Datum sortiert.
+     * @return Eine Liste mit Projekt-Objekten.
+     * @throws OakCoreException Falls SQL Exceptions auftreten, oder andere
+     * Exceptions.
+     */
     List<Project> searchProjectByName(String SearchEx, boolean recent) throws OakCoreException;
 
+    /**
+     * Es wird ein Tag zurückgegeben, der genau dem Tag-Objekt-Name des
+     * angebenen Parameter entspricht.
+     *
+     * @param tagName Names des Tag-Objekts
+     * @return Tag-Objekt
+     * @throws OakCoreException Falls SQL Exceptions auftreten, oder andere
+     * Exceptions.
+     */
     Tag getTagByName(String tagName) throws OakCoreException;
 
+    /**
+     * Hier wird ein Tag-Objekt erstellt.
+     *
+     * @param tag Tag-Objekt
+     * @return erstelltes Tag-Objekt
+     * @throws OakCoreException Falls SQL Exceptions auftreten, oder andere
+     * Exceptions.
+     */
     Tag createTag(Tag tag) throws OakCoreException;
-    
+
+    /**
+     * Alle Tags die vorhanden sind, werden ausgegeben.
+     *
+     * @return Liste der vorhanden Tag-Objekte
+     * @throws OakCoreException Falls SQL Exceptions auftreten, oder andere
+     * Exceptions.
+     */
     List<Tag> getTags() throws OakCoreException;
 
+    /**
+     * Die Beschreibung eines Tags wird aktualisiert.
+     *
+     * @param newtag Tag mit neuer Beschreibung.
+     * @return Erstellter Tag
+     * @throws OakCoreException Falls SQL Exceptions auftreten, oder andere
+     * Exceptions.
+     */
     Tag updateTagDescription(Tag newtag) throws OakCoreException;
-    
+
+    /**
+     * Es wird ein Tag anhand seines Namens gelöscht.
+     *
+     * @param tagName Name des Tag-Objektes
+     * @return gelöschtes Tag-Objekt
+     * @throws OakCoreException Falls SQL Exceptions auftreten, oder andere
+     * Exceptions.
+     */
     Tag deleteTag(String tagName) throws OakCoreException;
-    
+
+    /**
+     * Es werden Projekt-Objekte nach ihren Tags durchsucht.
+     *
+     * @param SearchEx Die Such-Ausdruck muss von der Datenbank akzeptiert
+     * werden. Es können Platzhalter der jeweiligen Datenbank verwendet werden.
+     * @param recent Falls Parameter wahr ist, werden nur Projekt-Objekte
+     * angezeigt dessen Status 'published' entspricht.
+     * @return Eine Projekt-Objekt Liste
+     * @throws OakCoreException Falls SQL Exceptions auftreten, oder andere
+     * Exceptions.
+     */
     List<Project> searchProjectByTag(String SearchEx, boolean recent) throws OakCoreException;
-    
+
 }
