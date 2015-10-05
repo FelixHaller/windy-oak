@@ -3,49 +3,74 @@ package windyoak.core;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
+ * Ein Tag-Objekt ist wie ein Schlüsselwort, welches das Projekt näher
+ * beschreibt. Ein Projekt-Objekt kann mehrere solche Tags besitzen.
  *
  * @author Felix Haller
  */
 @XmlRootElement(name = "tag")
-public class Tag
-{
+public class Tag {
+
     private String name;
     private String description;
-    
-    public Tag()
-    {
-        
+
+    public Tag() {
+
     }
-    
-    public Tag(String name)
-    {
+
+    /**
+     * Konstruktor.
+     *
+     * @param name Tag-Objekt Name (Schlüsselwort)
+     */
+    public Tag(String name) {
         this.name = name;
     }
-    
-    public Tag(String name, String description)
-    {
+
+    /**
+     * Konstruktor.
+     *
+     * @param name Tag-Objekt Name (Schlüsselwort)
+     * @param description Beschreibung/Erklärung des Schlüsselworts
+     */
+    public Tag(String name, String description) {
         this.name = name;
         this.description = description;
     }
-    
 
-    public String getName()
-    {
+    /**
+     * Name des Tags zurückgeben.
+     *
+     * @return
+     */
+    public String getName() {
         return name;
     }
 
-    public void setName(String name)
-    {
+    /**
+     * Name des Tags setzten.
+     *
+     * @param name
+     */
+    public void setName(String name) {
         this.name = name;
     }
 
-    public String getDescription()
-    {
+    /**
+     * Beschreibung wird zurückgegeben.
+     *
+     * @return
+     */
+    public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description)
-    {
+    /**
+     * Beschreibung wird gesetzt.
+     *
+     * @param description
+     */
+    public void setDescription(String description) {
         this.description = description;
     }
 
