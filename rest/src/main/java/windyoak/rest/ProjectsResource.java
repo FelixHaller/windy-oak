@@ -28,6 +28,7 @@ public interface ProjectsResource {
             {
                 MediaType.APPLICATION_XML,
                 MediaType.APPLICATION_JSON
+                
             })
     public Response createProject(
             @Context UriInfo uriInfo,
@@ -35,7 +36,8 @@ public interface ProjectsResource {
             @FormParam("username") String username,
             @FormParam("description") String description,
             @FormParam("members") String members,
-            @FormParam("status") String status
+            @FormParam("status") String status,
+            @FormParam("postsURL") String postsURL
             
     );
 
@@ -71,7 +73,8 @@ public interface ProjectsResource {
             @FormParam("username") String username,
             @FormParam("description") String description,
             @FormParam("status") String status,
-            @FormParam("members") String members
+            @FormParam("members") String members,
+            @FormParam("postsURL") String postsURL
     );
 
     @DELETE

@@ -13,7 +13,6 @@ import windyoak.core.Comment;
 import windyoak.core.OakCoreException;
 import windyoak.core.Project;
 import windyoak.core.ProjectMember;
-import windyoak.core.Projects;
 import windyoak.core.StoreService;
 import windyoak.core.Tag;
 import windyoak.core.User;
@@ -325,18 +324,20 @@ public class StoreServiceInSQLite implements StoreService {
         try {
             sql = String.format(
                     "INSERT INTO project "
-                    + "(creator, title, description, dateCreated, status) "
+                    + "(creator, title, description, dateCreated, status, postsURL) "
                     + "VALUES("
                     + "'%s',"
                     + "'%s',"
                     + "'%s',"
-                    + " %d, "
+                    + " %d ,"
+                    + "'%s',"
                     + "'%s')",
                     project.getCreator().getUsername(),
                     project.getTitle(),
                     project.getDescription(),
                     new Date().getTime(),
-                    project.getStatus()
+                    project.getStatus(),
+                    project.getPostsURL()
             );
             //while(project.getMembers())
             statement.executeUpdate(sql);
