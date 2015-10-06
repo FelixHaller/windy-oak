@@ -194,11 +194,19 @@ public class StoreServiceInSQLite implements StoreService {
             }
             project.setStatus(resultset.getString("status"));
 
-            try {
-                project.setPostsURL(new URL(resultset.getString("postsURL")));
-            } catch (MalformedURLException ex) {
-                Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.WARNING, "URL für Posts aus Datenbank ungültig.", ex);
+            String postsURL = resultset.getString("postsURL");
+            
+            // Nur wenn auch eine URL hinterlegt ist
+            if (postsURL != null && postsURL.matches("\\s*"))
+            {
+                try {
+                    project.setPostsURL(new URL(postsURL));
+                } 
+                catch (MalformedURLException ex) {
+                    Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.WARNING, "URL für Posts aus Datenbank ungültig.");
+                }
             }
+            
             
             User user = new User(resultset.getString("creator"));
             user.setForename(resultset.getString("forename"));

@@ -238,7 +238,7 @@ public class Client
     public static void main(String[] args)
     {
         Client client = new Client("http://localhost:8080");
-        
+            
         System.out.println("========================DEMO startet========================");
         System.out.println("Zeige Projekt mit der ID 2 an.");
         Project project2 = client.getProjectByID(2);
