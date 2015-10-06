@@ -82,7 +82,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
         User user;
         try {
             if (name == null || name.isEmpty() || description == null
-                    || description.isEmpty() || status == null || status.isEmpty() || tagNames == null || tagNames.isEmpty()) {
+                    || description.isEmpty() || status == null || status.isEmpty()) {
                 return Response.status(Status.NOT_ACCEPTABLE).entity("Empty Parameter").build();
             }
             user = storeService.getUser(username);
@@ -133,6 +133,9 @@ public class ProjectsResourceImpl implements ProjectsResource {
                 return Response.status(Status.NOT_ACCEPTABLE).entity("No valid members Specification!").build();
             }
             //TAG
+            if (tagNames == null || tagNames.isEmpty()){
+            project.setTags(null);
+            }else{
             Pattern pt = Pattern.compile("^[\\w+,]*\\w$");
             Matcher mt = pt.matcher(tagNames);
             Tags tags = new Tags();
@@ -150,8 +153,8 @@ public class ProjectsResourceImpl implements ProjectsResource {
             } else {
                 return Response.status(Status.NOT_ACCEPTABLE).entity("No valid tagName Specification!").build();
             }
-
             project.setTags(tags);
+            }
             createdProject = this.storeService.createProject(project);
 
         } catch (OakCoreException ex) {
@@ -327,7 +330,9 @@ public class ProjectsResourceImpl implements ProjectsResource {
                 }
             }
             //TAG
-            if (!(tagNames == null || tagNames.isEmpty())) {
+            if (tagNames == null || tagNames.isEmpty()) {
+            project.setTags(null);
+            }else{
                 Pattern pt = Pattern.compile("^[\\w+,]*\\w$");
                 Matcher mt = pt.matcher(tagNames);
                 Tags tags = new Tags();

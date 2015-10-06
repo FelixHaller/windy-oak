@@ -30,7 +30,7 @@ public class Tags {
         this.tags = tags;
     }
 
-    @XmlElement(name = "tags")
+    @XmlElement(name = "tag")
     public List<Tag> getTags()
     {
         return tags;

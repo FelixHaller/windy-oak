@@ -370,8 +370,8 @@ public class StoreServiceInSQLite implements StoreService {
                 );
                 statement.executeUpdate(sql);
             }
-
-            Tags tags = project.getTags();
+            if (project.getTags() != null) {
+                Tags tags = project.getTags();
             Iterator<Tag> itTag = tags.getTags().iterator();
             while (itTag.hasNext()) {
                 Tag newTag = itTag.next();
@@ -384,10 +384,12 @@ public class StoreServiceInSQLite implements StoreService {
                         newTag.getName()
                 );
                 statement.executeUpdate(sql);
+
             }
 
             connection.commit();
             connection.setAutoCommit(true);
+            }
         } catch (SQLException ex) {
             errorMessage = "Fehler bei Datenbankabfrage";
             Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, errorMessage, ex);
@@ -467,7 +469,8 @@ public class StoreServiceInSQLite implements StoreService {
 
             deleteTags = connection.prepareStatement(deleteTagsSt);
             deleteTags.executeUpdate();
-
+           
+            if (project.getTags()!=null){
             Tags tags = project.getTags();
             Iterator<Tag> itTag = tags.getTags().iterator();
             createTags = connection.prepareStatement(createTagsSt);
@@ -476,6 +479,7 @@ public class StoreServiceInSQLite implements StoreService {
                 createTags.setInt(1, project.getId());
                 createTags.setString(2, newTag.getName());
                 createTags.executeUpdate();
+            }
             }
 
             connection.commit();
@@ -689,7 +693,7 @@ public class StoreServiceInSQLite implements StoreService {
     @Override
     public Comment createComment(Comment comment) throws OakCoreException {
         this.establishConnection();
-        int newCommentID=0;
+        int newCommentID = 0;
 
         try {
             sql = String.format(
@@ -713,7 +717,6 @@ public class StoreServiceInSQLite implements StoreService {
             statement.executeUpdate(sql);
             newCommentID = statement.getGeneratedKeys().getInt(1);
 
-            
         } catch (SQLException ex) {
             errorMessage = "Fehler bei Datenbankabfrage";
             Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, errorMessage, ex);
@@ -937,7 +940,7 @@ public class StoreServiceInSQLite implements StoreService {
         this.establishConnection();
 
         try {
-           
+
             if (recent) {
                 sql = "SELECT project.*, user.* "
                         + "FROM  project, projecttag, user "
@@ -952,7 +955,7 @@ public class StoreServiceInSQLite implements StoreService {
                         + "WHERE project.projectID = projecttag.projectID "
                         + "and user.username=project.creator "
                         + "and (project.status='published' or project.status='closed') "
-                        + "and tagName LIKE '"+ SearchEx +"' "
+                        + "and tagName LIKE '" + SearchEx + "' "
                         + "order by projectID;";
             }
             ResultSet resultset = statement.executeQuery(sql);
@@ -975,12 +978,13 @@ public class StoreServiceInSQLite implements StoreService {
                 projects.getProjects().add(project);
             }
             resultset.close();
-            
+
             Iterator<Project> projectIterator = projects.getProjects().iterator();
+
             while (projectIterator.hasNext()) {
-               
+
                 Project nextProject = projectIterator.next();
-                 //creater abrufen
+                //creater abrufen
                 //ProjectTags abrufen
                 sql = "select tag.* from project, projecttag, tag "
                         + "where project.projectID = projecttag.projectID "
