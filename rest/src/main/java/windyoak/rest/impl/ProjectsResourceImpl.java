@@ -9,8 +9,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -449,7 +447,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
         try {
             Comments comments = storeService.fetchAllComments(projectid);
             if (comments == null) {
-                return Response.status(Status.NOT_FOUND).entity("Project have no Comments in Database!").build();
+                return Response.status(Status.NO_CONTENT).entity("Project have no Comments in Database!").build();
             }
 
             return Response.status(Status.OK).entity(comments).build();
