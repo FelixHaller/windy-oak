@@ -5,17 +5,19 @@
  */
 package windyoak.core;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  *
  * @author Konstantin Lorenz (klorenz1@hs-mittweida.de)
  */
-public class ProjectMember {
+public class Member {
 
     private User user;
     private String role;
 
 
-    public ProjectMember() {
+    public Member() {
     }
 
     public User getUser() {

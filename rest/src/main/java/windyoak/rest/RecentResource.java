@@ -33,12 +33,5 @@ public interface RecentResource {
     @Path("projects")
     public Response getRecentProjects();
 
-    @GET
-    @Produces({
-        MediaType.APPLICATION_XML,
-        MediaType.APPLICATION_JSON
-    })
-    @Path("posts")
-    public Response getRecentRSSPosts();
 
 }

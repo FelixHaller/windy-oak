@@ -1,5 +1,6 @@
 package windyoak.core;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -11,17 +12,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "projects")
 public class Projects {
     
-    private List<Project> projects;
+    private List<Project> projects = new ArrayList<>();
 
     // Diesen Konstruktor ist nötig, da das XML Framework das voraussetzt.
     public Projects()
     {
         
-    }
-
-    public Projects(List<Project> projects)
-    {
-        this.projects = projects;
     }
 
     @XmlElement(name = "project")
@@ -34,5 +30,6 @@ public class Projects {
     {
         this.projects = projects;
     }
+    
 
 }

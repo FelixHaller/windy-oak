@@ -1,6 +1,5 @@
 package windyoak.core;
 
-import java.util.List;
 
 /**
  *
@@ -17,7 +16,7 @@ public interface StoreService {
      *
      * @return Eine Liste mit allen Projekten
      */
-    List<Project> fetchAllProjects() throws OakCoreException;
+    Projects fetchAllProjects() throws OakCoreException;
 
     /**
      * Gibt die letzten n Projekte absteigend geordnet nach dem
@@ -32,7 +31,7 @@ public interface StoreService {
      * @param n maxmimale Anzahl an Projekten, die zurückgeliefert werden soll
      * @return Eine Liste mit Projekten
      */
-    List<Project> fetchRecentProjects(int n) throws OakCoreException;
+    Projects fetchRecentProjects(int n) throws OakCoreException;
 
     /**
      * Gibt alle verfügbaren Informationen zu einem bestimmten Projekt zurück.
@@ -59,6 +58,7 @@ public interface StoreService {
      * Aktualisiert ein bestehendes Projekt.
      *
      * @param project Das überarbeitete Projekt-Objekt
+     * @return 
      */
     Project updateProject(Project project) throws OakCoreException;
 
@@ -82,7 +82,7 @@ public interface StoreService {
      *
      * @return Liste alle Benutzer.
      */
-    List<User> fetchAllUsers() throws OakCoreException;
+    Users fetchAllUsers() throws OakCoreException;
 
     /**
      * Gibt alle bekannten Daten für einen bestimmten Benutzer aus.
@@ -102,7 +102,7 @@ public interface StoreService {
      * @param ProjectsID Die ID des Projektes
      * @return Liste mit Kommentar-Objekten.
      */
-    List<Comment> fetchAllComments(int projectID) throws OakCoreException;
+    Comments fetchAllComments(int projectID) throws OakCoreException;
 
     /**
      * Ein einzelnes Kommentar mit allen Details abrufen.
@@ -118,18 +118,18 @@ public interface StoreService {
 
     Comment createComment(Comment comment) throws OakCoreException;
 
-    List<Project> searchProjectByName(String SearchEx, boolean recent) throws OakCoreException;
+    Projects searchProjectByName(String SearchEx, boolean recent) throws OakCoreException;
 
     Tag getTagByName(String tagName) throws OakCoreException;
 
     Tag createTag(Tag tag) throws OakCoreException;
     
-    List<Tag> getTags() throws OakCoreException;
+    Tags getTags() throws OakCoreException;
 
     Tag updateTagDescription(Tag newtag) throws OakCoreException;
     
     Tag deleteTag(String tagName) throws OakCoreException;
     
-    List<Project> searchProjectByTag(String SearchEx, boolean recent) throws OakCoreException;
+    Projects searchProjectByTag(String SearchEx, boolean recent) throws OakCoreException;
     
 }

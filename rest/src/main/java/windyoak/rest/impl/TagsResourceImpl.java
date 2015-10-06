@@ -6,8 +6,6 @@
 package windyoak.rest.impl;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.ws.rs.core.Context;
@@ -15,6 +13,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import windyoak.core.OakCoreException;
 import windyoak.core.Project;
+import windyoak.core.Projects;
 import windyoak.core.StoreService;
 import windyoak.core.Tag;
 import windyoak.core.Tags;
@@ -68,11 +67,11 @@ public class TagsResourceImpl implements TagsResource {
     @Override
     public Response getTags() {
         try {
-            List<Tag> tagList = storeService.getTags();
+            Tags tagList = storeService.getTags();
             if (tagList == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity("No Tags found!").build();
             }
-            return Response.status(Response.Status.OK).entity(new Tags(tagList)).build();
+            return Response.status(Response.Status.OK).entity(tagList).build();
         } catch (OakCoreException ex) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
@@ -130,9 +129,9 @@ public class TagsResourceImpl implements TagsResource {
         }
         try {
 
-            List<Project> list = storeService.searchProjectByTag(tagName, false);
+            Projects projects = storeService.searchProjectByTag(tagName, false);
             
-            if (list.isEmpty()) {
+            if (projects.getProjects().isEmpty()) {
                 Tag newTag = storeService.deleteTag(tagName);
                 return Response.status(Response.Status.OK).entity(newTag).build();
             } else {

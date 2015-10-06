@@ -27,7 +27,7 @@ public class UsersResourceImpl implements UsersResource {
         Users users;
         try
         {
-            users = new Users(storeService.fetchAllUsers());
+            users = storeService.fetchAllUsers();
         }
         catch (OakCoreException ex)
         {

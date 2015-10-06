@@ -5,11 +5,10 @@
  */
 package windyoak.rest.impl;
 
-import java.util.List;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import windyoak.core.OakCoreException;
-import windyoak.core.Project;
+import windyoak.core.Projects;
 import windyoak.core.StoreService;
 import windyoak.rest.RecentResource;
 
@@ -25,24 +24,18 @@ public class RecentResourceImpl implements RecentResource {
     @Override
     public Response getRecents() {
         
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Nicht implementiert, da keine zweite RECENT Quelle verfügbar. Für die Zukunft vorbereitet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public Response getRecentProjects() {
-        List<Project> projects;
+        Projects projects;
         try {
             projects = storeService.fetchRecentProjects(10);
         } catch (OakCoreException ex) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
         return Response.status(Response.Status.OK).entity(projects).build();
-    }
-
-    @Override
-    public Response getRecentRSSPosts() 
-    {
-        throw new UnsupportedOperationException("Nicht Teil des Belegs. Für die Zukunft geplant. Bitte /projects/{id}/posts testen.");
     }
 
 }

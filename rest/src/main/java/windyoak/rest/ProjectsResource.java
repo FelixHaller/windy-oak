@@ -48,8 +48,10 @@ public interface ProjectsResource {
                 MediaType.APPLICATION_JSON
             })
     public Response getProjects(
-            @QueryParam("searchByTitle") String projectSearch,
-            @QueryParam("searchByTag") String searchByTag
+            @QueryParam("title") String title,
+            @QueryParam("tag") String tag,
+            @QueryParam("creator") String creator
+            
     );
 
     @GET

@@ -1,9 +1,7 @@
 package windyoak.core;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -29,16 +27,53 @@ public class Project
     private Date dateCreated;
     private Date dateUpdated;
     private String status;
-    private List<ProjectMember> members;
-    private ArrayList<Tag> tags;
+    private Members members;
+    private Tags tags;
     private URL postsURL;
 
-
+    
     public Project()
     {
 
     }
     
+    public Project(String title)
+    {
+        this.title = title;
+    }
+    
+    /**
+     * Diese Methode liefert den relativen Pfad (URL) zu den Posts des Projektes.
+     * 
+     * 
+     * @return
+     */
+    public String getPosts()
+    {
+        return "/projects/"+this.id+"/posts";
+    }
+    
+    public void setPosts(String foobar)
+    {
+        //Dummy
+    }
+    
+    /**
+     * Diese Methode liefert den relativen Pfad (URL) zu den Kommentaren zum Projekt.
+     * 
+     * 
+     * @return
+     */
+    public String getComments()
+    {
+        return "/projects/" + this.id + "/comments";
+    }
+    
+    public void setComments(String foobar)
+    {
+        //Dummy
+    }
+
     @XmlTransient
     public URL getPostsURL()
     {
@@ -50,31 +85,25 @@ public class Project
         this.postsURL = postsURL;
     }
 
-    public Project(String title)
-    {
-        this.title = title;
-    }
 
-    @XmlElement(name = "tag")
-    @XmlElementWrapper(name = "tags")
-    public ArrayList<Tag> getTags()
+    @XmlElement(name = "tags")
+    public Tags getTags()
     {
         return tags;
     }
 
-    public void setTags(ArrayList<Tag> tags)
+    public void setTags(Tags tags)
     {
         this.tags = tags;
     }
 
-    @XmlElement(name = "member")
-    @XmlElementWrapper(name = "members")
-    public List<ProjectMember> getMembers()
+    @XmlElement(name = "members")
+    public Members getMembers()
     {
         return members;
     }
 
-    public void setMembers(List<ProjectMember> members)
+    public void setMembers(Members members)
     {
         this.members = members;
     }

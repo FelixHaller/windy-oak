@@ -10,12 +10,17 @@ import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import windyoak.core.Comment;
+import windyoak.core.Comments;
 import windyoak.core.OakCoreException;
 import windyoak.core.Project;
-import windyoak.core.ProjectMember;
+import windyoak.core.Member;
+import windyoak.core.Members;
+import windyoak.core.Projects;
 import windyoak.core.StoreService;
 import windyoak.core.Tag;
+import windyoak.core.Tags;
 import windyoak.core.User;
+import windyoak.core.Users;
 
 /**
  * Verwaltet die Projektdaten in einer SQLite Datenbank.
@@ -62,8 +67,8 @@ public class StoreServiceInSQLite implements StoreService {
         }
     }
 
-    private List<Project> fetchProjects(boolean recent, int count) throws OakCoreException {
-        List<Project> projects = new ArrayList<>();
+    private Projects fetchProjects(boolean recent, int count) throws OakCoreException {
+        Projects projects = new Projects();
         this.establishConnection();
         try {
             if (recent) {
@@ -91,12 +96,11 @@ public class StoreServiceInSQLite implements StoreService {
                 project.setDescription(resultset.getString("description"));
                 project.setCreator(null);
 
-                projects.add(project);
+                projects.getProjects().add(project);
             }
             resultset.close();
-            Iterator<Project> projectIterator = projects.iterator();
-            while (projectIterator.hasNext()) {
-                Project nextProject = projectIterator.next();
+            for (Project nextProject : projects.getProjects())
+            {
                 //ProjectTags abrufen
                 sql = "select tag.* from project, projecttag, tag "
                         + "where project.projectID = projecttag.projectID "
@@ -104,11 +108,11 @@ public class StoreServiceInSQLite implements StoreService {
                         + "and project.projectID= " + nextProject.getId();
                 resultset = statement.executeQuery(sql);
 
-                ArrayList<Tag> tags = new ArrayList<>();
+                Tags tags = new Tags();
                 while (resultset.next()) {
                     Tag tag = new Tag(resultset.getString("tagName"),
                             resultset.getString("description"));
-                    tags.add(tag);
+                    tags.getTags().add(tag);
                 }
                 nextProject.setTags(tags);
                 //ProjectMember abrufen
@@ -119,9 +123,9 @@ public class StoreServiceInSQLite implements StoreService {
 
                 resultset = statement.executeQuery(sql);
 
-                ArrayList<ProjectMember> members = new ArrayList<>();
+                Members members = new Members();
                 while (resultset.next()) {
-                    ProjectMember member = new ProjectMember();
+                    Member member = new Member();
 
                     User nuser = new User(resultset.getString("username"));
                     nuser.setForename(resultset.getString("forename"));
@@ -129,7 +133,7 @@ public class StoreServiceInSQLite implements StoreService {
 
                     member.setUser(nuser);
                     member.setRole(resultset.getString("role"));
-                    members.add(member);
+                    members.getMembers().add(member);
                 }
                 nextProject.setMembers(members);
             }
@@ -144,12 +148,12 @@ public class StoreServiceInSQLite implements StoreService {
     }
 
     @Override
-    public List<Project> fetchAllProjects() throws OakCoreException {
+    public Projects fetchAllProjects() throws OakCoreException {
         return this.fetchProjects(false, 0);
     }
 
     @Override
-    public List<Project> fetchRecentProjects(int n) throws OakCoreException {
+    public Projects fetchRecentProjects(int n) throws OakCoreException {
         return this.fetchProjects(true, n);
     }
 
@@ -195,7 +199,7 @@ public class StoreServiceInSQLite implements StoreService {
             } catch (MalformedURLException ex) {
                 Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.WARNING, "URL für Posts aus Datenbank ungültig.", ex);
             }
-
+            
             User user = new User(resultset.getString("creator"));
             user.setForename(resultset.getString("forename"));
             user.setSurname(resultset.getString("surname"));
@@ -209,9 +213,9 @@ public class StoreServiceInSQLite implements StoreService {
 
             resultset = statement.executeQuery(sql);
 
-            ArrayList<ProjectMember> members = new ArrayList<>();
+            Members members = new Members();
             while (resultset.next()) {
-                ProjectMember member = new ProjectMember();
+                Member member = new Member();
 
                 User nuser = new User(resultset.getString("username"));
                 nuser.setForename(resultset.getString("forename"));
@@ -219,7 +223,7 @@ public class StoreServiceInSQLite implements StoreService {
 
                 member.setUser(nuser);
                 member.setRole(resultset.getString("role"));
-                members.add(member);
+                members.getMembers().add(member);
             }
             project.setMembers(members);
 
@@ -230,11 +234,11 @@ public class StoreServiceInSQLite implements StoreService {
                     + "and project.projectID= " + projectID;
             resultset = statement.executeQuery(sql);
 
-            ArrayList<Tag> tags = new ArrayList<>();
+            Tags tags = new Tags();
             while (resultset.next()) {
                 Tag tag = new Tag(resultset.getString("tagName"),
                         resultset.getString("description"));
-                tags.add(tag);
+                tags.getTags().add(tag);
             }
             project.setTags(tags);
             resultset.close();
@@ -255,8 +259,8 @@ public class StoreServiceInSQLite implements StoreService {
     }
 
     @Override
-    public List<User> fetchAllUsers() throws OakCoreException {
-        ArrayList<User> users = new ArrayList<>();
+    public Users fetchAllUsers() throws OakCoreException {
+        Users users = new Users();
         this.establishConnection();
         try {
             sql = "select * from user";
@@ -266,7 +270,7 @@ public class StoreServiceInSQLite implements StoreService {
                 user.setForename(resultset.getString("forename"));
                 user.setSurname(resultset.getString("surname"));
 
-                users.add(user);
+                users.getUsers().add(user);
             }
             resultset.close();
         } catch (SQLException ex) {
@@ -348,10 +352,11 @@ public class StoreServiceInSQLite implements StoreService {
             statement.executeUpdate(sql);
             newProjectID = statement.getGeneratedKeys().getInt(1);
 
-            List<ProjectMember> memberList = project.getMembers();
-            Iterator<ProjectMember> itMember = memberList.iterator();
+            Members memberList = project.getMembers();
+            Iterator<Member> itMember = memberList.getMembers().iterator();
+            
             while (itMember.hasNext()) {
-                ProjectMember member = itMember.next();
+                Member member = itMember.next();
                 sql = String.format(
                         "INSERT INTO projectmember "
                         + "(projectID, username, role) "
@@ -366,8 +371,8 @@ public class StoreServiceInSQLite implements StoreService {
                 statement.executeUpdate(sql);
             }
 
-            List<Tag> tagList = project.getTags();
-            Iterator<Tag> itTag = tagList.iterator();
+            Tags tags = project.getTags();
+            Iterator<Tag> itTag = tags.getTags().iterator();
             while (itTag.hasNext()) {
                 Tag newTag = itTag.next();
                 sql = String.format("INSERT INTO projecttag "
@@ -404,7 +409,7 @@ public class StoreServiceInSQLite implements StoreService {
         PreparedStatement deleteTags = null;
         PreparedStatement createTags = null;
 
-        ProjectMember member;
+        Member member;
 
         String newMember;
         String delete;
@@ -442,8 +447,8 @@ public class StoreServiceInSQLite implements StoreService {
                     + "(projectID, tagName) "
                     + "VALUES(?,?)";
 
-            List<ProjectMember> memberList = project.getMembers();
-            Iterator<ProjectMember> itMember = memberList.iterator();
+            Members memberList = project.getMembers();
+            Iterator<Member> itMember = memberList.getMembers().iterator();
 
             deleteOldMembers = connection.prepareStatement(delete);
             deleteOldMembers.executeUpdate();
@@ -463,8 +468,8 @@ public class StoreServiceInSQLite implements StoreService {
             deleteTags = connection.prepareStatement(deleteTagsSt);
             deleteTags.executeUpdate();
 
-            List<Tag> tagList = project.getTags();
-            Iterator<Tag> itTag = tagList.iterator();
+            Tags tags = project.getTags();
+            Iterator<Tag> itTag = tags.getTags().iterator();
             createTags = connection.prepareStatement(createTagsSt);
             while (itTag.hasNext()) {
                 Tag newTag = itTag.next();
@@ -497,8 +502,8 @@ public class StoreServiceInSQLite implements StoreService {
     }
 
     @Override
-    public List<Comment> fetchAllComments(int projectID) throws OakCoreException {
-        ArrayList<Comment> comments = new ArrayList<>();
+    public Comments fetchAllComments(int projectID) throws OakCoreException {
+        Comments comments = new Comments();
         this.establishConnection();
         try {
             sql = String.format(
@@ -529,7 +534,7 @@ public class StoreServiceInSQLite implements StoreService {
                 comment.setProjectID(resultset.getInt("projectID"));
                 comment.setStatus(resultset.getString("status"));
 
-                comments.add(comment);
+                comments.getComments().add(comment);
             } while (resultset.next());
 
             resultset.close();
@@ -720,8 +725,8 @@ public class StoreServiceInSQLite implements StoreService {
     }
 
     @Override
-    public List<Project> searchProjectByName(String SearchEx, boolean recent) throws OakCoreException {
-        List<Project> projects = new ArrayList<>();
+    public Projects searchProjectByName(String SearchEx, boolean recent) throws OakCoreException {
+        Projects projects = new Projects();
         this.establishConnection();
         try {
             if (recent) {
@@ -749,10 +754,13 @@ public class StoreServiceInSQLite implements StoreService {
                 }
                 project.setStatus(resultset.getString("status"));
 
-                projects.add(project);
+                projects.getProjects().add(project);
             }
             resultset.close();
-            Iterator<Project> projectIterator = projects.iterator();
+            
+           
+            
+            Iterator<Project> projectIterator = projects.getProjects().iterator();
             while (projectIterator.hasNext()) {
                 Project nextProject = projectIterator.next();
                 //ProjectTags abrufen
@@ -762,11 +770,11 @@ public class StoreServiceInSQLite implements StoreService {
                         + "and project.projectID= " + nextProject.getId();
                 resultset = statement.executeQuery(sql);
 
-                ArrayList<Tag> tags = new ArrayList<>();
+                Tags tags = new Tags();
                 while (resultset.next()) {
                     Tag tag = new Tag(resultset.getString("tagName"),
                             resultset.getString("description"));
-                    tags.add(tag);
+                    tags.getTags().add(tag);
                 }
                 nextProject.setTags(tags);
                 //ProjectMember abrufen
@@ -777,9 +785,9 @@ public class StoreServiceInSQLite implements StoreService {
 
                 resultset = statement.executeQuery(sql);
 
-                ArrayList<ProjectMember> members = new ArrayList<>();
+                Members members = new Members();
                 while (resultset.next()) {
-                    ProjectMember member = new ProjectMember();
+                    Member member = new Member();
 
                     User nuser = new User(resultset.getString("username"));
                     nuser.setForename(resultset.getString("forename"));
@@ -787,7 +795,7 @@ public class StoreServiceInSQLite implements StoreService {
 
                     member.setUser(nuser);
                     member.setRole(resultset.getString("role"));
-                    members.add(member);
+                    members.getMembers().add(member);
                 }
                 nextProject.setMembers(members);
             }
@@ -829,8 +837,8 @@ public class StoreServiceInSQLite implements StoreService {
     }
 
     @Override
-    public List<Tag> getTags() throws OakCoreException {
-        List<Tag> tags = new ArrayList<>();
+    public Tags getTags() throws OakCoreException {
+        Tags tags = new Tags();
         this.establishConnection();
         try {
             sql = "SELECT * "
@@ -842,7 +850,7 @@ public class StoreServiceInSQLite implements StoreService {
                 Tag newTag = new Tag();
                 newTag.setName(resultset.getString("tagName"));
                 newTag.setDescription(resultset.getString("description"));
-                tags.add(newTag);
+                tags.getTags().add(newTag);
             }
 
         } catch (SQLException ex) {
@@ -924,8 +932,8 @@ public class StoreServiceInSQLite implements StoreService {
     }
 
     @Override
-    public List<Project> searchProjectByTag(String SearchEx, boolean recent) throws OakCoreException {
-        List<Project> projects = new ArrayList<>();
+    public Projects searchProjectByTag(String SearchEx, boolean recent) throws OakCoreException {
+        Projects projects = new Projects();
         this.establishConnection();
 
         try {
@@ -964,11 +972,11 @@ public class StoreServiceInSQLite implements StoreService {
                 user.setSurname(resultset.getString("surname"));
                 project.setCreator(user);
 
-                projects.add(project);
+                projects.getProjects().add(project);
             }
             resultset.close();
             
-            Iterator<Project> projectIterator = projects.iterator();
+            Iterator<Project> projectIterator = projects.getProjects().iterator();
             while (projectIterator.hasNext()) {
                
                 Project nextProject = projectIterator.next();
@@ -980,11 +988,11 @@ public class StoreServiceInSQLite implements StoreService {
                         + "and project.projectID= " + nextProject.getId();
                 resultset = statement.executeQuery(sql);
 
-                ArrayList<Tag> tags = new ArrayList<>();
+                Tags tags = new Tags();
                 while (resultset.next()) {
                     Tag tag = new Tag(resultset.getString("tagName"),
                             resultset.getString("description"));
-                    tags.add(tag);
+                    tags.getTags().add(tag);
                 }
                 nextProject.setTags(tags);
                 //ProjectMember abrufen
@@ -995,9 +1003,9 @@ public class StoreServiceInSQLite implements StoreService {
 
                 resultset = statement.executeQuery(sql);
 
-                ArrayList<ProjectMember> members = new ArrayList<>();
+                Members members = new Members();
                 while (resultset.next()) {
-                    ProjectMember member = new ProjectMember();
+                    Member member = new Member();
 
                     User nuser = new User(resultset.getString("username"));
                     nuser.setForename(resultset.getString("forename"));
@@ -1005,7 +1013,7 @@ public class StoreServiceInSQLite implements StoreService {
 
                     member.setUser(nuser);
                     member.setRole(resultset.getString("role"));
-                    members.add(member);
+                    members.getMembers().add(member);
                 }
                 nextProject.setMembers(members);
 

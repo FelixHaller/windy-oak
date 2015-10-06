@@ -5,6 +5,7 @@
  */
 package windyoak.core;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -16,7 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "tags")
 public class Tags {
     
-    private List<Tag> tags;
+    private List<Tag> tags = new ArrayList<>();
 
     // Diesen Konstruktor ist nötig, da das XML Framework das voraussetzt.
     public Tags()
@@ -29,7 +30,7 @@ public class Tags {
         this.tags = tags;
     }
 
-    @XmlElement(name = "tag")
+    @XmlElement(name = "tags")
     public List<Tag> getTags()
     {
         return tags;

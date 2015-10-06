@@ -27,12 +27,14 @@ import windyoak.core.Comments;
 import windyoak.core.Project;
 import windyoak.core.User;
 import windyoak.core.OakCoreException;
-import windyoak.core.ProjectMember;
+import windyoak.core.Member;
+import windyoak.core.Members;
 import windyoak.core.PostsService;
 import windyoak.core.Projects;
 import windyoak.core.RSSPost;
 import windyoak.core.RSSPosts;
 import windyoak.core.Tag;
+import windyoak.core.Tags;
 import windyoak.rest.ProjectsResource;
 
 /**
@@ -109,11 +111,11 @@ public class ProjectsResourceImpl implements ProjectsResource {
             Pattern p = Pattern.compile("^([\\w\\s]+,[\\w\\s]*;)+$");
             Matcher m = p.matcher(members);
             if (m.matches()) {
-                List<ProjectMember> memberList = new ArrayList<>(); //= Arrays.asList(ts)
+                Members memberList = new Members(); //= Arrays.asList(ts)
                 String[] MembersAndRoles = members.split(";");
                 for (String MemberAndRole : MembersAndRoles)
                 {
-                    ProjectMember member = new ProjectMember();
+                    Member member = new Member();
                     String[] paar = MemberAndRole.split(",");
                     member.setUser(storeService.getUser(paar[0]));
                     if (paar.length == 1) {
@@ -124,7 +126,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
                     if (member.getUser() == null) {
                         return Response.status(Status.NOT_ACCEPTABLE).entity("Member " + paar[0] + " not in Database!").build();
                     }
-                    memberList.add(member);
+                    memberList.getMembers().add(member);
                 }
                 project.setMembers(memberList);
             } else {
@@ -133,7 +135,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
             //TAG
             Pattern pt = Pattern.compile("^[\\w+,]*\\w$");
             Matcher mt = pt.matcher(tagNames);
-            ArrayList<Tag> tagList = new ArrayList<>();
+            Tags tags = new Tags();
             Tag newTag;
             if (mt.matches()) {
                 String[] tagArray = tagNames.split(",");
@@ -142,14 +144,14 @@ public class ProjectsResourceImpl implements ProjectsResource {
                     if (newTag == null) {
                         return Response.status(Status.NOT_ACCEPTABLE).entity("Tag " + tagArray[i] + " not in Database!").build();
                     } else {
-                        tagList.add(newTag);
+                        tags.getTags().add(newTag);
                     }
                 }
             } else {
                 return Response.status(Status.NOT_ACCEPTABLE).entity("No valid tagName Specification!").build();
             }
 
-            project.setTags(tagList);
+            project.setTags(tags);
             createdProject = this.storeService.createProject(project);
 
         } catch (OakCoreException ex) {
@@ -160,28 +162,28 @@ public class ProjectsResourceImpl implements ProjectsResource {
     }
 
     @Override
-    public Response getProjects(String projectSearch, String searchByTag) {
+    public Response getProjects(String title, String tag, String creator) {
         try {
             boolean bsearchByProjectEmpty = false;
             boolean bsearchByTagEmpty = false;
             Pattern p = Pattern.compile("\'+");
 
-            if (projectSearch == null || projectSearch.isEmpty()) {
+            if (title == null || title.isEmpty()) {
                 bsearchByProjectEmpty = true;
             }
-            if (searchByTag == null || searchByTag.isEmpty()) {
+            if (tag == null || tag.isEmpty()) {
                 bsearchByTagEmpty = true;
             }
 
             //Beide Leer
             if (bsearchByTagEmpty & bsearchByProjectEmpty) {
-                return Response.status(Status.OK).entity(new Projects(storeService.fetchAllProjects())).build();
+                return Response.status(Status.OK).entity(storeService.fetchAllProjects()).build();
             }
             //Nur Tag leer. Project vorhanden
             if (bsearchByTagEmpty & !bsearchByProjectEmpty) {
-                Matcher m = p.matcher(projectSearch);
+                Matcher m = p.matcher(title);
                 if (!m.matches()) {
-                    Projects newPro = new Projects(storeService.searchProjectByName(projectSearch, false));
+                    Projects newPro = storeService.searchProjectByName(title, false);
                     if (newPro.getProjects().isEmpty()) {
                         
                         return Response.status(Status.NOT_FOUND).entity("No Project with this expression!").build();
@@ -193,9 +195,9 @@ public class ProjectsResourceImpl implements ProjectsResource {
             }
             // Nur Tag
             if (!bsearchByTagEmpty & bsearchByProjectEmpty) {
-                Matcher m = p.matcher(searchByTag);
+                Matcher m = p.matcher(tag);
                 if (!m.matches()) {
-                    Projects newPro = new Projects(storeService.searchProjectByName(searchByTag, false));
+                    Projects newPro = storeService.searchProjectByTag(tag, false);
                     if (newPro.getProjects().isEmpty()) {
                         return Response.status(Status.NOT_FOUND).entity("No Project with this expression!").build();
                     }
@@ -220,6 +222,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
         Project project;
         try {
             project = storeService.getProjectByID(projectId);
+            System.out.println(project.getTitle());
         } catch (OakCoreException ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
@@ -301,10 +304,10 @@ public class ProjectsResourceImpl implements ProjectsResource {
                 Pattern p = Pattern.compile("^([\\w\\s]+,[\\w\\s]*;)+$");
                 Matcher m = p.matcher(members);
                 if (m.matches()) {
-                    List<ProjectMember> memberList = new ArrayList<>(); //= Arrays.asList(ts)
+                    Members memberList = new Members(); //= Arrays.asList(ts)
                     String[] MembersAndRole = members.split(";");
                     for (int i = 0; i < MembersAndRole.length;i++) {
-                        ProjectMember member = new ProjectMember();
+                        Member member = new Member();
                         String[] paar = MembersAndRole[i].split(",");
                         member.setUser(storeService.getUser(paar[0]));
                         if (paar.length == 1) {
@@ -316,7 +319,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
                         if (member.getUser() == null) {
                             return Response.status(Status.NOT_ACCEPTABLE).entity("Member " + paar[0] + " not in Database!").build();
                         }
-                        memberList.add(member);
+                        memberList.getMembers().add(member);
                     }
                     project.setMembers(memberList);
                 } else {
@@ -327,7 +330,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
             if (!(tagNames == null || tagNames.isEmpty())) {
                 Pattern pt = Pattern.compile("^[\\w+,]*\\w$");
                 Matcher mt = pt.matcher(tagNames);
-                ArrayList<Tag> tagList = new ArrayList<>();
+                Tags tags = new Tags();
                 Tag newTag;
                 if (mt.matches()) {
                     String[] tagArray = tagNames.split(",");
@@ -336,13 +339,13 @@ public class ProjectsResourceImpl implements ProjectsResource {
                         if (newTag == null) {
                             return Response.status(Status.NOT_ACCEPTABLE).entity("Tag " + tagArray[i] + " not in Database!").build();
                         } else {
-                            tagList.add(newTag);
+                            tags.getTags().add(newTag);
                         }
                     }
                 } else {
                     return Response.status(Status.NOT_ACCEPTABLE).entity("No valid tagName Specification!").build();
                 }
-                project.setTags(tagList);
+                project.setTags(tags);
             }
             storeService.updateProject(project);
         } catch (OakCoreException ex) {
@@ -439,12 +442,12 @@ public class ProjectsResourceImpl implements ProjectsResource {
     @Override
     public Response getComments(int projectid) {
         try {
-            List<Comment> comments = storeService.fetchAllComments(projectid);
+            Comments comments = storeService.fetchAllComments(projectid);
             if (comments == null) {
                 return Response.status(Status.NOT_FOUND).entity("Project have no Comments in Database!").build();
             }
 
-            return Response.status(Status.OK).entity(new Comments(comments)).build();
+            return Response.status(Status.OK).entity(comments).build();
         } catch (OakCoreException ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }

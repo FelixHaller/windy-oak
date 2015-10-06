@@ -1,5 +1,6 @@
 package windyoak.core;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -8,10 +9,9 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Felix Haller
  */
-@XmlRootElement(name = "comments")
 public class Comments {
     
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
 
     // Diesen Konstruktor ist nötig, da das XML Framework das voraussetzt.
     public Comments()
