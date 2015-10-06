@@ -1,10 +1,12 @@
 package windyoak.client;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.net.URLEncoder;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,8 +25,8 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.apache.commons.httpclient.methods.PutMethod;
+import org.apache.commons.httpclient.methods.RequestEntity;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -134,6 +136,11 @@ public class Client
         try
         {
             int responseCode = httpClient.executeMethod(getMethod);
+            System.out.println("Der ResponseCode war: " + responseCode);
+            if (responseCode != 200)
+            {
+                return null;
+            }
             response = getMethod.getResponseBodyAsString();
         }
         catch (IOException ex)
@@ -153,31 +160,72 @@ public class Client
         
     }
     
-    public Project modProject(
+    
+    public Project updateProjectAttribute(
                             int id,
-                            String title, 
-                            String creator, 
-                            String description, 
-                            String members,
-                            String status,
-                            String tagNames,
-                            String postsURL)
+                            String key,
+                            String value
+                        )
     {
-        return null;
+        String response;
+        Project project;
+        
+        PutMethod putMethod = new PutMethod(getBaseUri() + "/projects/"+id);
+        
+        //Request auf Charset UTF-8 (das Charset der Datenbank) setzen
+        putMethod.addRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+        putMethod.setRequestHeader("Accept", xml);
+        
+        putMethod.setQueryString(new NameValuePair[] {
+            new NameValuePair(key, value)
+        });
+        
+        
+        try
+        {
+            int responseCode = httpClient.executeMethod(putMethod);
+            System.out.println("Der Response-Code war: " + responseCode);
+            response = new String(putMethod.getResponseBody(),"UTF-8");
+            if (responseCode >= 300)
+            {
+                throw new RuntimeException(response);
+            }
+            
+
+        }
+        catch (IOException ex)
+        {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, "Fehler bei Ausführung");
+            throw new RuntimeException(ex.getMessage());
+        }
+        
+        if (VERBOSE)
+        {
+            System.out.println(prettyPrintXml(response));
+        }
+        
+        project = projectFromResponse(response);
+
+        return project;
     }
     
-    public Projects searchProject(String query)
+    public Projects searchProject(String key, String value)
     {
-        Projects projects;
+        Projects projects = new Projects();
         String response;
-        GetMethod getMethod = new GetMethod(getBaseUri() + "/projects");
+        GetMethod getMethod = new GetMethod(getBaseUri() + "/projects");      
         getMethod.setRequestHeader("Accept", xml);
         getMethod.setQueryString(new NameValuePair[] {
-            new NameValuePair("title", query)
+            new NameValuePair(key, value)
         });
         try
         {
             int responseCode = this.httpClient.executeMethod(getMethod);
+            System.out.println("ResponseCode war: " + responseCode);
+            if (responseCode != 200)
+            {
+                return projects;
+            }
             response = getMethod.getResponseBodyAsString();
         }
         catch (IOException ex)
@@ -225,6 +273,7 @@ public class Client
      * - Erstellen eines Projektes
      * - Suchen nach Projektnamen
      * - Modifizieren eines Projektes
+     * - Tags zu Projekt hinzufügen
      * - Filtern nach tags
      * - Anzeigen der Kommentare zu einem Projekt
      * - Erstellen eines Kommentars zu einem Projekt
@@ -240,10 +289,19 @@ public class Client
         Client client = new Client("http://localhost:8080");
             
         System.out.println("========================DEMO startet========================");
-        System.out.println("Zeige Projekt mit der ID 2 an.");
-        Project project2 = client.getProjectByID(2);
-        System.out.println("Name von Projekt mit ID 2: " + project2.getTitle());
+        int id = 3;
+        
+        System.out.println(String.format("Rufe Projekt mit der ID %d ab.", id));
+        Project project = client.getProjectByID(id);
+        System.out.println(String.format("Name von Projekt mit ID %d: ", id) + project.getTitle());
         //pause();
+        
+        int id2 = 42;
+        
+        System.out.println(String.format("Rufe Projekt mit der ID %d ab.", id2));
+        Project project2 = client.getProjectByID(id2);
+        
+        
         
         
         System.out.println("Lege neues Projekt an...");
@@ -252,37 +310,45 @@ public class Client
             "Tutnix", 
             "Unser Beleg für das Modul Verteilte Sisteme", 
             "Tutnix,Chef;GMine,Chefin;",
-            "new",
+            "published",
             "Java",
             "https://github.com/FelixHaller/windy-oak/commits/master.atom");
         
         System.out.println("Das neue Projekt wurde angelegt unter der ID: " + windyoakProject.getId());
         
-        String suchString= "Sinnvoll";
+        String suchString= "sinnvoll";
         
-        System.out.println(String.format("Suche nach Projekt mit '%s' im Namen", suchString));
-        Projects foundProjects = client.searchProject(suchString);
-        System.out.println(String.format("Es wurden %d Projekte gefunden mit '%s' im Namen", foundProjects.getProjects().size(), suchString));
+        System.out.println(String.format("Suche nach Projekt mit '%s' im Namen.", suchString));
+        Projects foundProjects = client.searchProject("title",suchString);
+        System.out.println(String.format("Es wurden %d Projekt(e) gefunden mit '%s' im Namen.", foundProjects.getProjects().size(), suchString));
         
 
-        System.out.println("Entferne Tippfehler in angelegtem Projekt mit Hilfe gerade erhaltener ID");
-        
-        Project updatedProject = client.modProject(
+        System.out.println("Entferne Tippfehler in angelegtem windy-oak Projekt...");
+        Project updatedProject = client.updateProjectAttribute(
             windyoakProject.getId(),
-            "Windy-Oak", 
-            "Tutnix", 
-            "Unser Beleg für das Modul Verteilte Systeme", 
-            "Tutnix,Chef;GMine,Chefin;",
-            "new",
-            "Java",
-            "https://github.com/FelixHaller/windy-oak/commits/master.atom");
+            "description",
+            "Unser Beleg für das Modul Verteilte Systeme");
+        System.out.println("...und füge Tag Java mit Hilfe vorher erhaltener ID hinzu.");
+        updatedProject = client.updateProjectAttribute(
+            windyoakProject.getId(),
+            "tagNames",
+            "java,rest");
         
-        System.out.println("");
+        String tag = "Java";
+
+        System.out.println(String.format("Rufe alle Projekte die mit '%s' markiert sind ab.",tag));
+        Projects foundProjects2 = client.searchProject("tag", tag);
+        System.out.println(String.format("Es wurden %d Projekt(e) gefunden.", foundProjects2.getProjects().size()));
+        
+        
+        
+        
         
     }
     
     public static void pause()
     {
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++");
         System.out.println("Enter drücken um fortzufahren...");
         Scanner keyboard = new Scanner(System.in);
         keyboard.nextLine();
@@ -323,25 +389,6 @@ public class Client
     }
     
     
-    private String beautifyJSON(String response)
-    {
-        JSONObject jsonObject;
-        String jsonString;
-        try
-        {
-            jsonObject = new JSONObject(response);
-            jsonString = jsonObject.toString(4);
-        }
-        catch (JSONException ex)
-        {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, "JSON fehlerhaft");
-            throw new RuntimeException(ex.getMessage());
-        }
-        
-        return jsonString;
-        
-    }
-    
     public static String prettyPrintXml(final String xml)
     {
         Writer writer;
@@ -358,16 +405,56 @@ public class Client
         }
         catch (ParserConfigurationException | TransformerException ex)
         {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, "Fehler beim Preety Print von XML", ex);
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, "Fehler beim Pretty Print von XML", ex);
             throw new RuntimeException(ex.getMessage());
         }
         catch (SAXException | IOException ex)
         {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, "Fehler beim Preety Print von XML", ex);
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, "Fehler beim Pretty Print von XML", ex);
             throw new RuntimeException(ex.getMessage());
         }
         return writer.toString();
     }
     
+    
+    
+    private RequestEntity buildRequestEntityForPUTFromProject(final Project project)
+    {
+            RequestEntity requestEntity = new RequestEntity()
+            {
+                String encoded = "";
+                @Override
+                public boolean isRepeatable() 
+                {
+                    return false;
+                }
+
+                @Override
+                public void writeRequest(OutputStream outputStream) throws IOException 
+                {
+                    String query = "";
+                    
+                    query += String.format("%s=%s", "name", project.getTitle());
+                    
+                    
+                    encoded = URLEncoder.encode(query, "UTF-8");
+                    
+                    outputStream.write(encoded.getBytes());
+                }
+
+                @Override
+                public long getContentLength() 
+                {
+                    return encoded.getBytes().length;
+                }
+
+                @Override
+                public String getContentType() 
+                {
+                    return "application/xml";
+                }
+            };
+            return requestEntity;
+    }
 }
 

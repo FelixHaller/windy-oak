@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 
 import windyoak.core.StoreService;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
@@ -187,7 +188,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
                     Projects projects = storeService.searchProjectByName(title, false);
                     if (projects.getProjects().isEmpty()) {
                         
-                        return Response.status(Status.NOT_FOUND).entity("No Project with this expression!").build();
+                        return Response.status(Status.NOT_FOUND).type(MediaType.WILDCARD).entity(String.format("Keine Projekte mit '%s' im Titel gefunden!", title)).build();
                     }
                     return Response.status(Status.OK).entity(projects).build();
                 } else {
@@ -200,7 +201,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
                 if (!m.matches()) {
                     Projects projects = storeService.searchProjectByTag(tag, false);
                     if (projects.getProjects().isEmpty()) {
-                        return Response.status(Status.NOT_FOUND).entity("No Project with this expression!").build();
+                        return Response.status(Status.NOT_FOUND).type(MediaType.WILDCARD).entity(String.format("Keine Projekte die mit '%s' markiert sind gefunden!", tag)).build();
                     }
                     return Response.status(Status.OK).entity(projects).build();
                 } else {
@@ -209,7 +210,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
             }
             //Beide vorhanden
             if (!bsearchByTagEmpty & !bsearchByProjectEmpty) {
-                return Response.status(Status.NOT_ACCEPTABLE).entity("You can not use both search-parameters at the same time!").build();
+                return Response.status(Status.NOT_ACCEPTABLE).type(MediaType.WILDCARD).entity("You can not use both search-parameters at the same time!").build();
             }
         } catch (OakCoreException ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
@@ -247,7 +248,6 @@ public class ProjectsResourceImpl implements ProjectsResource {
     }
 
     @Override
-
     public Response updateProject(  int projectId, 
                                     UriInfo uriInfo, 
                                     String name, 
@@ -276,7 +276,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
                 if ("new".equals(status) || "published".equals(status) || "closed".equals(status)) {
                     project.setStatus(status);
                 } else {
-                    return Response.status(Status.NOT_ACCEPTABLE).entity("Unknown Status").build();
+                    return Response.status(Status.NOT_ACCEPTABLE).type(MediaType.WILDCARD).entity("Unknown Status").build();
                 }
             }
             if (!(username == null || username.isEmpty())) {
@@ -284,23 +284,26 @@ public class ProjectsResourceImpl implements ProjectsResource {
                 newUser = storeService.getUser(username);
 
                 if (newUser == null) {
-                    return Response.status(Status.NOT_FOUND).entity("User not found in Database!").build();
+                    return Response.status(Status.NOT_FOUND).type(MediaType.WILDCARD).entity("User not found in Database!").build();
                 }
                 project.setCreator(newUser);
             }
             
-            try
+            if (postsURL != null)
             {
-                project.setPostsURL(new URL(postsURL));
+                try
+                {
+                    project.setPostsURL(new URL(postsURL));
+                }
+                catch (MalformedURLException ex)
+                {
+                    errormsg = "keine gültige Feed-URL angegeben";
+                    Logger.getLogger(ProjectsResourceImpl.class.getName()).log(Level.SEVERE, errormsg, ex);
+                    return Response.status(Status.BAD_REQUEST).type(MediaType.WILDCARD).entity(errormsg).build();
+                }
             }
-            catch (MalformedURLException ex)
+            if (!(members == null || members.isEmpty())) 
             {
-                errormsg = "keine gültige Feed-URL angegeben";
-                Logger.getLogger(ProjectsResourceImpl.class.getName()).log(Level.SEVERE, errormsg, ex);
-                return Response.status(Status.BAD_REQUEST).entity(errormsg).build();
-            }
-            
-            if (!(members == null || members.isEmpty())) {
                 Pattern p = Pattern.compile("^([\\w\\s]+,[\\w\\s]*;)+$");
                 Matcher m = p.matcher(members);
                 if (m.matches()) {
@@ -312,46 +315,52 @@ public class ProjectsResourceImpl implements ProjectsResource {
                         member.setUser(storeService.getUser(paar[0]));
                         if (paar.length == 1) {
                             member.setRole("");
-                        } else {
+                        } 
+                        else {
                             member.setRole(paar[1]);
                         }
 
                         if (member.getUser() == null) {
-                            return Response.status(Status.NOT_ACCEPTABLE).entity("Member " + paar[0] + " not in Database!").build();
+                            return Response.status(Status.NOT_ACCEPTABLE).type(MediaType.WILDCARD).entity("Member " + paar[0] + " not in Database!").build();
                         }
                         memberList.getMembers().add(member);
                     }
                     project.setMembers(memberList);
                 } else {
-                    return Response.status(Status.NOT_ACCEPTABLE).entity("No Match in RegEx Member").build();
+                    return Response.status(Status.NOT_ACCEPTABLE).type(MediaType.WILDCARD).entity("No Match in RegEx Member").build();
                 }
             }
             //TAG
-            if (tagNames == null || tagNames.isEmpty()) {
-            project.setTags(null);
-            }else{
+            if (tagNames == null || tagNames.isEmpty()) 
+            {
+                project.setTags(null);
+            }
+            else
+            {
                 Pattern pt = Pattern.compile("^[\\w+,]*\\w$");
                 Matcher mt = pt.matcher(tagNames);
                 Tags tags = new Tags();
                 Tag newTag;
                 if (mt.matches()) {
-                    String[] tagArray = tagNames.split(",");
-                    for (int i = 0; tagArray.length > i; i++) {
-                        newTag = storeService.getTagByName(tagArray[i]);
+                    for (String tag : tagNames.split(",")) 
+                    {
+                        newTag = storeService.getTagByName(tag);
                         if (newTag == null) {
-                            return Response.status(Status.NOT_ACCEPTABLE).entity("Tag " + tagArray[i] + " not in Database!").build();
-                        } else {
+                            return Response.status(Status.NOT_ACCEPTABLE).type(MediaType.WILDCARD).entity("Tag " + tag + " not in Database!").build();
+                        } 
+                        else 
+                        {
                             tags.getTags().add(newTag);
                         }
                     }
                 } else {
-                    return Response.status(Status.NOT_ACCEPTABLE).entity("No valid tagName Specification!").build();
+                    return Response.status(Status.NOT_ACCEPTABLE).type(MediaType.WILDCARD).entity("No valid tagName Specification!").build();
                 }
                 project.setTags(tags);
             }
             storeService.updateProject(project);
         } catch (OakCoreException ex) {
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).type(MediaType.WILDCARD).entity(ex.getMessage()).build();
         }
         return Response.status(Status.OK).entity(project).build();
     }
@@ -375,13 +384,13 @@ public class ProjectsResourceImpl implements ProjectsResource {
                 if ("new".equals(status) || "published".equals(status) || "closed".equals(status)) {
                     comment.setStatus(status);
                 } else {
-                    return Response.status(Status.NOT_ACCEPTABLE).entity("Unknown Status").build();
+                    return Response.status(Status.NOT_ACCEPTABLE).type(MediaType.WILDCARD).entity("Unknown Status").build();
                 }
             }
 
             storeService.updateComment(comment);
         } catch (OakCoreException ex) {
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).type(MediaType.WILDCARD).entity(ex.getMessage()).build();
         }
         return Response.status(Status.OK).entity(comment).build();
 
@@ -396,7 +405,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
             }
             comment = storeService.deleteComment(commentid);
         } catch (OakCoreException ex) {
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).type(MediaType.WILDCARD).entity(ex.getMessage()).build();
         }
         return Response.status(Status.OK).entity(comment).build();
     }
@@ -409,17 +418,17 @@ public class ProjectsResourceImpl implements ProjectsResource {
         User user;
         try {
             if (storeService.getProjectByID(projectid) == null) {
-                return Response.status(Status.NOT_FOUND).entity("Project not in Database!").build();
+                return Response.status(Status.NOT_FOUND).type(MediaType.WILDCARD).entity("Project not in Database!").build();
             }
             if (title == null || title.isEmpty() || content == null
                     || content.isEmpty() || status == null || status.isEmpty()) {
-                return Response.status(Status.NOT_ACCEPTABLE).entity("Empty Parameter").build();
+                return Response.status(Status.NOT_ACCEPTABLE).type(MediaType.WILDCARD).entity("Empty Parameter").build();
             }
 
             user = storeService.getUser(creator);
 
             if (user == null) {
-                return Response.status(Status.NOT_FOUND).entity("Creator not found in Database!").build();
+                return Response.status(Status.NOT_FOUND).type(MediaType.WILDCARD).entity("Creator not found in Database!").build();
             }
             comment.setTitle(title);
             comment.setCreator(user);
@@ -428,7 +437,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
             if ("new".equals(status) || "published".equals(status) || "closed".equals(status)) {
                 comment.setStatus(status);
             } else {
-                return Response.status(Status.NOT_ACCEPTABLE).entity("Unknown Status").build();
+                return Response.status(Status.NOT_ACCEPTABLE).type(MediaType.WILDCARD).entity("Unknown Status").build();
             }
 
             createdComment = this.storeService.createComment(comment);
@@ -446,7 +455,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
         try {
             Comments comments = storeService.fetchAllComments(projectid);
             if (comments == null) {
-                return Response.status(Status.NO_CONTENT).entity("Project have no Comments in Database!").build();
+                return Response.status(Status.NO_CONTENT).type(MediaType.WILDCARD).entity("Project has no comments in Database!").build();
             }
 
             return Response.status(Status.OK).entity(comments).build();
@@ -462,7 +471,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
         try {
             comment = storeService.getCommentByID(commentid);
             if (comment == null) {
-                return Response.status(Status.NOT_FOUND).entity("Comment not found in Database!").build();
+                return Response.status(Status.NOT_FOUND).type(MediaType.WILDCARD).entity("Comment not found in Database!").build();
             }
         } catch (OakCoreException ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
@@ -478,7 +487,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
         try {
             project = storeService.getProjectByID(projectid);
             if (project == null) {
-                return Response.status(Status.NOT_FOUND).entity("Project not found in Database!").build();
+                return Response.status(Status.NOT_FOUND).type(MediaType.WILDCARD).entity("Project not found in Database!").build();
             }
         } catch (OakCoreException ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
@@ -487,7 +496,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
         URL postsURL = project.getPostsURL();
 
         if (postsURL == null) {
-            return Response.status(Status.NO_CONTENT).entity("No Posts (RSS, ATOM, ...) URL defined for Project.").build();
+            return Response.status(Status.NO_CONTENT).type(MediaType.WILDCARD).entity("No Posts (RSS, ATOM, ...) URL defined for Project.").build();
         }
 
         try {
@@ -506,7 +515,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
         try {
             project = storeService.getProjectByID(projectid);
             if (project == null) {
-                return Response.status(Status.NOT_FOUND).entity("Project not found in Database!").build();
+                return Response.status(Status.NOT_FOUND).type(MediaType.WILDCARD).entity("Project not found in Database!").build();
             }
         } catch (OakCoreException ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
@@ -515,13 +524,13 @@ public class ProjectsResourceImpl implements ProjectsResource {
         URL postsURL = project.getPostsURL();
 
         if (postsURL == null) {
-            return Response.status(Status.NO_CONTENT).entity("No Posts (RSS, ATOM, ...) URL defined for Project.").build();
+            return Response.status(Status.NO_CONTENT).type(MediaType.WILDCARD).entity("No Posts (RSS, ATOM, ...) URL defined for Project.").build();
         }
 
         try {
             rssPost = postsService.getPostByID(project.getPostsURL(), postid);
             if (rssPost == null) {
-                return Response.status(Status.NOT_FOUND).entity("Post ID nicht gefunden.").build();
+                return Response.status(Status.NOT_FOUND).type(MediaType.WILDCARD).entity("Post ID nicht gefunden.").build();
             }
         } catch (OakCoreException ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();

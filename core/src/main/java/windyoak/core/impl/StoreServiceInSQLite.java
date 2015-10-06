@@ -72,10 +72,12 @@ public class StoreServiceInSQLite implements StoreService {
             if (recent) {
                 sql = String.format("select * from project "
                         + "where status = 'published' "
+                        + "COLLATE NOCASE "
                         + "order by dateCreated desc limit %d", count);
             } else {
                 sql = "select * from project "
                         + "where status = 'published' "
+                        + "COLLATE NOCASE "
                         + "or status = 'closed' "
                         + "order by projectID";
             }
@@ -376,22 +378,22 @@ public class StoreServiceInSQLite implements StoreService {
                 );
                 statement.executeUpdate(sql);
             }
-            if (project.getTags() != null) {
+            if (project.getTags() != null) 
+            {
                 Tags tags = project.getTags();
-            Iterator<Tag> itTag = tags.getTags().iterator();
-            while (itTag.hasNext()) {
-                Tag newTag = itTag.next();
-                sql = String.format("INSERT INTO projecttag "
-                        + "(projectID,tagName)"
-                        + "VALUES("
-                        + "%d,"
-                        + "'%s')",
-                        newProjectID,
-                        newTag.getName()
-                );
-                statement.executeUpdate(sql);
+                for (Tag newTag : tags.getTags())
+                {
+                    sql = String.format("INSERT INTO projecttag "
+                            + "(projectID,tagName)"
+                            + "VALUES("
+                            + "%d,"
+                            + "'%s')",
+                            newProjectID,
+                            newTag.getName()
+                    );
+                    statement.executeUpdate(sql);
 
-            }
+                }
 
             connection.commit();
             connection.setAutoCommit(true);
@@ -473,19 +475,22 @@ public class StoreServiceInSQLite implements StoreService {
             updateProject = connection.prepareStatement(sql);
             updateProject.executeUpdate();
 
-            deleteTags = connection.prepareStatement(deleteTagsSt);
-            deleteTags.executeUpdate();
+            
            
-            if (project.getTags()!=null){
-            Tags tags = project.getTags();
-            Iterator<Tag> itTag = tags.getTags().iterator();
-            createTags = connection.prepareStatement(createTagsSt);
-            while (itTag.hasNext()) {
-                Tag newTag = itTag.next();
-                createTags.setInt(1, project.getId());
-                createTags.setString(2, newTag.getName());
-                createTags.executeUpdate();
-            }
+            if (project.getTags() != null)
+            {
+                deleteTags = connection.prepareStatement(deleteTagsSt);
+                deleteTags.executeUpdate();
+                
+                Tags tags = project.getTags();
+                createTags = connection.prepareStatement(createTagsSt);
+                for (Tag newTag : tags.getTags())
+                {
+                    System.out.println(newTag.getName());
+                    createTags.setInt(1, project.getId());
+                    createTags.setString(2, newTag.getName());
+                    createTags.executeUpdate();
+                }
             }
 
             connection.commit();
@@ -756,6 +761,7 @@ public class StoreServiceInSQLite implements StoreService {
             while (resultset.next()) {
                 Project project = new Project(resultset.getString("title"));
                 project.setId(resultset.getInt("projectID"));
+                project.setDescription(resultset.getString("description"));
                 project.setDateCreated(resultset.getLong("dateCreated"));
                 // Wir nehmen an, dass kein Projekt 1970 aktualisiert wurde
                 // Diese Ausnahme ist möglich, da SQLite einen leeren Wert als 0
@@ -824,18 +830,20 @@ public class StoreServiceInSQLite implements StoreService {
     @Override
     public Tag getTagByName(String tagName) throws OakCoreException {
         Tag newTag = new Tag();
-        newTag.setName(tagName);
+        
         this.establishConnection();
         try {
             sql = String.format("SELECT count(*) count, * "
                     + "FROM tag "
-                    + "WHERE tagName='%s'", tagName);
+                    + "WHERE tagName='%s'"
+                    + "COLLATE NOCASE ", tagName);
 
             ResultSet resultset = statement.executeQuery(sql);
             if (resultset.getInt("count") == 0) {
                 this.endConnection();
                 return null;
             }
+            newTag.setName(resultset.getString("tagName"));
             newTag.setDescription(resultset.getString("description"));
             resultset.close();
         } catch (SQLException ex) {
@@ -955,7 +963,8 @@ public class StoreServiceInSQLite implements StoreService {
                         + "WHERE project.projectID = projecttag.projectID "
                         + "and user.username=project.creator "
                         + "and project.status='published' "
-                        + "and tagName LIKE '" + SearchEx + "' "
+                        + "and tagName='"+SearchEx+"' "
+                        + "COLLATE NOCASE "
                         + "order by dateCreated desc";
             } else {
                 sql = "SELECT project.*, user.* "
@@ -963,7 +972,8 @@ public class StoreServiceInSQLite implements StoreService {
                         + "WHERE project.projectID = projecttag.projectID "
                         + "and user.username=project.creator "
                         + "and (project.status='published' or project.status='closed') "
-                        + "and tagName LIKE '" + SearchEx + "' "
+                        + "and tagName='"+SearchEx+"' "
+                        + "COLLATE NOCASE "
                         + "order by projectID;";
             }
             ResultSet resultset = statement.executeQuery(sql);
@@ -978,6 +988,7 @@ public class StoreServiceInSQLite implements StoreService {
                     project.setDateUpdated(resultset.getLong("dateUpdated"));
                 }
                 project.setStatus(resultset.getString("status"));
+                project.setDescription(resultset.getString("description"));
                 User user = new User(resultset.getString("creator"));
                 user.setForename(resultset.getString("forename"));
                 user.setSurname(resultset.getString("surname"));

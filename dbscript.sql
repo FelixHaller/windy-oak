@@ -100,24 +100,25 @@ insert into projectmember ("projectID", "username", "role") values ('5', 'TRedef
 COMMIT;
 
 BEGIN TRANSACTION;
-insert into projecttag ("projectID", "tagName") values ('Das World Wide Web (englisch für „weltweites Netz“, kurz Web, WWW, selten und vor allem in der Anfangszeit und den USA auch W3) ist ein über das Internet abrufbares System von elektronischen Hypertext-Dokumenten, sogenannten Webseiten. Sie sind durch Hyperlinks untereinander verknüpft und werden im Internet über die Protokolle HTTP oder HTTPS übertragen. Die Webseiten enthalten meist Texte, oft mit Bildern und grafischen Elementen illustriert. Häufig sind auch Videos, Tondokumente und Musikstücke eingebettet.', 'Web');
-insert into projecttag ("projectID", "tagName") values ('OpenGL (Open Graphics Library; deutsch Offene Grafikbibliothek) ist eine Spezifikation für eine plattform- und programmiersprachenunabhängige Programmierschnittstelle zur Entwicklung von 2D- und 3D- Computergrafikanwendungen. Der OpenGL-Standard beschreibt etwa 250 Befehle, die die Darstellung komplexer 3D-Szenen in Echtzeit erlauben. Zudem können andere Organisationen (zumeist Hersteller von Grafikkarten) proprietäre Erweiterungen definieren.', 'OpenGL');
-insert into projecttag ("projectID", "tagName") values ('Ein Medium (lat.: medium = Mitte, Mittelpunkt, von altgr. μέσov méson: das Mittlere; auch Öffentlichkeit, Gemeinwohl, öffentlicher Weg) ist nach neuerem Verständnis ein Vermittelndes im ganz allgemeinen Sinn. Das Wort „Medium“ in der Alltagssprache lässt sich oft mit Kommunikationsmittel gleichsetzen. In der Medientheorie, der Medienphilosophie und den Medienwissenschaften hat sich eine große Anzahl Konzepte mit unterschiedlichen Zielsetzungen entwickelt.', 'Medien');
-insert into projecttag ("projectID", "tagName") values ('Kalender (bis Mac OS X Version 10.7 iCal, in der englischen Version Calendar) ist ein von Apple mit dem Betriebssystem OS X ausgeliefertes Programm zur Verwaltung von Terminen. Es implementiert den iCalendar-Standard (RFC 5545, früher 2445). Steve Jobs stellte das Programm am 17. Juli 2002 auf der Macworld New York vor.', 'iCal');
-insert into projecttag ("projectID", "tagName") values ('Grafik  ist im weitesten Sinn der Sammelbegriff für alle künstlerischen oder technischen Zeichnungen sowie deren manuelle drucktechnische Vervielfältigung. In der engsten Begriffsverwendung bezieht sich Grafik allein auf die künstlerische Druckgrafik, die zur bildenden Kunst gehört. Eine Originalgrafik entsteht eigenständig, unabhängig von Vorlagen und in der Absicht, die Techniken der Druckgrafik für den künstlerischen Ausdruck zu nutzen.', 'Grafik');
-insert into projecttag ("projectID", "tagName") values ('Representational State Transfer (abgekürzt REST, seltener auch ReST) bezeichnet ein Programmierparadigma für verteilte Systeme, insbesondere für Webservices. REST ist eine Abstraktion der Struktur und des Verhaltens des World Wide Web. REST fordert, dass eine URI (Adresse) genau einen Seiteninhalt repräsentiert, und dass ein Web-/REST-Server auf mehrfache Anfragen mit demselben URI auch mit demselben Webseiteninhalt antwortet.', 'REST');
-insert into projecttag ("projectID", "tagName") values ('Java ist eine objektorientierte Programmiersprache und eine eingetragene Marke des Unternehmens Sun Microsystems (2010 von Oracle aufgekauft). Die Programmiersprache ist ein Bestandteil der Java-Technologie – diese besteht grundsätzlich aus dem Java-Entwicklungswerkzeug (JDK) zum Erstellen von Java-Programmen und der Java-Laufzeitumgebung (JRE) zu deren Ausführung. Die Laufzeitumgebung selbst umfasst die virtuelle Maschine (JVM) und die mitgelieferten Bibliotheken.', 'Java');
-insert into projecttag ("projectID", "tagName") values ('Das Wort Kunst bezeichnet im weitesten Sinne jede entwickelte Tätigkeit, die auf Wissen, Übung, Wahrnehmung, Vorstellung und Intuition gegründet ist (Heilkunst, Kunst der freien Rede). Im engeren Sinne werden damit Ergebnisse gezielter menschlicher Tätigkeit benannt, die nicht eindeutig durch Funktionen festgelegt sind. Kunst ist ein menschliches Kulturprodukt, das Ergebnis eines kreativen Prozesses.', 'Kunst');
+insert into tag ("description", "tagName") values ('Das World Wide Web (englisch für „weltweites Netz“, kurz Web, WWW, selten und vor allem in der Anfangszeit und den USA auch W3) ist ein über das Internet abrufbares System von elektronischen Hypertext-Dokumenten, sogenannten Webseiten. Sie sind durch Hyperlinks untereinander verknüpft und werden im Internet über die Protokolle HTTP oder HTTPS übertragen. Die Webseiten enthalten meist Texte, oft mit Bildern und grafischen Elementen illustriert. Häufig sind auch Videos, Tondokumente und Musikstücke eingebettet.', 'Web');
+insert into tag ("description", "tagName") values ('OpenGL (Open Graphics Library; deutsch Offene Grafikbibliothek) ist eine Spezifikation für eine plattform- und programmiersprachenunabhängige Programmierschnittstelle zur Entwicklung von 2D- und 3D- Computergrafikanwendungen. Der OpenGL-Standard beschreibt etwa 250 Befehle, die die Darstellung komplexer 3D-Szenen in Echtzeit erlauben. Zudem können andere Organisationen (zumeist Hersteller von Grafikkarten) proprietäre Erweiterungen definieren.', 'OpenGL');
+insert into tag ("description", "tagName") values ('Ein Medium (lat.: medium = Mitte, Mittelpunkt, von altgr. μέσov méson: das Mittlere; auch Öffentlichkeit, Gemeinwohl, öffentlicher Weg) ist nach neuerem Verständnis ein Vermittelndes im ganz allgemeinen Sinn. Das Wort „Medium“ in der Alltagssprache lässt sich oft mit Kommunikationsmittel gleichsetzen. In der Medientheorie, der Medienphilosophie und den Medienwissenschaften hat sich eine große Anzahl Konzepte mit unterschiedlichen Zielsetzungen entwickelt.', 'Medien');
+insert into tag ("description", "tagName") values ('Kalender (bis Mac OS X Version 10.7 iCal, in der englischen Version Calendar) ist ein von Apple mit dem Betriebssystem OS X ausgeliefertes Programm zur Verwaltung von Terminen. Es implementiert den iCalendar-Standard (RFC 5545, früher 2445). Steve Jobs stellte das Programm am 17. Juli 2002 auf der Macworld New York vor.', 'iCal');
+insert into tag ("description", "tagName") values ('Grafik  ist im weitesten Sinn der Sammelbegriff für alle künstlerischen oder technischen Zeichnungen sowie deren manuelle drucktechnische Vervielfältigung. In der engsten Begriffsverwendung bezieht sich Grafik allein auf die künstlerische Druckgrafik, die zur bildenden Kunst gehört. Eine Originalgrafik entsteht eigenständig, unabhängig von Vorlagen und in der Absicht, die Techniken der Druckgrafik für den künstlerischen Ausdruck zu nutzen.', 'Grafik');
+insert into tag ("description", "tagName") values ('Representational State Transfer (abgekürzt REST, seltener auch ReST) bezeichnet ein Programmierparadigma für verteilte Systeme, insbesondere für Webservices. REST ist eine Abstraktion der Struktur und des Verhaltens des World Wide Web. REST fordert, dass eine URI (Adresse) genau einen Seiteninhalt repräsentiert, und dass ein Web-/REST-Server auf mehrfache Anfragen mit demselben URI auch mit demselben Webseiteninhalt antwortet.', 'REST');
+insert into tag ("description", "tagName") values ('Java ist eine objektorientierte Programmiersprache und eine eingetragene Marke des Unternehmens Sun Microsystems (2010 von Oracle aufgekauft). Die Programmiersprache ist ein Bestandteil der Java-Technologie – diese besteht grundsätzlich aus dem Java-Entwicklungswerkzeug (JDK) zum Erstellen von Java-Programmen und der Java-Laufzeitumgebung (JRE) zu deren Ausführung. Die Laufzeitumgebung selbst umfasst die virtuelle Maschine (JVM) und die mitgelieferten Bibliotheken.', 'Java');
+insert into tag ("description", "tagName") values ('Das Wort Kunst bezeichnet im weitesten Sinne jede entwickelte Tätigkeit, die auf Wissen, Übung, Wahrnehmung, Vorstellung und Intuition gegründet ist (Heilkunst, Kunst der freien Rede). Im engeren Sinne werden damit Ergebnisse gezielter menschlicher Tätigkeit benannt, die nicht eindeutig durch Funktionen festgelegt sind. Kunst ist ein menschliches Kulturprodukt, das Ergebnis eines kreativen Prozesses.', 'Kunst');
 COMMIT;
 BEGIN TRANSACTION;
-insert into tag ("description", "tagName") values ('2', 'Web');
-insert into tag ("description", "tagName") values ('3', 'OpenGL');
-insert into tag ("description", "tagName") values ('3', 'Medien');
-insert into tag ("description", "tagName") values ('1', 'iCal');
-insert into tag ("description", "tagName") values ('3', 'Grafik');
-insert into tag ("description", "tagName") values ('2', 'REST');
-insert into tag ("description", "tagName") values ('2', 'Java');
-insert into tag ("description", "tagName") values ('6', 'Kunst');
+
+insert into projecttag ("projectID", "tagName") values ('2', 'Web');
+insert into projecttag ("projectID", "tagName") values ('3', 'OpenGL');
+insert into projecttag ("projectID", "tagName") values ('3', 'Medien');
+insert into projecttag ("projectID", "tagName") values ('1', 'iCal');
+insert into projecttag ("projectID", "tagName") values ('3', 'Grafik');
+insert into projecttag ("projectID", "tagName") values ('2', 'REST');
+insert into projecttag ("projectID", "tagName") values ('2', 'Java');
+insert into projecttag ("projectID", "tagName") values ('6', 'Kunst');
 COMMIT;
 BEGIN TRANSACTION;
 insert into user ("username", "forename", "surname") values ('CMusencus', 'Cajus', 'Musencus');
@@ -139,18 +140,4 @@ insert into user ("username", "forename", "surname") values ('fhaller1', 'Felix'
 
 
 COMMIT;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

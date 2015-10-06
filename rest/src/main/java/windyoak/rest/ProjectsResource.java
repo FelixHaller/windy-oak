@@ -74,13 +74,13 @@ public interface ProjectsResource {
     public Response updateProject(
             @PathParam("projectid") int projectId,
             @Context UriInfo uriInfo,
-            @FormParam("name") String name,
-            @FormParam("username") String username,
-            @FormParam("description") String description,
-            @FormParam("status") String status,
-            @FormParam("members") String members,
-            @FormParam("tagNames") String tagNames, 
-            @FormParam("postsURL") String postsURL
+            @QueryParam("name") String name,
+            @QueryParam("username") String username,
+            @QueryParam("description") String description,
+            @QueryParam("status") String status,
+            @QueryParam("members") String members,
+            @QueryParam("tagNames") String tagNames,
+            @QueryParam("postsURL") String postsURL
     );
 
     @DELETE
