@@ -184,12 +184,12 @@ public class ProjectsResourceImpl implements ProjectsResource {
             if (bsearchByTagEmpty & !bsearchByProjectEmpty) {
                 Matcher m = p.matcher(title);
                 if (!m.matches()) {
-                    Projects newPro = storeService.searchProjectByName(title, false);
-                    if (newPro.getProjects().isEmpty()) {
+                    Projects projects = storeService.searchProjectByName(title, false);
+                    if (projects.getProjects().isEmpty()) {
                         
                         return Response.status(Status.NOT_FOUND).entity("No Project with this expression!").build();
                     }
-                    return Response.status(Status.OK).entity(newPro.getProjects()).build();
+                    return Response.status(Status.OK).entity(projects).build();
                 } else {
                     return Response.status(Status.NOT_ACCEPTABLE).entity("\' not allowed!").build();
                 }
@@ -198,11 +198,11 @@ public class ProjectsResourceImpl implements ProjectsResource {
             if (!bsearchByTagEmpty & bsearchByProjectEmpty) {
                 Matcher m = p.matcher(tag);
                 if (!m.matches()) {
-                    Projects newPro = storeService.searchProjectByTag(tag, false);
-                    if (newPro.getProjects().isEmpty()) {
+                    Projects projects = storeService.searchProjectByTag(tag, false);
+                    if (projects.getProjects().isEmpty()) {
                         return Response.status(Status.NOT_FOUND).entity("No Project with this expression!").build();
                     }
-                    return Response.status(Status.OK).entity(newPro.getProjects()).build();
+                    return Response.status(Status.OK).entity(projects).build();
                 } else {
                     return Response.status(Status.NOT_ACCEPTABLE).entity("\' not allowed!").build();
                 }
@@ -223,7 +223,6 @@ public class ProjectsResourceImpl implements ProjectsResource {
         Project project;
         try {
             project = storeService.getProjectByID(projectId);
-            System.out.println(project.getTitle());
         } catch (OakCoreException ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }

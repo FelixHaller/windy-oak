@@ -2,10 +2,8 @@ package windyoak.core.impl;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
 import java.sql.*;
 import java.util.Date;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -743,13 +741,15 @@ public class StoreServiceInSQLite implements StoreService {
             if (recent) {
                 sql = "select * from project "
                         + "where status = 'published' "
-                        + "and project.title LIKE '" + SearchEx + "'"
-                        + "order by dateCreated desc";
+                        + "and project.title LIKE '%" + SearchEx + "%' "
+                        + "COLLATE NOCASE "
+                        + "order by dateCreated desc " ;
             } else {
                 sql = "select * from project "
                         + "where (status = 'published' "
                         + "or status = 'closed') "
-                        + "and project.title LIKE '" + SearchEx + "'"
+                        + "and project.title LIKE '%" + SearchEx + "%' "
+                        + "COLLATE NOCASE "
                         + "order by projectID";
             }
             ResultSet resultset = statement.executeQuery(sql);

@@ -173,7 +173,7 @@ public class Client
         GetMethod getMethod = new GetMethod(getBaseUri() + "/projects");
         getMethod.setRequestHeader("Accept", xml);
         getMethod.setQueryString(new NameValuePair[] {
-            new NameValuePair("searchByTitle", "%"+query+"%")
+            new NameValuePair("title", query)
         });
         try
         {
