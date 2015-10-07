@@ -118,8 +118,6 @@ public interface StoreService {
 
     Comment createComment(Comment comment) throws OakCoreException;
 
-    Projects searchProjectByName(String SearchEx, boolean recent) throws OakCoreException;
-
     Tag getTagByName(String tagName) throws OakCoreException;
 
     Tag createTag(Tag tag) throws OakCoreException;
@@ -130,6 +128,6 @@ public interface StoreService {
     
     Tag deleteTag(String tagName) throws OakCoreException;
     
-    Projects searchProjectByTag(String SearchEx, boolean recent) throws OakCoreException;
+    Projects searchProject(String title, String tagName, String creator, boolean recent) throws OakCoreException;
     
 }
