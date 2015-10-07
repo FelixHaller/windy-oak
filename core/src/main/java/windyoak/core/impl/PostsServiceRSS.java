@@ -77,6 +77,7 @@ public class PostsServiceRSS implements PostsService
             post.setTitle(entry.getTitle().trim());
             post.setCreator(entry.getAuthor().trim());
             post.setDescription(Jsoup.parse(entry.getContents().get(0).getValue()).body().text());
+            
             try
             {
                 post.setUrl(new URL(entry.getLink()));
@@ -95,16 +96,20 @@ public class PostsServiceRSS implements PostsService
             {
                 post.setPubDate(entry.getUpdatedDate());
             }
-
-            try
+            
+            if (entry.getComments() != null)
             {
-                post.setCommentsURL(new URL(entry.getComments()));
+                try
+                {
+                    post.setCommentsURL(new URL(entry.getComments()));
+                }
+                catch (MalformedURLException ex)
+                {
+                    errormsg = "Kommentar URL ungültig";
+                    Logger.getLogger(PostsServiceRSS.class.getName()).log(Level.WARNING, errormsg, ex);
+                }
             }
-            catch (MalformedURLException ex)
-            {
-                errormsg = "Kommentar URL ungültig";
-                Logger.getLogger(PostsServiceRSS.class.getName()).log(Level.WARNING, errormsg, ex);
-            }
+            
 
             rssPosts.addRSSPost(post);
         }
