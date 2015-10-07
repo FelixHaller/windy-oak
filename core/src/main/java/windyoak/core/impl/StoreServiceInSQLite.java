@@ -97,8 +97,7 @@ public class StoreServiceInSQLite implements StoreService {
                 projects.getProjects().add(project);
             }
             resultset.close();
-            for (Project nextProject : projects.getProjects())
-            {
+            for (Project nextProject : projects.getProjects()) {
                 //ProjectTags abrufen
                 sql = "select tag.* from project, projecttag, tag "
                         + "where project.projectID = projecttag.projectID "
@@ -193,19 +192,16 @@ public class StoreServiceInSQLite implements StoreService {
             project.setStatus(resultset.getString("status"));
 
             String postsURL = resultset.getString("postsURL");
-            
+
             // Nur wenn auch eine URL hinterlegt ist
-            if (postsURL != null && postsURL.matches("\\s*"))
-            {
+            if (postsURL != null && postsURL.matches("\\s*")) {
                 try {
                     project.setPostsURL(new URL(postsURL));
-                } 
-                catch (MalformedURLException ex) {
+                } catch (MalformedURLException ex) {
                     Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.WARNING, "URL für Posts aus Datenbank ungültig.");
                 }
             }
-            
-            
+
             User user = new User(resultset.getString("creator"));
             user.setForename(resultset.getString("forename"));
             user.setSurname(resultset.getString("surname"));
@@ -360,7 +356,7 @@ public class StoreServiceInSQLite implements StoreService {
 
             Members memberList = project.getMembers();
             Iterator<Member> itMember = memberList.getMembers().iterator();
-            
+
             while (itMember.hasNext()) {
                 Member member = itMember.next();
                 sql = String.format(
@@ -378,23 +374,23 @@ public class StoreServiceInSQLite implements StoreService {
             }
             if (project.getTags() != null) {
                 Tags tags = project.getTags();
-            Iterator<Tag> itTag = tags.getTags().iterator();
-            while (itTag.hasNext()) {
-                Tag newTag = itTag.next();
-                sql = String.format("INSERT INTO projecttag "
-                        + "(projectID,tagName)"
-                        + "VALUES("
-                        + "%d,"
-                        + "'%s')",
-                        newProjectID,
-                        newTag.getName()
-                );
-                statement.executeUpdate(sql);
+                Iterator<Tag> itTag = tags.getTags().iterator();
+                while (itTag.hasNext()) {
+                    Tag newTag = itTag.next();
+                    sql = String.format("INSERT INTO projecttag "
+                            + "(projectID,tagName)"
+                            + "VALUES("
+                            + "%d,"
+                            + "'%s')",
+                            newProjectID,
+                            newTag.getName()
+                    );
+                    statement.executeUpdate(sql);
 
-            }
+                }
 
-            connection.commit();
-            connection.setAutoCommit(true);
+                connection.commit();
+                connection.setAutoCommit(true);
             }
         } catch (SQLException ex) {
             errorMessage = "Fehler bei Datenbankabfrage";
@@ -475,17 +471,17 @@ public class StoreServiceInSQLite implements StoreService {
 
             deleteTags = connection.prepareStatement(deleteTagsSt);
             deleteTags.executeUpdate();
-           
-            if (project.getTags()!=null){
-            Tags tags = project.getTags();
-            Iterator<Tag> itTag = tags.getTags().iterator();
-            createTags = connection.prepareStatement(createTagsSt);
-            while (itTag.hasNext()) {
-                Tag newTag = itTag.next();
-                createTags.setInt(1, project.getId());
-                createTags.setString(2, newTag.getName());
-                createTags.executeUpdate();
-            }
+
+            if (project.getTags() != null) {
+                Tags tags = project.getTags();
+                Iterator<Tag> itTag = tags.getTags().iterator();
+                createTags = connection.prepareStatement(createTagsSt);
+                while (itTag.hasNext()) {
+                    Tag newTag = itTag.next();
+                    createTags.setInt(1, project.getId());
+                    createTags.setString(2, newTag.getName());
+                    createTags.executeUpdate();
+                }
             }
 
             connection.commit();
@@ -734,94 +730,6 @@ public class StoreServiceInSQLite implements StoreService {
     }
 
     @Override
-    public Projects searchProjectByName(String SearchEx, boolean recent) throws OakCoreException {
-        Projects projects = new Projects();
-        this.establishConnection();
-        try {
-            if (recent) {
-                sql = "select * from project "
-                        + "where status = 'published' "
-                        + "and project.title LIKE '%" + SearchEx + "%' "
-                        + "COLLATE NOCASE "
-                        + "order by dateCreated desc " ;
-            } else {
-                sql = "select * from project "
-                        + "where (status = 'published' "
-                        + "or status = 'closed') "
-                        + "and project.title LIKE '%" + SearchEx + "%' "
-                        + "COLLATE NOCASE "
-                        + "order by projectID";
-            }
-            ResultSet resultset = statement.executeQuery(sql);
-            while (resultset.next()) {
-                Project project = new Project(resultset.getString("title"));
-                project.setId(resultset.getInt("projectID"));
-                project.setDateCreated(resultset.getLong("dateCreated"));
-                // Wir nehmen an, dass kein Projekt 1970 aktualisiert wurde
-                // Diese Ausnahme ist möglich, da SQLite einen leeren Wert als 0
-                // ausgibt und nicht als NULL
-                if (resultset.getLong("dateUpdated") > 0) {
-                    project.setDateUpdated(resultset.getLong("dateUpdated"));
-                }
-                project.setStatus(resultset.getString("status"));
-
-                projects.getProjects().add(project);
-            }
-            resultset.close();
-            
-           
-            
-            Iterator<Project> projectIterator = projects.getProjects().iterator();
-            while (projectIterator.hasNext()) {
-                Project nextProject = projectIterator.next();
-                //ProjectTags abrufen
-                sql = "select tag.* from project, projecttag, tag "
-                        + "where project.projectID = projecttag.projectID "
-                        + "and projecttag.tagName = tag.tagName "
-                        + "and project.projectID= " + nextProject.getId();
-                resultset = statement.executeQuery(sql);
-
-                Tags tags = new Tags();
-                while (resultset.next()) {
-                    Tag tag = new Tag(resultset.getString("tagName"),
-                            resultset.getString("description"));
-                    tags.getTags().add(tag);
-                }
-                nextProject.setTags(tags);
-                //ProjectMember abrufen
-                sql = "select user.*, projectmember.role from user,project, projectmember "
-                        + "where project.projectID = projectmember.projectID "
-                        + "and projectmember.username = user.username "
-                        + "and project.projectID= " + nextProject.getId();
-
-                resultset = statement.executeQuery(sql);
-
-                Members members = new Members();
-                while (resultset.next()) {
-                    Member member = new Member();
-
-                    User nuser = new User(resultset.getString("username"));
-                    nuser.setForename(resultset.getString("forename"));
-                    nuser.setSurname(resultset.getString("surname"));
-
-                    member.setUser(nuser);
-                    member.setRole(resultset.getString("role"));
-                    members.getMembers().add(member);
-                }
-                nextProject.setMembers(members);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, null, ex);
-            throw new OakCoreException("Fehler bei der Datenbankabfrage");
-        } finally {
-            this.endConnection();
-        }
-
-        return projects;
-
-    }
-
-    @Override
     public Tag getTagByName(String tagName) throws OakCoreException {
         Tag newTag = new Tag();
         newTag.setName(tagName);
@@ -943,28 +851,41 @@ public class StoreServiceInSQLite implements StoreService {
     }
 
     @Override
-    public Projects searchProjectByTag(String SearchEx, boolean recent) throws OakCoreException {
+    public Projects searchProject(String title, String tagName, String creator, boolean recent) throws OakCoreException {
         Projects projects = new Projects();
         this.establishConnection();
 
         try {
 
             if (recent) {
-                sql = "SELECT project.*, user.* "
-                        + "FROM  project, projecttag, user "
-                        + "WHERE project.projectID = projecttag.projectID "
-                        + "and user.username=project.creator "
-                        + "and project.status='published' "
-                        + "and tagName LIKE '" + SearchEx + "' "
+                sql = "select distinct "
+                        + "projectID,creator, "
+                        + "title, description, "
+                        + "dateCreated, dateUpdated, "
+                        + "status, postsURL, "
+                        + "username, forename, surname "
+                        + "from viewProject "
+                        + "WHERE "
+                        + "status = 'published' "
+                        + "and tagName LIKE  '%" + tagName + "%' COLLATE NOCASE "
+                        + "and title LIKE '%" + title + "%'  COLLATE NOCASE "
+                        + "and creator LIKE '%" + creator + "%' COLLATE NOCASE "
                         + "order by dateCreated desc";
             } else {
-                sql = "SELECT project.*, user.* "
-                        + "FROM  project, projecttag, user "
-                        + "WHERE project.projectID = projecttag.projectID "
-                        + "and user.username=project.creator "
-                        + "and (project.status='published' or project.status='closed') "
-                        + "and tagName LIKE '" + SearchEx + "' "
-                        + "order by projectID;";
+                sql = "select distinct "
+                        + "projectID,creator, "
+                        + "title, description, "
+                        + "dateCreated, dateUpdated, "
+                        + "status, postsURL, "
+                        + "username, forename, surname "
+                        + "from viewProject "
+                        + "WHERE "
+                        + "(status = 'published' "
+                        + "or status = 'closed') "
+                        + "and tagName LIKE  '%" + tagName + "%' COLLATE NOCASE "
+                        + "and title LIKE '%" + title + "%'  COLLATE NOCASE "
+                        + "and creator LIKE '%" + creator + "%' COLLATE NOCASE "
+                        + "order by projectID";
             }
             ResultSet resultset = statement.executeQuery(sql);
             while (resultset.next()) {
