@@ -835,7 +835,7 @@ public class StoreServiceInSQLite implements StoreService {
         try {
             sql = String.format("SELECT count(*) count, * "
                     + "FROM tag "
-                    + "WHERE tagName='%s'"
+                    + "WHERE tagName='%s' "
                     + "COLLATE NOCASE ", tagName);
 
             ResultSet resultset = statement.executeQuery(sql);

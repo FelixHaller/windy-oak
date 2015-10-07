@@ -1,12 +1,10 @@
 package windyoak.client;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.net.URLEncoder;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,7 +24,6 @@ import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
-import org.apache.commons.httpclient.methods.RequestEntity;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -46,7 +43,7 @@ public class Client
 {
 
     // der verwendete Client
-    private HttpClient httpClient;
+    private final HttpClient httpClient;
     // die Basis URI zum Webservice
     private String baseUri;
     // Feld für den Mediatype XML
@@ -301,9 +298,6 @@ public class Client
         System.out.println(String.format("Rufe Projekt mit der ID %d ab.", id2));
         Project project2 = client.getProjectByID(id2);
         
-        
-        
-        
         System.out.println("Lege neues Projekt an...");
         Project windyoakProject = client.addProject(
             "Windy-Oak", 
@@ -416,45 +410,6 @@ public class Client
         return writer.toString();
     }
     
-    
-    
-    private RequestEntity buildRequestEntityForPUTFromProject(final Project project)
-    {
-            RequestEntity requestEntity = new RequestEntity()
-            {
-                String encoded = "";
-                @Override
-                public boolean isRepeatable() 
-                {
-                    return false;
-                }
 
-                @Override
-                public void writeRequest(OutputStream outputStream) throws IOException 
-                {
-                    String query = "";
-                    
-                    query += String.format("%s=%s", "name", project.getTitle());
-                    
-                    
-                    encoded = URLEncoder.encode(query, "UTF-8");
-                    
-                    outputStream.write(encoded.getBytes());
-                }
-
-                @Override
-                public long getContentLength() 
-                {
-                    return encoded.getBytes().length;
-                }
-
-                @Override
-                public String getContentType() 
-                {
-                    return "application/xml";
-                }
-            };
-            return requestEntity;
-    }
 }
 
