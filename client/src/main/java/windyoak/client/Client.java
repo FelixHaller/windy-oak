@@ -33,7 +33,6 @@ import windyoak.core.Comments;
 import windyoak.core.Project;
 import windyoak.core.Projects;
 import windyoak.core.RSSPosts;
-import windyoak.core.Tag;
 
 /**
  * Der Testclient für den WindyOak REST-Service.
@@ -379,7 +378,6 @@ public class Client
         
         if (VERBOSE)
         {
-            System.out.println("Letzter Stand des gelöschten Projektes: ");
             System.out.println(prettyPrintXml(response));
         }
         
@@ -412,6 +410,7 @@ public class Client
         
         if (VERBOSE)
         {
+            System.out.println("Letzter Stand des gelöschten Projektes: ");
             System.out.println(prettyPrintXml(response));
         }
         
@@ -517,7 +516,7 @@ public class Client
         
         if (rssPosts.getRSSPosts().size() > 0)
         {
-            System.out.println("Inhalt des letzten Posts: \n ======================================" + rssPosts.getRSSPosts().get(0).getDescription());
+            System.out.println("Inhalt des letzten Posts: \n ======================================\n" + rssPosts.getRSSPosts().get(0).getDescription());
         }
         else
         {

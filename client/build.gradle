@@ -10,3 +10,14 @@ dependencies {
     compile 'org.slf4j:slf4j-log4j12:1.7.12'
     compile 'org.json:json:20090211'
 }
+
+task createRunnable(type: Jar) {
+	manifest {
+        attributes 'Implementation-Title': 'Projekt Hub',  
+        	'Implementation-Version': "1.0",
+        	'Main-Class': 'windyoak.client.Client'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}

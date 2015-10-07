@@ -5,4 +5,16 @@ core/build/
 rest/build/
 client/build
 db.sqlite
-
+doc/Technische_Dokumentation/*.aux
+doc/Technische_Dokumentation/*.glg
+doc/Technische_Dokumentation/*.glo
+doc/Technische_Dokumentation/*.gls
+doc/Technische_Dokumentation/*.idx
+doc/Technische_Dokumentation/*.ilg
+doc/Technische_Dokumentation/*.ind
+doc/Technische_Dokumentation/*.ist
+doc/Technische_Dokumentation/*.log
+doc/Technische_Dokumentation/*.nlo
+doc/Technische_Dokumentation/*.nls
+doc/Technische_Dokumentation/*.synctex.gz
+doc/Technische_Dokumentation/*.pdf
