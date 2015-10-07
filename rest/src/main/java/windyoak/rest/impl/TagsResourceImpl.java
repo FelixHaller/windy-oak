@@ -129,7 +129,7 @@ public class TagsResourceImpl implements TagsResource {
         }
         try {
 
-            Projects projects = storeService.searchProjectByTag(tagName, false);
+            Projects projects = storeService.searchProject("",tagName,"", false);
             
             if (projects.getProjects().isEmpty()) {
                 Tag newTag = storeService.deleteTag(tagName);

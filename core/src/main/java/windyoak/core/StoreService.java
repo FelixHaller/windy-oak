@@ -128,6 +128,6 @@ public interface StoreService {
     
     Tag deleteTag(String tagName) throws OakCoreException;
     
-    Projects searchProject(String title, String tag, String creator, boolean recent) throws OakCoreException;
+    Projects searchProject(String title, String tagName, String creator, boolean recent) throws OakCoreException;
     
 }

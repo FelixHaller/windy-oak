@@ -165,26 +165,23 @@ public class ProjectsResourceImpl implements ProjectsResource {
     @Override
     public Response getProjects(String title, String tag, String creator) {
         try {
-            boolean bsearchByProjectEmpty = false;
-            boolean bsearchByTagEmpty = false;
+
             Pattern p = Pattern.compile("\'+");
 
-            if (title == null || title.isEmpty()) {
-                bsearchByProjectEmpty = true;
+            if (title == null ) {
+                title="";
             }
-            if (tag == null || tag.isEmpty()) {
-                bsearchByTagEmpty = true;
+            if (tag == null ) {
+                tag="";
             }
-
-            //Beide Leer
-            if (bsearchByTagEmpty & bsearchByProjectEmpty) {
-                return Response.status(Status.OK).entity(storeService.fetchAllProjects()).build();
+            if (creator == null) {
+                creator="";
             }
-            //Nur Tag leer. Project vorhanden
-            if (bsearchByTagEmpty & !bsearchByProjectEmpty) {
-                Matcher m = p.matcher(title);
-                if (!m.matches()) {
-                    Projects projects = storeService.searchProjectByName(title, false);
+                Matcher m1 = p.matcher(title);
+                Matcher m2 = p.matcher(tag);
+                Matcher m3 = p.matcher(creator);
+                if (!m1.matches()&!m2.matches()&!m3.matches()) {
+                    Projects projects = storeService.searchProject(title,tag,creator,false);
                     if (projects.getProjects().isEmpty()) {
                         
                         return Response.status(Status.NOT_FOUND).entity("No Project with this expression!").build();
@@ -193,29 +190,10 @@ public class ProjectsResourceImpl implements ProjectsResource {
                 } else {
                     return Response.status(Status.NOT_ACCEPTABLE).entity("\' not allowed!").build();
                 }
-            }
-            // Nur Tag
-            if (!bsearchByTagEmpty & bsearchByProjectEmpty) {
-                Matcher m = p.matcher(tag);
-                if (!m.matches()) {
-                    Projects projects = storeService.searchProjectByTag(tag, false);
-                    if (projects.getProjects().isEmpty()) {
-                        return Response.status(Status.NOT_FOUND).entity("No Project with this expression!").build();
-                    }
-                    return Response.status(Status.OK).entity(projects).build();
-                } else {
-                    return Response.status(Status.NOT_ACCEPTABLE).entity("\' not allowed!").build();
-                }
-            }
-            //Beide vorhanden
-            if (!bsearchByTagEmpty & !bsearchByProjectEmpty) {
-                return Response.status(Status.NOT_ACCEPTABLE).entity("You can not use both search-parameters at the same time!").build();
-            }
+ 
         } catch (OakCoreException ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
-        //Es wurden alle möglichen Szenarien abgefangen!
-        return null;
     }
 
     @Override
