@@ -197,7 +197,7 @@ public class StoreServiceInSQLite implements StoreService {
             String postsURL = resultset.getString("postsURL");
             
             // Nur wenn auch eine URL hinterlegt ist
-            if (postsURL != null && postsURL.matches("\\s*"))
+            if (postsURL != null && ! postsURL.matches("\\s*"))
             {
                 try {
                     project.setPostsURL(new URL(postsURL));
@@ -709,7 +709,7 @@ public class StoreServiceInSQLite implements StoreService {
         try {
             sql = String.format(
                     "INSERT INTO comment "
-                    + "(creator, title, content, dateCreated, published, projectID) "
+                    + "(creator, title, content, dateCreated, status, projectID) "
                     + "VALUES("
                     + "'%s',"
                     + "'%s',"
