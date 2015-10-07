@@ -2,125 +2,149 @@
 
 \usepackage[all,blueheadings,150]{HSMW-Logo}
 \usepackage[utf8]{inputenc} 			% wichtig für Umlaute
+\usepackage[onehalfspacing]{setspace} % Zeilenabstand 1,5 Fach
+\setlength{\parindent}{0pt} % Neue Absätze nicht einrücken
+
+
 
 \begin{document}
-\chapter{Aufgabenstellung}
-\chapter{Motivation}
-\chapter{Installations- und Startanleitung}
-\chapter{REST Ressourcen im Überblick}
-Hier soll eine "Ubersichtsgrafik hin.
-\chapter{REST-Schnittstellen}
- Schnittstellen im einzelnen dokumentieren:
- Welcher Dienst wird bereit gestellt? Was passiert?
- Welche Aufrufe sind dazu notwendig?
- Welche Parameter m"ussen "ubergeben werden? (obligatorisch, verpflichtend)
- Welche Status-Codes sind zu erwarten?
- Welche Ergebnisse werden zur"uckgegeben? 
-\chapter{Datenmodell und Persistierung}
-\chapter{Client}
-
-\section{Bedienung}
-
-	Der Client ist auf der Kommandozeile ausführbar. Gestartet wird er indem man ihn zuerst mit Hilfe von \emph{gradle} baut. Sollte man das gesamte Projekt gebaut haben wird er als Abhängigkeit bereits erstellt.
-	\begin{verbatim}
-		$ gradle build client
-	\end{verbatim}
 	
-	Danach findet man im Verzeichnis \emph{client/build/distributions} eine \emph{client.tar}, in welcher sich der lauffähige Client befindet. Man muss sie zuerst entpacken und danach den client starten.
 	
-	\begin{verbatim}
-		$ cd client/build/distributions
-		$ tar xf client.tar
-		$ cd client
-		$ bin/client
-	\end{verbatim}
+	%\titlehead{Kopf der Titelei}
+	\subject{Verteilte Systeme}
+	\title{Programmier-Beleg REST}
+	\subtitle{Eine zentrale Projektverwaltung für Studenten und Professoren}
+	\author{Felix Haller (fhaller1) \and Konstantin Lorenz(klorenz1)}
+	\date{07.10.2015}
+	\publishers{Prüfer: Prof. Dr.-Ing. Andreas Ittner}
+	%\extratitle{\centering Schmutztitel \\ goLaTeX (C) 2009 \\ ISBN 978-3865412911}
+	%\uppertitleback{Obiger Titelrückentitel}
+	%\lowertitleback{Für dieses Beispiel wird keine Haftung übernommen.}
+	%\dedication{Dieses Beispiel widme ich\\allen LaTeX Usern}
+	\maketitle
 	
-	Für eine JAR Datei mit allen Abhängigkeiten wurde von uns eine Task \emph{createRunnable} im client Projekt erstellt. Mithilfe von
-	\begin{verbatim}
-		$ gradle client:createRunnable
-		$ java -jar client/build/libs/client.jar
-	\end{verbatim}
+	\newpage
+	\tableofcontents
+	\newpage	
 	
-	kann diese erzeugt und anschließend gestartet werden.
 	
-\section{Testszenarien}
 	
-	Er testet die Funktionalität des REST-Service und gibt die Rückgabe (XML) formatiert aus. Nach jedem Szenario unterbricht er seinen Lauf, um dem Bediener die Möglichkeit zu geben den Ablauf der Abrufe nachzuvollziehen und die Ausgabe zu betrachten. Die Ausführung kann durch das Drücken der ''ENTER'' Taste fortgesetzt werden. Während des Durchlaufs werden zudem die zurückgelieferten Statuscodes ausgegeben.
 	
-	Der Client testet folgende Anwendungsszenarien:
-	\begin{itemize}
-		\item Anzeigen eines bereits vorhandenen Demo - Projektes
-		\begin{itemize}
-			\item Erwartetes Ergebnis: erfolgreich (Statuscode: 200)
-		\end{itemize}
-		\item Anzeigen der Kommentare zu einem Projekt
-		\begin{itemize}
-			\item Erwartetes Ergebnis: erfolgreich (Statuscode: 200)
-			\item Es wird der Inhalt des ersten Kommentar ausgegeben
-		\end{itemize}
-		\item Versuch des Abrufs eines nicht vorhandenen Projektes (falsche ID)
-		\begin{itemize}
-			\item Erwartetes Ergebnis: Fehler (Statuscode: 404)
-		\end{itemize}
-		\item Erstellen eines neuen Projektes
-		\begin{itemize}
-			\item Erwartetes Ergebnis: erfolgreich (Statuscode: 201)
-			\item Die ID des angelegten Projektes wird am Ende ausgegeben
-		\end{itemize}
-		\item Suchen nach Projektnamen
-		\begin{itemize}
-			\item Erwartetes Ergebnis: erfolgreich (Statuscode: 200)
-			\item Anzahl der gefundenen Projekte wird ausgegeben
-		\end{itemize}
-		\item Modifizieren eines Projektes (zwei Abfragen)
-		\begin{itemize}
-			\item Tippfehler in Beschreibung wird korrigiert
-			\item Tag wird zum Projekt hinzugefügt
-			\item Erwartetes Ergebnis: erfolgreich (Statuscode: 200) (beide Male)
-		\end{itemize}
-		\item Das Filtern von Projekten nach Tags
-		\begin{itemize}
-			\item Erwartetes Ergebnis: erfolgreich (Statuscode: 200)
-			\item Anzahl der mit Tag markierten Projekte wird ausgegeben
-		\end{itemize}
-		\item Erstellen eines Kommentars zu einem Projekt
-		\begin{itemize}
-			\item Erwartetes Ergebnis: erfolgreich (Statuscode: 201)
-			\item Kommentar-ID wird am Ende ausgegeben
-		\end{itemize}
-		\item Anzeigen der RSS-Posts zu einem Projekt
-		\begin{itemize}
-			\item Erwartetes Ergebnis: erfolgreich (Statuscode: 200)
-			\item (Abhängig von der Erreichbarkeit des fremden Service. Im Beispiel Projekt handelt es sich um github.com)
-			\item Der Inhalt des jüngsten Posts wird angezeigt
-		\end{itemize}
-		\item Anzeigen der letzten angelegten Projekte
-		\begin{itemize}
-			\item Erwartetes Ergebnis: erfolgreich (Statuscode: 200)
-			\item letzten (max. 10) angelegten Projekte werden absteigend sortiert angezeigt
-			\item Die ID des neusten Projektes wird angezeigt
-		\end{itemize}
-		\item Das Löschen eines Projektes
-		\begin{itemize}
-			\item Erwartetes Ergebnis: erfolgreich (Statuscode: 200)
-			\item Projekt wird in Datenbank als gelöscht markiert
-			\item Letzter Zustand des gelöschten Projektes wird ausgegeben
-		\end{itemize}
-		\item gelöschtes Projekt erneut anzeigen
-		\begin{itemize}
-			\item Erwartetes Ergebnis: Fehler (Statuscode: 404)
-		\end{itemize}
+	\section{Aufgabenstellung}
+	\section{Motivation}
+	\section{Installations- und Startanleitung}
+	\section{REST Ressourcen im Überblick}
+		Hier soll eine "Ubersichtsgrafik hin.
+	\section{REST-Schnittstellen}
+		 Schnittstellen im einzelnen dokumentieren:
+		 Welcher Dienst wird bereit gestellt? Was passiert?
+		 Welche Aufrufe sind dazu notwendig?
+		 Welche Parameter m"ussen "ubergeben werden? (obligatorisch, verpflichtend)
+		 Welche Status-Codes sind zu erwarten?
+		 Welche Ergebnisse werden zur"uckgegeben?
+	\section{Datenmodell und Persistierung}
+	\section{Client}
+		\subsection{Bedienung}
 		
-	\end{itemize}
-	
-	Für die einzelnen Aufgaben wurden jeweils Methoden erstellt, die eine Instanz der Apache \emph{HttpClient} Klasse bedienen. Sie senden eine GET/POST/PUT/DELETE Anfrage zum REST-Service und empfangen das Ergebnis. Das anschließende Unmarschalling der empfangenen XML Bäume in die entsprechenden Java-Objekte übernehmen spezielle Methoden für die einzelnen Objekt-Typen.
-	
-	Für die formatierte Ausgabe der XML-Antworten wurde außerdem eine Klassen-Methode \emph{prettyPrintXml} geschrieben.
-	
-	
-	
-\chapter{Zusammenfassung}
-\chapter{Fazit}
-\chapter{Arbeitsverteilung}
-Wer hat was gemacht.
+			Der Client ist auf der Kommandozeile ausführbar. Gestartet wird er indem man ihn zuerst mit Hilfe von \emph{gradle} baut. Sollte man das gesamte Projekt gebaut haben wird er als Abhängigkeit bereits erstellt.
+			\begin{verbatim}
+				$ gradle build client
+			\end{verbatim}
+			
+			Danach findet man im Verzeichnis \emph{client/build/distributions} eine \emph{client.tar}, in welcher sich der lauffähige Client befindet. Man muss sie zuerst entpacken und danach den client starten.
+			
+			\begin{verbatim}
+				$ cd client/build/distributions
+				$ tar xf client.tar
+				$ cd client
+				$ bin/client
+			\end{verbatim}
+			
+			Für eine JAR Datei mit allen Abhängigkeiten wurde von uns eine Task \emph{createRunnable} im client Projekt erstellt. Mithilfe von
+			\begin{verbatim}
+				$ gradle client:createRunnable
+				$ java -jar client/build/libs/client.jar
+			\end{verbatim}
+			
+			kann diese erzeugt und anschließend gestartet werden.
+		\subsection{Methoden des Clients}
+		
+			Für die einzelnen Aufgaben wurden jeweils Methoden erstellt, die eine Instanz der Apache \emph{HttpClient} Klasse bedienen. Sie senden eine GET/POST/PUT/DELETE Anfrage zum REST-Service und empfangen das Ergebnis. Das anschließende Unmarschalling der empfangenen XML Bäume in die entsprechenden Java-Objekte übernehmen spezielle Methoden für die einzelnen Objekt-Typen.
+			
+			Für die formatierte Ausgabe der XML-Antworten wurde außerdem eine Klassen-Methode \emph{prettyPrintXml} geschrieben.
+		
+		
+		\subsection{Testszenarien}
+			
+			Er testet die Funktionalität des REST-Service und gibt die Rückgabe (XML) formatiert aus. Nach jedem Szenario unterbricht er seinen Lauf, um dem Bediener die Möglichkeit zu geben den Ablauf der Abrufe nachzuvollziehen und die Ausgabe zu betrachten. Die Ausführung kann durch das Drücken der ''ENTER'' Taste fortgesetzt werden. Der Client gibt aus, was er gerade macht und was darauf hin passiert. Während des Durchlaufs werden zudem die zurückgelieferten Statuscodes ausgegeben.
+			
+			Der Client testet folgende Anwendungsszenarien:
+			\begin{itemize}
+				\item Anzeigen eines bereits vorhandenen Demo - Projektes
+				\begin{itemize}
+					\item Erwartetes Ergebnis: erfolgreich (Statuscode: 200)
+				\end{itemize}
+				\item Anzeigen der Kommentare zu einem Projekt
+				\begin{itemize}
+					\item Erwartetes Ergebnis: erfolgreich (Statuscode: 200)
+					\item Es wird der Inhalt des ersten Kommentar ausgegeben
+				\end{itemize}
+				\item Versuch des Abrufs eines nicht vorhandenen Projektes (falsche ID)
+				\begin{itemize}
+					\item Erwartetes Ergebnis: Fehler (Statuscode: 404)
+				\end{itemize}
+				\item Erstellen eines neuen Projektes
+				\begin{itemize}
+					\item Erwartetes Ergebnis: erfolgreich (Statuscode: 201)
+					\item Die ID des angelegten Projektes wird am Ende ausgegeben
+				\end{itemize}
+				\item Suchen nach Projektnamen
+				\begin{itemize}
+					\item Erwartetes Ergebnis: erfolgreich (Statuscode: 200)
+					\item Anzahl der gefundenen Projekte wird ausgegeben
+				\end{itemize}
+				\item Modifizieren eines Projektes (zwei Abfragen)
+				\begin{itemize}
+					\item Tippfehler in Beschreibung wird korrigiert
+					\item Tag wird zum Projekt hinzugefügt
+					\item Erwartetes Ergebnis: erfolgreich (Statuscode: 200) (beide Male)
+				\end{itemize}
+				\item Das Filtern von Projekten nach Tags
+				\begin{itemize}
+					\item Erwartetes Ergebnis: erfolgreich (Statuscode: 200)
+					\item Anzahl der mit Tag markierten Projekte wird ausgegeben
+				\end{itemize}
+				\item Erstellen eines Kommentars zu einem Projekt
+				\begin{itemize}
+					\item Erwartetes Ergebnis: erfolgreich (Statuscode: 201)
+					\item Kommentar-ID wird am Ende ausgegeben
+				\end{itemize}
+				\item Anzeigen der RSS-Posts zu einem Projekt
+				\begin{itemize}
+					\item Erwartetes Ergebnis: erfolgreich (Statuscode: 200)
+					\item (Abhängig von der Erreichbarkeit des fremden Service. Im Beispiel Projekt handelt es sich um github.com)
+					\item Der Inhalt des jüngsten Posts wird angezeigt
+				\end{itemize}
+				\item Anzeigen der letzten angelegten Projekte
+				\begin{itemize}
+					\item Erwartetes Ergebnis: erfolgreich (Statuscode: 200)
+					\item letzten (max. 10) angelegten Projekte werden absteigend sortiert angezeigt
+					\item Die ID des neusten Projektes wird angezeigt
+				\end{itemize}
+				\item Das Löschen eines Projektes
+				\begin{itemize}
+					\item Erwartetes Ergebnis: erfolgreich (Statuscode: 200)
+					\item Projekt wird in Datenbank als gelöscht markiert
+					\item Letzter Zustand des gelöschten Projektes wird ausgegeben
+				\end{itemize}
+				\item gelöschtes Projekt erneut anzeigen
+				\begin{itemize}
+					\item Erwartetes Ergebnis: Fehler (Statuscode: 404)
+				\end{itemize}
+			\end{itemize}
+		
+	\section{Zusammenfassung}
+	\section{Fazit}
+	\section{Arbeitsverteilung}
+		Wer hat was gemacht.
 \end{document}

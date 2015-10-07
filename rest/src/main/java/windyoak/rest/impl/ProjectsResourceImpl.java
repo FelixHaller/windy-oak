@@ -185,7 +185,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
                     Projects projects = storeService.searchProject(title,tag,creator,false);
                     if (projects.getProjects().isEmpty()) {
                         
-                        return Response.status(Status.NOT_FOUND).type(MediaType.WILDCARD).entity(String.format("Keine Projekte mit '%s' im Titel gefunden!", title)).build();
+                        return Response.status(Status.NOT_FOUND).type("text/plain; charset=utf-8").entity(String.format("Keine Projekte mit '%s' im Titel gefunden!", title)).build();
                     }
                     return Response.status(Status.OK).entity(projects).build();
                 } else {
@@ -254,7 +254,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
                 if ("new".equals(status) || "published".equals(status) || "closed".equals(status)) {
                     project.setStatus(status);
                 } else {
-                    return Response.status(Status.NOT_ACCEPTABLE).type(MediaType.WILDCARD).entity("Unknown Status").build();
+                    return Response.status(Status.NOT_ACCEPTABLE).type("text/plain; charset=utf-8").entity("Unknown Status").build();
                 }
             }
             if (!(username == null || username.isEmpty())) {
@@ -262,7 +262,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
                 newUser = storeService.getUser(username);
 
                 if (newUser == null) {
-                    return Response.status(Status.NOT_FOUND).type(MediaType.WILDCARD).entity("User not found in Database!").build();
+                    return Response.status(Status.NOT_FOUND).type("text/plain; charset=utf-8").entity("User not found in Database!").build();
                 }
                 project.setCreator(newUser);
             }
@@ -277,7 +277,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
                 {
                     errormsg = "keine gültige Feed-URL angegeben";
                     Logger.getLogger(ProjectsResourceImpl.class.getName()).log(Level.SEVERE, errormsg, ex);
-                    return Response.status(Status.BAD_REQUEST).type(MediaType.WILDCARD).entity(errormsg).build();
+                    return Response.status(Status.BAD_REQUEST).type("text/plain; charset=utf-8").entity(errormsg).build();
                 }
             }
             if (!(members == null || members.isEmpty())) 
@@ -299,13 +299,13 @@ public class ProjectsResourceImpl implements ProjectsResource {
                         }
 
                         if (member.getUser() == null) {
-                            return Response.status(Status.NOT_ACCEPTABLE).type(MediaType.WILDCARD).entity("Member " + paar[0] + " not in Database!").build();
+                            return Response.status(Status.NOT_ACCEPTABLE).type("text/plain; charset=utf-8").entity("Member " + paar[0] + " not in Database!").build();
                         }
                         memberList.getMembers().add(member);
                     }
                     project.setMembers(memberList);
                 } else {
-                    return Response.status(Status.NOT_ACCEPTABLE).type(MediaType.WILDCARD).entity("No Match in RegEx Member").build();
+                    return Response.status(Status.NOT_ACCEPTABLE).type("text/plain; charset=utf-8").entity("No Match in RegEx Member").build();
                 }
             }
             //TAG
@@ -324,7 +324,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
                     {
                         newTag = storeService.getTagByName(tag);
                         if (newTag == null) {
-                            return Response.status(Status.NOT_ACCEPTABLE).type(MediaType.WILDCARD).entity("Tag " + tag + " not in Database!").build();
+                            return Response.status(Status.NOT_ACCEPTABLE).type("text/plain; charset=utf-8").entity("Tag " + tag + " not in Database!").build();
                         } 
                         else 
                         {
@@ -332,13 +332,13 @@ public class ProjectsResourceImpl implements ProjectsResource {
                         }
                     }
                 } else {
-                    return Response.status(Status.NOT_ACCEPTABLE).type(MediaType.WILDCARD).entity("No valid tagName Specification!").build();
+                    return Response.status(Status.NOT_ACCEPTABLE).type("text/plain; charset=utf-8").entity("No valid tagName Specification!").build();
                 }
                 project.setTags(tags);
             }
             storeService.updateProject(project);
         } catch (OakCoreException ex) {
-            return Response.status(Status.INTERNAL_SERVER_ERROR).type(MediaType.WILDCARD).entity(ex.getMessage()).build();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).type("text/plain; charset=utf-8").entity(ex.getMessage()).build();
         }
         return Response.status(Status.OK).entity(project).build();
     }
@@ -362,13 +362,13 @@ public class ProjectsResourceImpl implements ProjectsResource {
                 if ("new".equals(status) || "published".equals(status) || "closed".equals(status)) {
                     comment.setStatus(status);
                 } else {
-                    return Response.status(Status.NOT_ACCEPTABLE).type(MediaType.WILDCARD).entity("Unknown Status").build();
+                    return Response.status(Status.NOT_ACCEPTABLE).type("text/plain; charset=utf-8").entity("Unknown Status").build();
                 }
             }
 
             storeService.updateComment(comment);
         } catch (OakCoreException ex) {
-            return Response.status(Status.INTERNAL_SERVER_ERROR).type(MediaType.WILDCARD).entity(ex.getMessage()).build();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).type("text/plain; charset=utf-8").entity(ex.getMessage()).build();
         }
         return Response.status(Status.OK).entity(comment).build();
 
@@ -383,7 +383,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
             }
             comment = storeService.deleteComment(commentid);
         } catch (OakCoreException ex) {
-            return Response.status(Status.INTERNAL_SERVER_ERROR).type(MediaType.WILDCARD).entity(ex.getMessage()).build();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).type("text/plain; charset=utf-8").entity(ex.getMessage()).build();
         }
         return Response.status(Status.OK).entity(comment).build();
     }
@@ -396,17 +396,17 @@ public class ProjectsResourceImpl implements ProjectsResource {
         User user;
         try {
             if (storeService.getProjectByID(projectid) == null) {
-                return Response.status(Status.NOT_FOUND).type(MediaType.WILDCARD).entity("Project not in Database!").build();
+                return Response.status(Status.NOT_FOUND).type("text/plain; charset=utf-8").entity("Project not in Database!").build();
             }
             if (title == null || title.isEmpty() || content == null
                     || content.isEmpty() || status == null || status.isEmpty()) {
-                return Response.status(Status.NOT_ACCEPTABLE).type(MediaType.WILDCARD).entity("Empty Parameter").build();
+                return Response.status(Status.NOT_ACCEPTABLE).type("text/plain; charset=utf-8").entity("Empty Parameter").build();
             }
 
             user = storeService.getUser(creator);
 
             if (user == null) {
-                return Response.status(Status.NOT_FOUND).type(MediaType.WILDCARD).entity("Creator not found in Database!").build();
+                return Response.status(Status.NOT_FOUND).type("text/plain; charset=utf-8").entity("Creator not found in Database!").build();
             }
             comment.setTitle(title);
             comment.setCreator(user);
@@ -415,7 +415,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
             if ("new".equals(status) || "published".equals(status) || "closed".equals(status)) {
                 comment.setStatus(status);
             } else {
-                return Response.status(Status.NOT_ACCEPTABLE).type(MediaType.WILDCARD).entity("Unknown Status").build();
+                return Response.status(Status.NOT_ACCEPTABLE).type("text/plain; charset=utf-8").entity("Unknown Status").build();
             }
 
             createdComment = this.storeService.createComment(comment);
@@ -433,7 +433,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
         try {
             Comments comments = storeService.fetchAllComments(projectid);
             if (comments == null) {
-                return Response.status(Status.NO_CONTENT).type(MediaType.WILDCARD).entity("Project has no comments in Database!").build();
+                return Response.status(Status.NO_CONTENT).type("text/plain; charset=utf-8").entity("Project has no comments in Database!").build();
             }
 
             return Response.status(Status.OK).entity(comments).build();
@@ -449,7 +449,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
         try {
             comment = storeService.getCommentByID(commentid);
             if (comment == null) {
-                return Response.status(Status.NOT_FOUND).type(MediaType.WILDCARD).entity("Comment not found in Database!").build();
+                return Response.status(Status.NOT_FOUND).type("text/plain; charset=utf-8").entity("Comment not found in Database!").build();
             }
         } catch (OakCoreException ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
@@ -465,7 +465,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
         try {
             project = storeService.getProjectByID(projectid);
             if (project == null) {
-                return Response.status(Status.NOT_FOUND).type(MediaType.WILDCARD).entity("Project not found in Database!").build();
+                return Response.status(Status.NOT_FOUND).type("text/plain; charset=utf-8").entity("Project not found in Database!").build();
             }
         } catch (OakCoreException ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
@@ -474,7 +474,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
         URL postsURL = project.getPostsURL();
 
         if (postsURL == null) {
-            return Response.status(Status.NO_CONTENT).type(MediaType.WILDCARD).entity("No Posts (RSS, ATOM, ...) URL defined for Project.").build();
+            return Response.status(Status.NO_CONTENT).type("text/plain; charset=utf-8").entity("No Posts (RSS, ATOM, ...) URL defined for Project.").build();
         }
 
         try {
@@ -493,7 +493,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
         try {
             project = storeService.getProjectByID(projectid);
             if (project == null) {
-                return Response.status(Status.NOT_FOUND).type(MediaType.WILDCARD).entity("Project not found in Database!").build();
+                return Response.status(Status.NOT_FOUND).type("text/plain; charset=utf-8").entity("Project not found in Database!").build();
             }
         } catch (OakCoreException ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
@@ -502,13 +502,13 @@ public class ProjectsResourceImpl implements ProjectsResource {
         URL postsURL = project.getPostsURL();
 
         if (postsURL == null) {
-            return Response.status(Status.NO_CONTENT).type(MediaType.WILDCARD).entity("No Posts (RSS, ATOM, ...) URL defined for Project.").build();
+            return Response.status(Status.NO_CONTENT).type("text/plain; charset=utf-8").entity("No Posts (RSS, ATOM, ...) URL defined for Project.").build();
         }
 
         try {
             rssPost = postsService.getPostByID(project.getPostsURL(), postid);
             if (rssPost == null) {
-                return Response.status(Status.NOT_FOUND).type(MediaType.WILDCARD).entity("Post ID nicht gefunden.").build();
+                return Response.status(Status.NOT_FOUND).type("text/plain; charset=utf-8").entity("Post ID nicht gefunden.").build();
             }
         } catch (OakCoreException ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();

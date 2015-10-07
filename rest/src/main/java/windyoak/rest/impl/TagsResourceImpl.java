@@ -5,14 +5,12 @@
  */
 package windyoak.rest.impl;
 
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import windyoak.core.OakCoreException;
-import windyoak.core.Project;
 import windyoak.core.Projects;
 import windyoak.core.StoreService;
 import windyoak.core.Tag;
