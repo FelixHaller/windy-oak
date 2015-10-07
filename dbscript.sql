@@ -44,6 +44,12 @@ CREATE TABLE "User" (
     "forename" TEXT NOT NULL,
     "surname" TEXT NOT NULL
 );
+/*Views*/
+
+CREATE VIEW "viewProject" AS
+SELECT project.*,  user.*, projecttag.* FROM  project,  user, projecttag WHERE user.username=project.creator AND project.projectID = projecttag.projectID 
+UNION
+SELECT project.*, user.* ,  '' projectID ,'' TagName FROM project, user WHERE project.projectID NOT IN (SELECT projectID FROM projecttag) AND user.username=project.creator order by projectID;
 
 BEGIN TRANSACTION;
 insert into comment ("commentID", "creator", "title", "content", "dateCreated", "dateUpdated", "status", "projectID") values ('1', 'CMusencus', 'Gute Arbeit', 'Also dass, was ich bis jetzt von eurer Arbeit gesehen habe ist wirklich super! Weiter so! ;)', '1388891495000', NULL, 'published', '1');
