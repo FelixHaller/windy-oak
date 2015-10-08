@@ -20,7 +20,3 @@ task initDatabase(type: Exec) {
         executable "bash"
         args "createDB.sh"
     }
-
-task build(dependsOn: initDatabase) {
-    
-    }
