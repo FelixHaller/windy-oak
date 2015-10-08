@@ -19,7 +19,7 @@
 	\subject{Verteilte Systeme}
 	\title{Programmier-Beleg REST}
 	\subtitle{Eine zentrale Projektverwaltung für Studenten und Professoren}
-	\author{Felix Haller (fhaller1) \and Konstantin Lorenz(klorenz1)}
+	\author{Felix Haller (fhaller1) \and Konstantin Lorenz (klorenz1)}
 	\date{07.10.2015}
 	\publishers{Prüfer: Prof. Dr.-Ing. Andreas Ittner}
 	%\extratitle{\centering Schmutztitel \\ goLaTeX (C) 2009 \\ ISBN 978-3865412911}
@@ -63,96 +63,96 @@
 		%Konstantin
 		Hier soll eine "Ubersichtsgrafik hin.
 	\section{REST-Schnittstellen} \label{sec:restschnittstellen}
-	\subsection{Projekte}
+\subsection{Projekte}
 	Projekte sind das zentrale Element, die jeder anlegen kann und an denen jeder Interessierte teilhaben kann. Ob es nun darum geht bei einem Projekt immer auf dem aktuellen Stand zu bleiben oder aktiv mitzuarbeiten.
-		\begin{itemize}
-				\item \emph{/projects}, ist eine Ressource, die ein Projekt darstellt. 
+	\begin{itemize}
+			\item \emph{/projects}, ist eine Ressource, die ein Projekt darstellt. 
+			\begin{itemize}
+				\item GET, listet alle in der Datenbank verfügbaren Projekte auf, die den Status \emph{published} oder \emph{closed} besitzen
 				\begin{itemize}
-					\item GET, listet alle in der Datenbank verfügbaren Projekte auf, die den Status \emph{published} oder \emph{closed} besitzen
+					\item Query Parameter: \emph{title, tag, creator} sind alle optional und dienen der Einschränkung der Projektausgabe. Dabei kann eine Filterung über den Projekt-Title, die zugehören Tags sowie über den Ersteller vorgenommen werden. Es werden nur Projekte angezeigt, die den Status \emph{published} oder \emph{closed} besitzen.
+					\item Rückgabewerte: Es wird eine Liste von Projekten, die der Filterung entsprechen, zurückgegeben. Falls keine Übereinstimmung bei der Filterung erfolgt, wird ein Statuscode 204 gesendet. 
+				\end{itemize}
+				\item POST, Es wird ein neues Projekt erzeugt und in die Datenbank eingetragen.
+				\begin{itemize}
+					\item Form Parameter:
 					\begin{itemize}
-						\item Query Parameter: \emph{title, tag, creator} sind alle optional und dienen der Einschränkung der Projektausgabe. Dabei kann eine Filterung über den Projekt-Title, die zugehören Tags sowie über den Ersteller vorgenommen werden. Es werden nur Projekte angezeigt, die den Status \emph{published} oder \emph{closed} besitzen.
-						\item Rückgabewert: Es wird eine Liste von Projekten, die der Filterung entsprechen, zurückgegeben. Falls keine Übereinstimmung bei der Filterung erfolgt, wird ein Statuscode 204 gesendet. 
+						\item  \emph{title}, Titel des Projektes als String
+						\item  \emph{username}, Benutzername des Erstellers. Der Ersteller muss als User in der Datenbank vorhanden sein.
+						\item  \emph{description}, Beschreibung des Projektes als String
+						\item  \emph{members}, Mitarbeiter mit ihren Rollen mit folgender Syntax: username1,Rolle;username2,Rolle; Die Mitarbeiter müssen als User in der Datenbank vorhanden sein. Die Rollen können frei gewählt werden.
+						\item  \emph{tagname (optional)}, Tag-Name eines vorhandenen Tags
+						\item \emph{postsURL}, URL eines RSS-Feeds 
 					\end{itemize}
-					\item POST, Es wird ein neues Projekt erzeugt und in die Datenbank eingetragen.
+					\item Rückgabewerte: Es wird das erstellte Projekt-Objekt zurückgegeben. Der zugehörige Statuscode ist 200. Ist ein nicht optionaler Parameter leer oder wird gegen die Syntax verstoßen, ist ein Statuscode 406 zu erwarten.  
+				\end{itemize}
+			\end{itemize}
+			\item \emph{/projects/\{id\}} Hier kann die \emph{id} des Projektes angegeben werden. Alle Methoden werden zur Manipulation des Projektes mit dieser \emph{id} verwendet.
+			\begin{itemize}
+				\item GET, ruft das Projekt ab und stellt es dar. 
+				\begin{itemize}
+					\item Path Parameter: \emph{id}, Nummer des Projekts
+					\item Rückgabewerte: Falls ein Projekt mit dieser \emph{id} nicht vorhanden ist, wird ein Statuscode 404 erzeugt. Ansonsten wird das Projekt mit dem Statuscode 200 zurückgegeben.
+				\end{itemize}
+				\item PUT, das Projekt kann mit dieser Methode verändert werden. Alle Parameter sind optional. Erfolgt keine Wertzuweisung bei den Parametern, gibt es auch keine Änderung. Die Parameter liegen in gleicher Weise vor, wie bei der POST-Methode von der \emph{/projects} Ressource.
+				\item DELETE, Das Projekt-Objekt mit der zugehörigen \emph{id} wird gelöscht.
+				\begin{itemize}
+					\item Rückgabewerte: Es wird das gelöschte Projekt-Objekt mit einem Statuscode 200 zurückgegeben. Ist diese \emph{id} nicht vorhanden, wird ein Statuscode 404 gesendet.
+				\end{itemize}	
+			\end{itemize}
+	\end{itemize}
+\subsection{Kommentare}
+	Die Kommentare dient den Benutzern des \emph{Project-Hub} als Rückkanal für die Betreiber des Projektes. Damit ist es möglich Verbesserungsvorschläge, Anregungen, Wünsche aber auch Kritik anzubringen und somit eine höhere Qualität und Benutzerfreundlichkeit von Projekten zu erreichen.  
+	\begin{itemize}
+		\item \emph {projects/\{id\}/comments}, ist eine Ressource, die einen Kommentar darstellt.
+		\begin{itemize}
+			\item GET, listet alle in der Datenbank verfügbaren Kommentare auf, die zu der \emph{id} des Projektes gehören und  den Status \emph{published} oder \emph{closed} besitzen
+			\begin{itemize}
+				\item Rückgabewerte: Es wird eine Liste von Kommentaren, die zu der Projekt-\emph{id} des Projektes gehören, ausgegeben. Der Statuscode ist bei erfolgreicher Rückgabe 200. Falls keine Kommentare vorhanden sind, wird ein Statuscode 204 zurückgegeben. Es werden nur Kommentare angezeigt, die den Status \emph{published} oder \emph{closed} besitzen.
+			\end{itemize}
+					\item POST, Es wird ein neuer Kommentar erzeugt und in die Datenbank eingetragen.
 					\begin{itemize}
 						\item Form Parameter:
 						\begin{itemize}
-							\item  \emph{title}, Titel des Projektes als String
-							\item  \emph{username}, Benutzername des Erstellers. Der Ersteller muss als User in der Datenbank vorhanden sein.
-							\item  \emph{description}, Beschreibung des Projektes als String
-							\item  \emph{members}, Mitarbeiter mit ihren Rollen mit folgender Syntax: username1,Rolle;username2,Rolle; Die Mitarbeiter müssen als User in der Datenbank vorhanden sein. Die Rollen können frei gewählt werden.
-							\item  \emph{tagname (optional)}, Tag-Name eines vorhandenen Tags
-							\item \emph{postsURL}, URL eines RSS-Feeds 
+							\item  \emph{title}, Titel des Kommentars als String
+							\item  \emph{creator}, Benutzername des Erstellers. Der Ersteller muss als User in der Datenbank vorhanden sein.
+							\item  \emph{content}, Inhalt des Kommentars als String
+							\item  \emph{status}, Hier kann der Status des Kommentars angegeben werden. Es sind folgende Wert möglich: \emph{new, published, closed}.
 						\end{itemize}
-						\item Rückgabewert: Es wird das erstellte Projekt-Objekt zurückgegeben. Der zugehörige Statuscode ist 200. Ist ein nicht optionaler Parameter leer oder wird gegen die Syntax verstoßen, ist ein Statuscode 406 zu erwarten.  
+						\item Rückgabewerte: Es wird das erstellte Kommentar-Objekt zurückgegeben. Der zugehörige Statuscode ist 200. Ist ein Parameter leer oder wird gegen die Syntax verstoßen, ist ein Statuscode 406 zu erwarten.  
 					\end{itemize}
-				\end{itemize}
-				\item \emph{/projects/\{id\}} Hier kann die \emph{id} des Projektes angegeben werden. Alle Methoden werden zur Manipulation des Projektes mit dieser \emph{id} verwendet.
-				\begin{itemize}
-					\item GET, ruft das Projekt ab und stellt es dar. 
-					\begin{itemize}
-						\item Path Parameter: \emph{id}, Nummer des Projekts
-						\item Rückgabewert: Falls ein Projekt mit dieser \emph{id} nicht vorhanden ist wird ein Statuscode 404 erzeugt. Ansonsten wird das Projekt mit dem Statuscode 200 zurückgegeben.
-					\end{itemize}
-					\item PUT, das Projekt kann mit dieser Methode verändert werden. Alle Parameter sind optional. Erfolgt keine Wertzuweisung bei den Parametern, gibt es auch keine Änderung. Die Parameter liegen in gleicher Weise vor, wie bei der POST-Methode von der \emph{/projects} Ressource.
-					\item DELETE, Das Projekt-Objekt mit der zugehörigen \emph{id} wird gelöscht.
-					\begin{itemize}
-						\item Rückgabewert: Es wird das gelöschte Projekt-Objekt mit einem Statuscode 200 zurückgegeben. Ist diese \emph{id} nicht vorhanden, wird ein Statuscode 404 gesendet.
-					\end{itemize}	
-				\end{itemize}
 		\end{itemize}
-	\subsection{Kommentare}
-		Die Kommentare dient den Benutzern des \emph{Project-Hub} als Rückkanal für die Betreiber des Projektes. Damit ist es möglich Verbesserungsvorschläge, Anregungen, Wünsche aber auch Kritik anzubringen und somit eine höhere Qualität und Benutzerfreundlichkeit von Projekten zu erreichen.  
-		\begin{itemize}
-			\item \emph {projects/\{id\}/comments}, ist eine Ressource, die einen Kommentar darstellt.
+			\item \emph{projects/\{id\}/comments/\{id\}} Hier kann die \emph{id} des Kommentars angegeben werden. Alle Methoden werden zur Manipulation des Kommentars mit dieser \emph{id} verwendet.
 			\begin{itemize}
-				\item GET, listet alle in der Datenbank verfügbaren Kommentare auf, die zu der \emph{id} des Projektes gehören und  den Status \emph{published} oder \emph{closed} besitzen
-				\begin{itemize}
-					\item Rückgabewert: Es wird eine Liste von Kommentaren, die zu der Projekt-\emph{id} des Projektes gehören, ausgegeben. Der Statuscode ist bei erfolgreicher Rückgabe 200. Falls keine Kommentare vorhanden sind, wird ein Statuscode 204 zurückgegeben. Es werden nur Kommentare angezeigt, die den Status \emph{published} oder \emph{closed} besitzen.
-				\end{itemize}
-						\item POST, Es wird ein neuer Kommentar erzeugt und in die Datenbank eingetragen.
-						\begin{itemize}
-							\item Form Parameter:
-							\begin{itemize}
-								\item  \emph{title}, Titel des Kommentars als String
-								\item  \emph{creator}, Benutzername des Erstellers. Der Ersteller muss als User in der Datenbank vorhanden sein.
-								\item  \emph{content}, Inhalt des Kommentars als String
-								\item  \emph{status}, Hier kann der Status des Kommentars angegeben werden. Es sind folgende Wert möglich: \emph{new, published, closed}.
-							\end{itemize}
-							\item Rückgabewert: Es wird das erstellte Kommentar-Objekt zurückgegeben. Der zugehörige Statuscode ist 200. Ist ein Parameter leer oder wird gegen die Syntax verstoßen, ist ein Statuscode 406 zu erwarten.  
-						\end{itemize}
+					\item GET, ruft den Kommentar ab und stellt ihn dar. 
+					\begin{itemize}
+						\item Rückgabewerte: Falls ein Kommentar mit dieser \emph{id} nicht vorhanden ist, wird ein Statuscode 404 erzeugt. Ansonsten wird der Kommentar mit dem Statuscode 200 zurückgegeben.
+					\end{itemize}
+					\item PUT, der Kommentar kann mit dieser Methode verändert werden. Alle Parameter sind optional. Erfolgt keine Wertzuweisung bei den Parametern, gibt es auch keine Änderung. Die Parameter liegen in gleicher Weise vor, wie bei der POST-Methode von der \emph{projects/\{id\}/comments} Ressource.
+					\item DELETE, Das Kommentar-Objekt mit der zugehörigen \emph{id} wird gelöscht.
+					\begin{itemize}
+						\item Rückgabewerte: Es wird das gelöschte Kommentar-Objekt mit einem Statuscode 200 zurückgegeben.
+					\end{itemize}
 			\end{itemize}
-				\item \emph{projects/\{id\}/comments/\{id\}} Hier kann die \emph{id} des Kommentars angegeben werden. Alle Methoden werden zur Manipulation des Kommentars mit dieser \emph{id} verwendet.
-				\begin{itemize}
-						\item GET, ruft den Kommentar ab und stellt ihn dar. 
-						\begin{itemize}
-							\item Rückgabewert: Falls ein Kommentar mit dieser \emph{id} nicht vorhanden ist, wird ein Statuscode 404 erzeugt. Ansonsten wird der Kommentar mit dem Statuscode 200 zurückgegeben.
-						\end{itemize}
-						\item PUT, der Kommentar kann mit dieser Methode verändert werden. Alle Parameter sind optional. Erfolgt keine Wertzuweisung bei den Parametern, gibt es auch keine Änderung. Die Parameter liegen in gleicher Weise vor, wie bei der POST-Methode von der \emph{projects/\{id\}/comments} Ressource.
-						\item DELETE, Das Kommentar-Objekt mit der zugehörigen \emph{id} wird gelöscht.
-						\begin{itemize}
-							\item Rückgabewert: Es wird das gelöschte Kommentar-Objekt mit einem Statuscode 200 zurückgegeben.
-						\end{itemize}
-				\end{itemize}
-		\end{itemize}
+	\end{itemize}
 \subsection{Posts}
 Meistens werden Projekte auf anderen Plattformen entwickelt z.B. Web-Management-Software. Es entsteht unerwünschte Redundanz, deshalb war das Ziel RSS-Feeds mit aktuellen Informationen auf der Projektseite anzubieten, um einen umfangreichen Überblick zu gewährleisten und Redundanz zu vermeiden bzw. zu minimieren.    
+	\begin{itemize}
+		\item \emph{/projects/\{id\}/posts}, ist ein RSS-Feed einer in der Datenbank hinterlegten URL. Ein RSS-Feed besteht aus mehreren Posts mit einer jeweiligen \emph{id}.
 		\begin{itemize}
-			\item \emph{/projects/\{id\}/posts}, ist ein RSS-Feed einer in der Datenbank hinterlegten URL. Ein RSS-Feed besteht aus mehreren Posts mit einer jeweiligen \emph{id}.
+			\item GET, listet alle Posts eines RSS-Feeds auf, die zu einem Projekt gehören.
 			\begin{itemize}
-				\item GET, listet alle Posts eines RSS-Feeds auf, die zu einem Projekt gehören.
-				\begin{itemize}
-					\item Rückgabewert: Es werden mehrere Posts eines Feeds des dazugehörigen Projektes ausgegeben. Diese wird bei der Projekterstellung als \emph{postsURL} Parameter verlangt. Ist kein RSS-Feed-URL vorhanden, wird ein Statuscode 204 ausgegeben. Ansonsten ist bei erfolgreicher Ausführung ein Statuscode 200 zu erwarten.
-				\end{itemize}
+				\item Rückgabewerte: Es werden mehrere Posts eines Feeds des dazugehörigen Projektes ausgegeben. Diese wird bei der Projekterstellung als \emph{postsURL} Parameter verlangt. Ist kein RSS-Feed-URL vorhanden, wird ein Statuscode 204 ausgegeben. Ansonsten ist bei erfolgreicher Ausführung ein Statuscode 200 zu erwarten.
 			\end{itemize}
-			\item \emph{/projects/\{id\}/posts\{id\}}
-			\begin{itemize}
-				\item GET, listet ein Post eines RSS-Feeds auf.
-				\begin{itemize}
-					\item Rückgabewert: Es wird ein Post eines RSS-Feeds angezeigt. Der dazugehörige Statuscode ist 200. Kann eine \emph{id} keinem Post zugeordnet werden, wird der Statuscode 204 ausgegeben.  
-				\end{itemize}
-			\end{itemize} 	
 		\end{itemize}
+		\item \emph{/projects/\{id\}/posts\{id\}}
+		\begin{itemize}
+			\item GET, listet ein Post eines RSS-Feeds auf.
+			\begin{itemize}
+				\item Rückgabewerte: Es wird ein Post eines RSS-Feeds angezeigt. Der dazugehörige Statuscode ist 200. Kann eine \emph{id} keinem Post zugeordnet werden, wird der Statuscode 404 ausgegeben.  
+			\end{itemize}
+		\end{itemize} 	
+	\end{itemize}
 \subsection{Schlagworte}
 Schlagworte werden hier Synonym zu Tags verwendet.
 Tags dienen der näheren Beschreibung und Klassifizierung eines Projektes. Es ist eine uneingeschränkte Zuordnung solcher Schlagworte möglich. Werden Tags konsequent an Projekte vergeben, kann z.B. eine Suche zu einen Schlagwort ausgeführt werden. 
@@ -161,20 +161,61 @@ Tags dienen der näheren Beschreibung und Klassifizierung eines Projektes. Es is
 	\begin{itemize}
 		\item GET, listet alle vorhanden Tags in einer Liste mit Beschreibung aus.
 		\begin{itemize}
-			\item Rückgabewert: Gibt alle Tags, die in der Datenbank vorhanden sind, aus. Bei Erfolg wird der Statuscode 200 erzeugt. Sind keine Tags vorhanden wird ein Statuscode 204 gesendet. 
+			\item Rückgabewerte: Gibt alle Tags, die in der Datenbank vorhanden sind, aus. Bei Erfolg wird der Statuscode 200 erzeugt. Sind keine Tags vorhanden wird ein Statuscode 204 gesendet. 
 		\end{itemize}
 		\item POST, Es wird ein neues Tag-Objekt erstellt und in der Datenbank abgelegt. Es können keine Tags doppelt angelegt werden.
 		\begin{itemize}
 			\item Form Parameter: Die Parameter \emph{tagName, description} sind alles Pflichtfelder. \emph{tagName} darf keine Sonderzeichen oder Zahlen enthalten. Die Beschreibung ist frei wählbar. 
 		\end{itemize} 
-	\end{itemize}	
+	\end{itemize}
+	\item \emph{/tags/\{tagName\}} Einzelner Tag mit einem \emph{tagName} als Name des Tag-Objektes.
+	\begin{itemize}
+		\item GET, gibt das einzelne Tag-Objekt zurück.
+		\begin{itemize}
+			\item Rückgabewerte: Bei erfolgreicher Anzeige des Objektes wird ein Statuscode 200 generiert. Ist das Objekt mit diesem \emph{tagName} nicht vorhanden wird ein Statuscode 404 ausgegeben.
+		\end{itemize}
+		\item PUT, diese Methode dient zum Updaten des Tag. Allerdings ist nur eine Änderung der Beschreibung möglich. Möchte man den Namen ändern, muss ein neue Tag-Objekt erstellt werden.
+		\begin{itemize}
+			\item Form Parameter: Der einzige Parameter der geändert werden kann:\emph{description}. Wird kein Parameter angegeben oder ist der Parameter leer, erfolgt keine Änderung. 
+			\item Rückgabewerte: Wird ein Update erfolgreich ausgeführt, wird der Statuscode 200 generiert und das aktuelle Tag-Objekt angezeigt. Falls das Tag-Objekt mit diesem \emph{tagName} nicht vorhanden ist, wird ein Statuscode 404 ausgegeben.  
+		\end{itemize} 
+		\item DELETE, löscht einen Tag. Der Tag kann nur gelöscht werden, wenn dieser in keinem Projekt-Objekt mehr verwendet wird.
+		\begin{itemize}
+			\item Rückgabewerte: Es wird ein Statuscode 200 generiert, wenn das Objekt erfolgreich gelöscht werden konnte. Falls das Objekt mit diesem \emph{tagName} nicht vorhanden ist, kommt es zum Statuscode 404. Wird der Tag noch von einem Projekt verwendet, wird der Statuscode 409 (Conflict) generiert.
+		\end{itemize}
+	\end{itemize} 	
 \end{itemize}
-		 Schnittstellen im einzelnen dokumentieren:
-		 Welcher Dienst wird bereit gestellt? Was passiert?
-		 Welche Aufrufe sind dazu notwendig?
-		 Welche Parameter m"ussen "ubergeben werden? (obligatorisch, verpflichtend)
-		 Welche Status-Codes sind zu erwarten?
-		 Welche Ergebnisse werden zur"uckgegeben? 
+\subsection{Benutzer}
+Der Bentzer, in der Ressource als \emph{user} bezeichnet, dient zur eindeutigen Identifikation von Publikationen und soll bei Umsetzung des Projektes aus einer bestehenden Datenbank importiert werden, weshalb davon abgesehen wird Methoden zur Erstellung und Bearbeitung zu implementieren.
+\begin{itemize}
+	\item \emph{/users}, steht für die \emph{Users} Ressource. 
+	\begin{itemize}
+		\item GET, Es werden alle Benutzer, die in der Datenbank verfügbar sind, abgerufen und als Liste ausgegeben.
+		\begin{itemize}
+			\item Rückgabewerte: Bei Erfolg wird eine Benutzerliste mit dem Statuscode 200 übertragen. Ist die Datenbank leer wird der Statuscode 204 erzeugt.
+		\end{itemize} 
+	\end{itemize}
+	\item \emph{ /users/\{id\}}, dient als Ressource für einen einzelnen Nutzer. Über die \emph{id} kann ein Nutzer eindeutig identifiziert werden. 
+	\begin{itemize}
+		\item GET, Methode zum Abrufen des Nutzers
+		\begin{itemize}
+			\item Rückgabewerte:Bei erfolgreicher Übertragung wird ein Statuscode 200 ausgegeben. Falls die \emph{id} nicht vorhanden ist, kommt es zu einem Statuscode 404.
+		\end{itemize} 
+	\end{itemize}
+\end{itemize}
+
+\subsection{Neuigkeiten}
+Diese Ressource dient dazu die Benutzer über aktuelle Projekte zu informieren. In der Zukunft soll diese Funktion auch aktuelle RSS-Posts ausgeben.
+\begin{itemize}
+	\item\emph{/recent}, dient als Referenzpunkt für weitere Entwicklungen in der Zukunft.
+	\item\emph{/recent/projects}, steht für die neusten Projekte, die den Status \emph{published} besitzen.
+	\begin{itemize}
+		\item GET, Die Methode ruft die neusten 10 Projekte ab und gibt diese als Liste nach Datum sortiert aus.
+		\begin{itemize}
+			\item Rückgabewerte: Bei erfolgreicher Rückgabe der Projektliste wird ein Statuscode 200 erzeugt. Anderenfalls wird ein Statuscode 204 z.B. bei einer leeren Liste generiert.
+		\end{itemize}
+	\end{itemize} 
+\end{itemize}
 	\section{Datenmodell und Persistierung}
 	%Konstantin
 	\section{Client}
