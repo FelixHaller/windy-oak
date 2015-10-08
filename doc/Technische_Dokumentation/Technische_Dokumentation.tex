@@ -3,8 +3,13 @@
 \usepackage[all,blueheadings,150]{HSMW-Logo}
 \usepackage[utf8]{inputenc} 			% wichtig für Umlaute
 \usepackage[onehalfspacing]{setspace} % Zeilenabstand 1,5 Fach
+\usepackage[ngerman]{babel}
 \setlength{\parindent}{0pt} % Neue Absätze nicht einrücken
+\usepackage{hyperref}
+\setcounter{tocdepth}{1}	% Nur die erste Ebene im Inhaltsverzeichnis anzeigen.
 
+
+%Anhang
 
 
 \begin{document}
@@ -22,28 +27,44 @@
 	%\lowertitleback{Für dieses Beispiel wird keine Haftung übernommen.}
 	%\dedication{Dieses Beispiel widme ich\\allen LaTeX Usern}
 	\maketitle
-	
+	\thispagestyle{empty} 
 	\newpage
 	\tableofcontents
+	\thispagestyle{empty}
 	\newpage	
-	
+	\setcounter{page}{1} 
 	
 	
 	
 	\section{Aufgabenstellung}
-	%Felix
+		Nachfolgend weitestgehend übernommen aus offizieller Aufgabenstellung:
+		Es soll im Rahmen einer Belegarbeit ein eigener, lauffähiger RESTful Webservice mit einem frei wählbaren Thema entwickelt
+		werden. Zum Nachweis der Funktionsfähigkeit ist ein Testclient notwendig, der ein Testszenario nachvollziehbar durchspielt und damit alle Funktionen des Service prüft. In der abzugebenden technischen Dokumentation soll alles enthalten sein, was zum Verständnis des Services, also seiner Funktion und dem technischen Hintergrund, notwendig ist.
+		
 	\section{Motivation}
-	%Felix
+		Zur Zeit existiert keine zentrale Anlaufstelle, wenn es um die Bekanntmachung von und die Suche nach Projekten geht. Das Ziel des Webservice ist eine bessere Vernetzung der Hochschulmitglieder während der Planung und Durchführung von Projekten. Einerseits soll eine Möglichkeit für Professoren gegeben werden geplante Forschungsarbeiten, für die noch Unterstützer gesucht werden, vorzustellen. Andererseits soll Studenten die Möglichkeit geboten werden bei Interesse an einem Thema - beispielsweise einer bestimmten Programmiersprache - eine Anlaufstelle zur praktischen Umsetzung zu finden. Außerdem erleichtert es u.U. das Finden eines Themas für praktische Belegarbeiten (z.B. Java2, Verteilte Systeme, SWT, ...)
 	\section{Installations- und Startanleitung}
-	%Felix
+		Das Projekt wird mittels des Build Systems \emph{gradle} entwickelt. Es hilft bei den regelmäßig auszuführenden Arbeiten, wie dem Kompilieren von Klassen, dem Testen der Anwendung und der Erstellung der Javadoc Dokumentation. Innerhalb der gradle Konfigurationsdateien wurden Abhängigkeiten so definiert, dass beim Bau des Hauptprojektes alle Unterprojekte gleich mit gebaut und getestet werden. Außerdem werden alle benötigten Abhängigkeiten beim erstmaligen Kompilieren der Quellen heruntergeladen. Somit ist keine manuelle Installation von externen Abhängigkeiten notwendig. Um zuvor gebaute und temporäre Dateien vor dem Kompilieren zu löschen empfiehlt es sich den \emph{clean} Auftrag vorher auszuführen.
+				
+		Zum Erstellen und Testen des gesamten Projektes verwendet man also den folgenden Befehl:
+		\begin{verbatim}
+			$ gradle clean build
+		\end{verbatim}
+		
+		Zum Starten des REST-Service verwendet man den entsprechenden Auftrag innerhalb des \emph{rest} Projektes:
+		\begin{verbatim}
+			$ gradle rest:jettyRun
+		\end{verbatim}
+		
+		Danach ist der Service unter der Adresse http://localhost:8080 erreichbar und gemäß den in Abschnitt \ref{sec:restschnittstellen} beschriebenen Methodenaufrufen verwendbar.
+		
+		Die Verwendung des mitgelieferten Clients wird in Abschnitt \ref{sec:client} ausführlich erklärt.
 	\section{REST Ressourcen im Überblick}
-	%Konstantin
+		%Konstantin
 		Hier soll eine "Ubersichtsgrafik hin.
-	\section{REST-Schnittstellen}
-	%Konstantin
-	\section{REST-Schnittstellen}
+	\section{REST-Schnittstellen} \label{sec:restschnittstellen}
 	\subsection{Projekte}
-		Projekte sind das zentrale Element, die jeder anlegen kann und an denen jeder Interessierte teilhaben kann. Ob es nun darum geht bei einem Projekt immer auf dem aktuellen Stand zu bleiben oder aktiv mitzuarbeiten.
+	Projekte sind das zentrale Element, die jeder anlegen kann und an denen jeder Interessierte teilhaben kann. Ob es nun darum geht bei einem Projekt immer auf dem aktuellen Stand zu bleiben oder aktiv mitzuarbeiten.
 		\begin{itemize}
 				\item \emph{/projects}, ist eine Ressource, die ein Projekt darstellt. 
 				\begin{itemize}
@@ -157,6 +178,7 @@ Tags dienen der näheren Beschreibung und Klassifizierung eines Projektes. Es is
 	\section{Datenmodell und Persistierung}
 	%Konstantin
 	\section{Client}
+	\label{sec:client}
 		\subsection{Bedienung}
 		
 			Der Client ist auf der Kommandozeile ausführbar. Gestartet wird er indem man ihn zuerst mit Hilfe von \emph{gradle} baut. Sollte man das gesamte Projekt gebaut haben wird er als Abhängigkeit bereits erstellt.
@@ -176,7 +198,7 @@ Tags dienen der näheren Beschreibung und Klassifizierung eines Projektes. Es is
 			Für eine JAR Datei mit allen Abhängigkeiten wurde von uns eine Task \emph{createRunnable} im client Projekt erstellt. Mithilfe von
 			\begin{verbatim}
 				$ gradle client:createRunnable
-				$ java -jar client/build/libs/client.jar
+				$ java -jar client/build/libs/client-all.jar
 			\end{verbatim}
 			
 			kann diese erzeugt und anschließend gestartet werden.
@@ -257,8 +279,138 @@ Tags dienen der näheren Beschreibung und Klassifizierung eines Projektes. Es is
 			\end{itemize}
 		
 	\section{Zusammenfassung}
-	%Konstantin
-	\section{Fazit}
+		%Konstantin
+	\section{Fazit (Entwurf)}
+		\begin{itemize}
+			\item viel gelernt
+			\item Zeit für Doku unterschätzt
+			\item wollten RSS Service (war Bonus) noch integrieren, dadurch zu wenig Zeit für Doku
+			\item Arbeiten im Team am Anfang schwierig (Aufwand durch Merge Konflikte und unbekannte Workflows sowie unterschiedliche Programmierstile)
+		\end{itemize}
+		
 	\section{Arbeitsverteilung}
-		Wer hat was gemacht.
+		
+		Die Entwicklung erfolgte in enger Zusammenarbeit beider beteiligten. Ganz am Anfang startete Felix Haller mit der Entwicklung eines lauffähigen REST Service mit Demo-Antworten auf REST-Anfragen. Währenddessen erstellte Konstantin Lorenz die zuvor ausgearbeitete Datenbank und ein Skript um diese automatisiert erstellen zu können. Als diese beiden Sachen lauffähig waren, wurde das erste mal getauscht um auch die anderen Bereiche kennen zu lernen. Konstantin Lorenz übernahm die Weiterentwicklung des REST Service um die fehlenden Ressourcen sowie Methoden und Felix Haller programmierte die Schnittstelle zur nun vorhandenen Datenbank so wie die Kapsel-Klassen für alle Objekte.
+		Nachdem der Kern-Service lief widmete sich Felix Haller der Schnittstelle zu den RSS Posts. Das beinhaltet den Backend-Service für die zuvor von Konstantin Lorenz vorbereiteten REST Ressource (/projects/{id}/posts). Herr Lorenz begann mit dem Beheben von im Laufe der Tests aufgefallenen Fehlern und dem dazugehörigen Anpassen der Services und der Datenbank.
+		
+		Nachfolgend eine genauere Aufschlüsselung aller weiteren Teile der Entwicklung und der jeweiligen Arbeitsverteilung:
+	 
+		
+		\subsection{Design des REST Service und gradle Skripte}
+			Gemeinsame Arbeit.
+		\subsection{Entwicklung REST Service}
+			Grundlegender REST Service von Felix Haller erstellt mit einigen Methoden der /projects Ressource. Später weiterentwickelt (/recent..., /user...) durch Konstantin Lorenz. Fehlerbeseitigung in gemeinsamer Arbeit. 
+		\subsection{Design der Datenbank}
+			Gemeinsame Arbeit.
+		\subsection{Erstellung Datenbank}
+			Größtenteils durch Konstantin Lorenz parallel zur Erstellung des Grundgerüsts des REST Service. Nach Rollentausch wurden in den Meetings besprochene Datenbankänderungen auch durch Felix Haller eingepflegt. Datenbankpflege übernahm aber weiterhin Konstantin Lorenz.
+		\subsection{Erstellung der Datenbankschnittstellen}
+			Grundlegende Funktion und Einbindung in das Core Projekt durch Felix Haller. Später Weiterentwicklung durch Konstantin Lorenz. Gemeinsame Fehlerbehebung während der gesamten Entwicklungszeit.
+		\subsection{Erstellung der RSS Schnittstelle}
+			Durch Felix Haller.
+		\subsection{Erstellung der Testklassen}
+			
+		\subsection{Erstellung Client}
+			Durch Felix Haller.
+		\subsection{Erstellung Dokumentation}
+			Gemeinsame Arbeit. Jeder hat die von ihm bearbeiteten Bereiche dokumentiert. Alles wurde von dem jeweils anderen kontrolliert und um fehlende Fakten ergänzt. Erstellung der Dokumentation mit Hilfe von \LaTeX Vorlagen der Hochschule (Prof. Dohmen).
+	
+
+	\newpage	
+	\appendix
+	\pagenumbering{Roman}
+	\setcounter{page}{1}
+	\addcontentsline{toc}{section}{Anhang}
+	\section*{Anhang}
+	\section{Gesprächsprotokolle}
+		Aufgrund der geographischen Trennung der beteiligten Personen lief die Kommunikation größtenteils über e-Mail, TextSecure (Messenger) oder mündlich über das Telefon ab. Die Anzahl der persönlichen Treffen war deshalb begrenzt. Fehler und Vorschläge wurden über TextSecure besprochen und im Bug-Tracker des Projektes behandelt.
+		
+		Nachfolgend alle vorhandenen Meeting-Protokolle:
+		\subsection{Meeting 1}
+			\begin{itemize}
+				\item Datum: 30.03.2015
+				\item Anwesende Personen: Felix Haller, Konstantin Lorenz
+				\item Themen:
+				\begin{itemize}
+					\item Gemeinsame Ausarbeitung ER- und REST Diagramm
+					\item Besprechung Beleg-Idee Dokument (für Abgabe) mit allen Texten
+					\item Codename:
+					\begin{itemize}
+						\item Beschluss: windy oak
+					\end{itemize}
+				\end{itemize}
+			\end{itemize}
+		
+		\subsection{Meeting 2}
+		\begin{itemize}
+			\item Datum: 20.04.2015
+			\item Anwesende Personen: Felix Haller, Konstantin Lorenz
+			\item Themen:
+			\begin{itemize}
+				\item Besprechung Zuständigkeiten
+				\begin{itemize}
+					\item Vorschlag: Gemeinsame Entwicklung aller Komponenten
+					\item Beschluss: Grobe REST-Service Implementation durch Felix Haller
+					\item Beschluss: Datenbank-Erstellung durch Konstantin Lorenz
+				\end{itemize}
+				\item Quellcode-Verwaltung
+				\begin{itemize}
+					\item Beschluss: Hosting auf Github (git VCS, Wiki, Issue-Tracker)
+				\end{itemize}
+				\item Termin für erste Lauffähige Funktionen
+				\begin{itemize}
+					\item Beschluss: 30.04.2015
+				\end{itemize}
+				\item Termin für nächstes Meeting
+				\begin{itemize}
+					\item Beschluss: 30.04.2015
+				\end{itemize}
+			\end{itemize}
+		\end{itemize}
+		
+		\subsection{Meeting 3}
+		\begin{itemize}
+			\item Datum: 30.04.2015
+			\item Anwesende Personen: Felix Haller, Konstantin Lorenz
+			\item Themen:
+			\begin{itemize}
+				\item Zuständigkeiten:
+				\begin{itemize}
+					\item Beschluss: Konstantin Lorenz übernimmt weitere Entwicklung des REST Service
+					\item Beschluss: Felix Haller übernimmt Entwicklung der Datenbank Schnittstellen
+				\end{itemize}
+				\item RSS Service (nicht Teil des ursprünglichen Beleg-Umfangs)
+				\begin{itemize}
+					\item Entwicklung angepeilt für Juni/Juli (Umsetzung durch Felix Haller)
+				\end{itemize}
+				\item Zeitplanung:
+				\begin{itemize}
+					\item Client-Entwicklung für Anfang September geplant
+					\item Erstellung Dokumentation für Ende September - Anfang Oktober geplant
+				\end{itemize}
+			\end{itemize}
+		\end{itemize}
+		
+		\subsection{Meeting 4}
+		\begin{itemize}
+			\item Datum: 17.06.2015
+			\item Anwesende Personen: Felix Haller, Konstantin Lorenz
+			\item Themen:
+			\begin{itemize}
+				\item Zustand REST Service/Zeitplanung
+				\begin{itemize}
+					\item Zeitplan OK
+				\end{itemize}
+				\item RSS Service
+				\begin{itemize}
+					\item Integration wird begonnen durch Felix Haller
+				\end{itemize}
+				\item Weitere Kommunikation (während Prüfungsperiode/Semesterferien)
+				\begin{itemize}
+					\item Beschluss: bis auf weiteres keine weiteren Meetings, Kommunikation über e-Mail
+				\end{itemize}
+			\end{itemize}
+		\end{itemize}
+		
+		
 \end{document}

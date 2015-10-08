@@ -26,7 +26,7 @@ public class RecentResourceImpl implements RecentResource {
     public Response getRecents() {
         
         return Response
-            .status(Response.Status.METHOD_NOT_ALLOWED)
+            .status(Response.Status.NOT_FOUND)
             .type("text/plain; charset=utf-8")
             .entity("Nicht implementiert, da keine zweite RECENT Quelle verfügbar. Für die Zukunft vorbereitet.")
             .build();
