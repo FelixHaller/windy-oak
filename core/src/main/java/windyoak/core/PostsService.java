@@ -32,13 +32,6 @@ public interface PostsService
      */
     public RSSPosts getRecentPosts(URL url, int n) throws OakCoreException;
     
-    /**
-     * Gibt eine Liste mit allen kompletten Posts zurück.
-     * 
-     * @param url
-     * @return
-     */
-    public RSSPosts getPosts(URL url, boolean recent, int count) throws OakCoreException;
     
     /**
      * Gibt einen einzelnen kompletten Post mit bestimmter ID zurück.
