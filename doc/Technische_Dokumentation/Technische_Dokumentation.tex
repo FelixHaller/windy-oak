@@ -6,7 +6,10 @@
 \usepackage[ngerman]{babel}
 \setlength{\parindent}{0pt} % Neue Absätze nicht einrücken
 \usepackage{hyperref}
+\setcounter{tocdepth}{1}	% Nur die erste Ebene im Inhaltsverzeichnis anzeigen.
 
+
+%Anhang
 
 
 \begin{document}
@@ -57,11 +60,9 @@
 		
 		Die Verwendung des mitgelieferten Clients wird in Abschnitt \ref{sec:client} ausführlich erklärt.
 	\section{REST Ressourcen im Überblick}
-	%Konstantin
+		%Konstantin
 		Hier soll eine "Ubersichtsgrafik hin.
-	\section{REST-Schnittstellen}\label{sec:restschnittstellen}
-	%Konstantin
-		\section{REST-Schnittstellen}
+	\section{REST-Schnittstellen} \label{sec:restschnittstellen}
 		Kurze Erklärung der Objekte
 		Projekt-Ressource
 		\begin{itemize}
@@ -245,10 +246,138 @@
 			\end{itemize}
 		
 	\section{Zusammenfassung}
-	%Konstantin
-	\section{Fazit}
-		%Felix
+		%Konstantin
+	\section{Fazit (Entwurf)}
+		\begin{itemize}
+			\item viel gelernt
+			\item Zeit für Doku unterschätzt
+			\item wollten RSS Service (war Bonus) noch integrieren, dadurch zu wenig Zeit für Doku
+			\item Arbeiten im Team am Anfang schwierig (Aufwand durch Merge Konflikte und unbekannte Workflows sowie unterschiedliche Programmierstile)
+		\end{itemize}
+		
 	\section{Arbeitsverteilung}
-		%Felix
-		Wer hat was gemacht.
+		
+		Die Entwicklung erfolgte in enger Zusammenarbeit beider beteiligten. Ganz am Anfang startete Felix Haller mit der Entwicklung eines lauffähigen REST Service mit Demo-Antworten auf REST-Anfragen. Währenddessen erstellte Konstantin Lorenz die zuvor ausgearbeitete Datenbank und ein Skript um diese automatisiert erstellen zu können. Als diese beiden Sachen lauffähig waren, wurde das erste mal getauscht um auch die anderen Bereiche kennen zu lernen. Konstantin Lorenz übernahm die Weiterentwicklung des REST Service um die fehlenden Ressourcen sowie Methoden und Felix Haller programmierte die Schnittstelle zur nun vorhandenen Datenbank so wie die Kapsel-Klassen für alle Objekte.
+		Nachdem der Kern-Service lief widmete sich Felix Haller der Schnittstelle zu den RSS Posts. Das beinhaltet den Backend-Service für die zuvor von Konstantin Lorenz vorbereiteten REST Ressource (/projects/{id}/posts). Herr Lorenz begann mit dem Beheben von im Laufe der Tests aufgefallenen Fehlern und dem dazugehörigen Anpassen der Services und der Datenbank.
+		
+		Nachfolgend eine genauere Aufschlüsselung aller weiteren Teile der Entwicklung und der jeweiligen Arbeitsverteilung:
+	 
+		
+		\subsection{Design des REST Service und gradle Skripte}
+			Gemeinsame Arbeit.
+		\subsection{Entwicklung REST Service}
+			Grundlegender REST Service von Felix Haller erstellt mit einigen Methoden der /projects Ressource. Später weiterentwickelt (/recent..., /user...) durch Konstantin Lorenz. Fehlerbeseitigung in gemeinsamer Arbeit. 
+		\subsection{Design der Datenbank}
+			Gemeinsame Arbeit.
+		\subsection{Erstellung Datenbank}
+			Größtenteils durch Konstantin Lorenz parallel zur Erstellung des Grundgerüsts des REST Service. Nach Rollentausch wurden in den Meetings besprochene Datenbankänderungen auch durch Felix Haller eingepflegt. Datenbankpflege übernahm aber weiterhin Konstantin Lorenz.
+		\subsection{Erstellung der Datenbankschnittstellen}
+			Grundlegende Funktion und Einbindung in das Core Projekt durch Felix Haller. Später Weiterentwicklung durch Konstantin Lorenz. Gemeinsame Fehlerbehebung während der gesamten Entwicklungszeit.
+		\subsection{Erstellung der RSS Schnittstelle}
+			Durch Felix Haller.
+		\subsection{Erstellung der Testklassen}
+			
+		\subsection{Erstellung Client}
+			Durch Felix Haller.
+		\subsection{Erstellung Dokumentation}
+			Gemeinsame Arbeit. Jeder hat die von ihm bearbeiteten Bereiche dokumentiert. Alles wurde von dem jeweils anderen kontrolliert und um fehlende Fakten ergänzt. Erstellung der Dokumentation mit Hilfe von \LaTeX Vorlagen der Hochschule (Prof. Dohmen).
+	
+
+	\newpage	
+	\appendix
+	\pagenumbering{Roman}
+	\setcounter{page}{1}
+	\addcontentsline{toc}{section}{Anhang}
+	\section*{Anhang}
+	\section{Gesprächsprotokolle}
+		Aufgrund der geographischen Trennung der beteiligten Personen lief die Kommunikation größtenteils über e-Mail, TextSecure (Messenger) oder mündlich über das Telefon ab. Die Anzahl der persönlichen Treffen war deshalb begrenzt. Fehler und Vorschläge wurden über TextSecure besprochen und im Bug-Tracker des Projektes behandelt.
+		
+		Nachfolgend alle vorhandenen Meeting-Protokolle:
+		\subsection{Meeting 1}
+			\begin{itemize}
+				\item Datum: 30.03.2015
+				\item Anwesende Personen: Felix Haller, Konstantin Lorenz
+				\item Themen:
+				\begin{itemize}
+					\item Gemeinsame Ausarbeitung ER- und REST Diagramm
+					\item Besprechung Beleg-Idee Dokument (für Abgabe) mit allen Texten
+					\item Codename:
+					\begin{itemize}
+						\item Beschluss: windy oak
+					\end{itemize}
+				\end{itemize}
+			\end{itemize}
+		
+		\subsection{Meeting 2}
+		\begin{itemize}
+			\item Datum: 20.04.2015
+			\item Anwesende Personen: Felix Haller, Konstantin Lorenz
+			\item Themen:
+			\begin{itemize}
+				\item Besprechung Zuständigkeiten
+				\begin{itemize}
+					\item Vorschlag: Gemeinsame Entwicklung aller Komponenten
+					\item Beschluss: Grobe REST-Service Implementation durch Felix Haller
+					\item Beschluss: Datenbank-Erstellung durch Konstantin Lorenz
+				\end{itemize}
+				\item Quellcode-Verwaltung
+				\begin{itemize}
+					\item Beschluss: Hosting auf Github (git VCS, Wiki, Issue-Tracker)
+				\end{itemize}
+				\item Termin für erste Lauffähige Funktionen
+				\begin{itemize}
+					\item Beschluss: 30.04.2015
+				\end{itemize}
+				\item Termin für nächstes Meeting
+				\begin{itemize}
+					\item Beschluss: 30.04.2015
+				\end{itemize}
+			\end{itemize}
+		\end{itemize}
+		
+		\subsection{Meeting 3}
+		\begin{itemize}
+			\item Datum: 30.04.2015
+			\item Anwesende Personen: Felix Haller, Konstantin Lorenz
+			\item Themen:
+			\begin{itemize}
+				\item Zuständigkeiten:
+				\begin{itemize}
+					\item Beschluss: Konstantin Lorenz übernimmt weitere Entwicklung des REST Service
+					\item Beschluss: Felix Haller übernimmt Entwicklung der Datenbank Schnittstellen
+				\end{itemize}
+				\item RSS Service (nicht Teil des ursprünglichen Beleg-Umfangs)
+				\begin{itemize}
+					\item Entwicklung angepeilt für Juni/Juli (Umsetzung durch Felix Haller)
+				\end{itemize}
+				\item Zeitplanung:
+				\begin{itemize}
+					\item Client-Entwicklung für Anfang September geplant
+					\item Erstellung Dokumentation für Ende September - Anfang Oktober geplant
+				\end{itemize}
+			\end{itemize}
+		\end{itemize}
+		
+		\subsection{Meeting 4}
+		\begin{itemize}
+			\item Datum: 17.06.2015
+			\item Anwesende Personen: Felix Haller, Konstantin Lorenz
+			\item Themen:
+			\begin{itemize}
+				\item Zustand REST Service/Zeitplanung
+				\begin{itemize}
+					\item Zeitplan OK
+				\end{itemize}
+				\item RSS Service
+				\begin{itemize}
+					\item Integration wird begonnen durch Felix Haller
+				\end{itemize}
+				\item Weitere Kommunikation (während Prüfungsperiode/Semesterferien)
+				\begin{itemize}
+					\item Beschluss: bis auf weiteres keine weiteren Meetings, Kommunikation über e-Mail
+				\end{itemize}
+			\end{itemize}
+		\end{itemize}
+		
+		
 \end{document}
