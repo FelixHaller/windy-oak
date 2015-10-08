@@ -56,20 +56,93 @@
 		Danach ist der Service unter der Adresse http://localhost:8080 erreichbar und gemäß den in Abschnitt \ref{sec:restschnittstellen} beschriebenen Methodenaufrufen verwendbar.
 		
 		Die Verwendung des mitgelieferten Clients wird in Abschnitt \ref{sec:client} ausführlich erklärt.
-		
-		
-		
 	\section{REST Ressourcen im Überblick}
+	%Konstantin
 		Hier soll eine "Ubersichtsgrafik hin.
-	
-	\section{REST-Schnittstellen} \label{sec:restschnittstellen}
+	\section{REST-Schnittstellen}\label{sec:restschnittstellen}
+	%Konstantin
+		\section{REST-Schnittstellen}
+		Kurze Erklärung der Objekte
+		Projekt-Ressource
+		\begin{itemize}
+		
+		
+				\item \emph{/projects}
+				\begin{itemize}
+					\item GET, listet alle in der Datenbank verfügbaren Projekte auf, die den Status \emph{published} oder \emph{closed} besitzen
+					\begin{itemize}
+						\item Query Parameter: \emph{title, tag, creator} sind alle optional und dienen der Einschränkung der Projektausgabe. Dabei kann eine Filterung über den Projekt-Title, die zugehören Tags sowie über den Ersteller vorgenommen werden. 
+						\item Rückgabewert: Es wird eine Liste von Projekten, die der Filterung entsprechen, zurückgegeben. Falls keine Übereinstimmung bei der Filterung erfolgt, wird ein Statuscode 204 gesendet. 
+					\end{itemize}
+					\item POST, Es wird ein neues Projekt erzeugt und in die Datenbank eingetragen.
+					\begin{itemize}
+						\item Form Parameter:
+						\begin{itemize}
+							\item  \emph{title}, Titel des Projektes als String
+							\item  \emph{username}, Benutzername des Erstellers. Der Ersteller muss als User in der Datenbank vorhanden sein.
+							\item  \emph{description}, Beschreibung des Projektes als String
+							\item  \emph{members}, Mitarbeiter mit ihren Rollen mit folgender Syntax: username1,Rolle;username2,Rolle; Die Mitarbeiter müssen als User in der Datenbank vorhanden sein. Die Rollen können frei gewählt werden.
+							\item  \emph{tagname (optional)}, Tag-Name eines vorhandenen Tags
+							\item \emph{postsURL}, URL eines RSS-Feeds 
+						\end{itemize}
+						\item Rückgabewert: Es wird das erstellte Projekt-Objekt zurückgegeben. Der zugehörige Statuscode ist 200. Ist ein nicht optionaler Parameter leer oder wird gegen die Syntax verstoßen, ist ein Statuscode 406 zu erwarten.  
+					\end{itemize}
+				\end{itemize}
+				\item \emph{/projects/{id}} Hier kann die \emph{id} des Projektes angegeben werden. Alle Methoden werden zur Manipulation des Projektes mit dieser \emph{id} verwendet.
+				\begin{itemize}
+					\item GET, ruft das Projekt ab und stellt es dar. 
+					\begin{itemize}
+						\item Path Parameter: \emph{id}, Nummer des Projekts
+						\item Rückgabewert: Falls ein Projekt mit dieser \emph{id} nicht vorhanden ist wird ein Statuscode 404 erzeugt. Ansonsten wird das Projekt mit dem Statuscode 200 zurückgegeben.
+					\end{itemize}
+					\item PUT, das Projekt kann mit dieser Methode verändert werden. Alle Parameter sind optional. Erfolgt keine Wertzuweisung bei den Parametern, gibt es auch keine Änderung. Die Parameter liegen in gleicher Weise vor, wie bei der POST-Methode von der \emph{/projects} Ressource.
+					\item DELETE, Das Projekt-Objekt mit der zugehörigen \emph{id} wird gelöscht.
+					\begin{itemize}
+						\item Rückgabewert: Es wird das gelöschte Projekt-Objekt mit einem Statuscode 200 zurückgegeben. Ist diese \emph{id} nicht vorhanden, wird ein Statuscode 404 gesendet.
+					\end{itemize}	
+				\end{itemize}
+		\end{itemize}
+		Kurze Erklärung der Kommentare
+		\begin{itemize}
+			\item projects/{id}/comments
+			\begin{itemize}
+				\item GET, listet alle in der Datenbank verfügbaren Kommentare auf, die zu der \emph{id} des Projektes gehören und  den Status \emph{published} oder \emph{closed} besitzen
+				\begin{itemize}
+					\item Rückgabewert: Es wird eine Liste von Kommentaren, die zu der Projekt-\emph{id} des Projektes gehören, ausgegeben. Der Statuscode ist bei erfolgreicher Rückgabe 200. Falls keine Kommentare vorhanden sind, wird ein Statuscode 204 zurückgegeben. 
+				\end{itemize}
+						\item POST, Es wird ein neuer Kommentar erzeugt und in die Datenbank eingetragen.
+						\begin{itemize}
+							\item Form Parameter:
+							\begin{itemize}
+								\item  \emph{title}, Titel des Kommentars als String
+								\item  \emph{creator}, Benutzername des Erstellers. Der Ersteller muss als User in der Datenbank vorhanden sein.
+								\item  \emph{content}, Inhalt des Kommentars als String
+								\item  \emph{status}, Hier kann der Status des Kommentars angegeben werden. Es sind folgende Wert möglich: \emph{new, published, closed}.???Erklärung???
+							\end{itemize}
+							\item Rückgabewert: Es wird das erstellte Kommentar-Objekt zurückgegeben. Der zugehörige Statuscode ist 200. Ist ein Parameter leer oder wird gegen die Syntax verstoßen, ist ein Statuscode 406 zu erwarten.  
+						\end{itemize}
+			\end{itemize}
+				\item \emph{projects/{id}/comments/{id}} Hier kann die \emph{id} des Kommentars angegeben werden. Alle Methoden werden zur Manipulation des Kommentars mit dieser \emph{id} verwendet.
+				\begin{itemize}
+						\item GET, ruft den Kommentar ab und stellt ihn dar. 
+						\begin{itemize}
+							\item Rückgabewert: Falls ein Kommentar mit dieser \emph{id} nicht vorhanden ist wird ein Statuscode 404 erzeugt. Ansonsten wird der Kommentar mit dem Statuscode 200 zurückgegeben.
+						\end{itemize}
+						\item PUT, der Kommentar kann mit dieser Methode verändert werden. Alle Parameter sind optional. Erfolgt keine Wertzuweisung bei den Parametern, gibt es auch keine Änderung. Die Parameter liegen in gleicher Weise vor, wie bei der POST-Methode von der \emph{projects/{id}/comments} Ressource.
+						\item DELETE, Das Kommentar-Objekt mit der zugehörigen \emph{id} wird gelöscht.
+						\begin{itemize}
+							\item Rückgabewert: Es wird das gelöschte Kommentar-Objekt mit einem Statuscode 200 zurückgegeben. Ist diese \emph{id} nicht vorhanden, wird ein Statuscode 404 gesendet.
+						\end{itemize}
+				\end{itemize}
+		\end{itemize}
 		 Schnittstellen im einzelnen dokumentieren:
 		 Welcher Dienst wird bereit gestellt? Was passiert?
 		 Welche Aufrufe sind dazu notwendig?
 		 Welche Parameter m"ussen "ubergeben werden? (obligatorisch, verpflichtend)
 		 Welche Status-Codes sind zu erwarten?
-		 Welche Ergebnisse werden zur"uckgegeben?
+		 Welche Ergebnisse werden zur"uckgegeben? 
 	\section{Datenmodell und Persistierung}
+	%Konstantin
 	\section{Client}
 	\label{sec:client}
 		\subsection{Bedienung}
@@ -172,6 +245,7 @@
 			\end{itemize}
 		
 	\section{Zusammenfassung}
+	%Konstantin
 	\section{Fazit}
 		%Felix
 	\section{Arbeitsverteilung}
