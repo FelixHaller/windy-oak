@@ -2,201 +2,226 @@
 
 \usepackage[all,blueheadings,150]{HSMW-Logo}
 \usepackage[utf8]{inputenc} 			% wichtig für Umlaute
+\usepackage[onehalfspacing]{setspace} % Zeilenabstand 1,5 Fach
+\setlength{\parindent}{0pt} % Neue Absätze nicht einrücken
+
+
 
 \begin{document}
-\section{Aufgabenstellung}
-\section{Motivation}
-\section{Installations- und Startanleitung}
-\section{REST Ressourcen im Überblick}
-Hier soll eine "Ubersichtsgrafik hin.
-\section{REST-Schnittstellen}
-Kurze Erklärung der Objekte
-Projekt-Ressource
-\begin{itemize}
-
-
-		\item \emph{/projects}
+	
+	
+	%\titlehead{Kopf der Titelei}
+	\subject{Verteilte Systeme}
+	\title{Programmier-Beleg REST}
+	\subtitle{Eine zentrale Projektverwaltung für Studenten und Professoren}
+	\author{Felix Haller (fhaller1) \and Konstantin Lorenz(klorenz1)}
+	\date{07.10.2015}
+	\publishers{Prüfer: Prof. Dr.-Ing. Andreas Ittner}
+	%\extratitle{\centering Schmutztitel \\ goLaTeX (C) 2009 \\ ISBN 978-3865412911}
+	%\uppertitleback{Obiger Titelrückentitel}
+	%\lowertitleback{Für dieses Beispiel wird keine Haftung übernommen.}
+	%\dedication{Dieses Beispiel widme ich\\allen LaTeX Usern}
+	\maketitle
+	
+	\newpage
+	\tableofcontents
+	\newpage	
+	
+	
+	
+	
+	\section{Aufgabenstellung}
+	\section{Motivation}
+	\section{Installations- und Startanleitung}
+	\section{REST Ressourcen im Überblick}
+		Hier soll eine "Ubersichtsgrafik hin.
+	\section{REST-Schnittstellen}
+		\section{REST-Schnittstellen}
+		Kurze Erklärung der Objekte
+		Projekt-Ressource
 		\begin{itemize}
-			\item GET, listet alle in der Datenbank verfügbaren Projekte auf, die den Status \emph{published} oder \emph{closed} besitzen
-			\begin{itemize}
-				\item Query Parameter: \emph{title, tag, creator} sind alle optional und dienen der Einschränkung der Projektausgabe. Dabei kann eine Filterung über den Projekt-Title, die zugehören Tags sowie über den Ersteller vorgenommen werden. 
-				\item Rückgabewert: Es wird eine Liste von Projekten, die der Filterung entsprechen, zurückgegeben. Falls keine Übereinstimmung bei der Filterung erfolgt, wird ein Statuscode 204 gesendet. 
-			\end{itemize}
-			\item POST, Es wird ein neues Projekt erzeugt und in die Datenbank eingetragen.
-			\begin{itemize}
-				\item Form Parameter:
-				\begin{itemize}
-					\item  \emph{title}, Titel des Projektes als String
-					\item  \emph{username}, Benutzername des Erstellers. Der Ersteller muss als User in der Datenbank vorhanden sein.
-					\item  \emph{description}, Beschreibung des Projektes als String
-					\item  \emph{members}, Mitarbeiter mit ihren Rollen mit folgender Syntax: username1,Rolle;username2,Rolle; Die Mitarbeiter müssen als User in der Datenbank vorhanden sein. Die Rollen können frei gewählt werden.
-					\item  \emph{tagname (optional)}, Tag-Name eines vorhandenen Tags
-					\item \emph{postsURL}, URL eines RSS-Feeds 
-				\end{itemize}
-				\item Rückgabewert: Es wird das erstellte Projekt-Objekt zurückgegeben. Der zugehörige Statuscode ist 200. Ist ein nicht optionaler Parameter leer oder wird gegen die Syntax verstoßen, ist ein Statuscode 406 zu erwarten.  
-			\end{itemize}
-		\end{itemize}
-		\item \emph{/projects/{id}} Hier kann die \emph{id} des Projektes angegeben werden. Alle Methoden werden zur Manipulation des Projektes mit dieser \emph{id} verwendet.
-		\begin{itemize}
-			\item GET, ruft das Projekt ab und stellt es dar. 
-			\begin{itemize}
-				\item Rückgabewert: Falls ein Projekt mit dieser \emph{id} nicht vorhanden ist wird ein Statuscode 404 erzeugt. Ansonsten wird das Projekt mit dem Statuscode 200 zurückgegeben.
-			\end{itemize}
-			\item PUT, das Projekt kann mit dieser Methode verändert werden. Alle Parameter sind optional. Erfolgt keine Wertzuweisung bei den Parametern, gibt es auch keine Änderung. Die Parameter liegen in gleicher Weise vor, wie bei der POST-Methode von der \emph{/projects} Ressource.
-			\item DELETE, Das Projekt-Objekt mit der zugehörigen \emph{id} wird gelöscht.
-			\begin{itemize}
-				\item Rückgabewert: Es wird das gelöschte Projekt-Objekt mit einem Statuscode 200 zurückgegeben. Ist diese \emph{id} nicht vorhanden, wird ein Statuscode 404 gesendet.
-			\end{itemize}
-			
-		\end{itemize}
 		
-\end{itemize}
-Kurze Erklärung der Kommentare
-\begin{itemize}
-	\item projects/id/comments
-	\begin{itemize}
-		\item GET, listet alle in der Datenbank verfügbaren Kommentare auf, die zu der \emph{id} des Projektes gehören und  den Status \emph{published} oder \emph{closed} besitzen
+		
+				\item \emph{/projects}
 				\begin{itemize}
-					\item Rückgabewert: Es wird eine Liste von Kommentaren, die zu der Projekt-\emph{id} des Projektes gehören, ausgegeben. Der Statuscode ist bei erfolgreicher Rückgabe 200. Falls keine Kommentare vorhanden sind wird ein Statuscode 204 zurückgegeben. 
-				\end{itemize}
-				\item POST, Es wird ein neuer Kommentar erzeugt und in die Datenbank eingetragen.
-				\begin{itemize}
-					\item Form Parameter:
+					\item GET, listet alle in der Datenbank verfügbaren Projekte auf, die den Status \emph{published} oder \emph{closed} besitzen
 					\begin{itemize}
-						\item  \emph{title}, Titel des Kommentars als String
-						\item  \emph{creator}, Benutzername des Erstellers. Der Ersteller muss als User in der Datenbank vorhanden sein.
-						\item  \emph{content}, Inhalt des Kommentars als String
-						\item  \emph{status}, Hier kann der Status des Kommentars angegeben werden. Es sind folgende Wert möglich: \emph{new, published, closed}.???Erklärung???
+						\item Query Parameter: \emph{title, tag, creator} sind alle optional und dienen der Einschränkung der Projektausgabe. Dabei kann eine Filterung über den Projekt-Title, die zugehören Tags sowie über den Ersteller vorgenommen werden. 
+						\item Rückgabewert: Es wird eine Liste von Projekten, die der Filterung entsprechen, zurückgegeben. Falls keine Übereinstimmung bei der Filterung erfolgt, wird ein Statuscode 204 gesendet. 
 					\end{itemize}
-					\item Rückgabewert: Es wird das erstellte Kommentar-Objekt zurückgegeben. Der zugehörige Statuscode ist 200. Ist ein Parameter leer oder wird gegen die Syntax verstoßen, ist ein Statuscode 406 zu erwarten.  
+					\item POST, Es wird ein neues Projekt erzeugt und in die Datenbank eingetragen.
+					\begin{itemize}
+						\item Form Parameter:
+						\begin{itemize}
+							\item  \emph{title}, Titel des Projektes als String
+							\item  \emph{username}, Benutzername des Erstellers. Der Ersteller muss als User in der Datenbank vorhanden sein.
+							\item  \emph{description}, Beschreibung des Projektes als String
+							\item  \emph{members}, Mitarbeiter mit ihren Rollen mit folgender Syntax: username1,Rolle;username2,Rolle; Die Mitarbeiter müssen als User in der Datenbank vorhanden sein. Die Rollen können frei gewählt werden.
+							\item  \emph{tagname (optional)}, Tag-Name eines vorhandenen Tags
+							\item \emph{postsURL}, URL eines RSS-Feeds 
+						\end{itemize}
+						\item Rückgabewert: Es wird das erstellte Projekt-Objekt zurückgegeben. Der zugehörige Statuscode ist 200. Ist ein nicht optionaler Parameter leer oder wird gegen die Syntax verstoßen, ist ein Statuscode 406 zu erwarten.  
+					\end{itemize}
 				\end{itemize}
-			\end{itemize}
-			\item \emph{projects/id/comments/id} Hier kann die \emph{id} des Projektes angegeben werden. Alle Methoden werden zur Manipulation des Projektes mit dieser \emph{id} verwendet.
-			\begin{itemize}
-				\item GET, ruft das Projekt ab und stellt es dar. 
+				\item \emph{/projects/{id}} Hier kann die \emph{id} des Projektes angegeben werden. Alle Methoden werden zur Manipulation des Projektes mit dieser \emph{id} verwendet.
 				\begin{itemize}
-					\item Rückgabewert: Falls ein Projekt mit dieser \emph{id} nicht vorhanden ist wird ein Statuscode 404 erzeugt. Ansonsten wird das Projekt mit dem Statuscode 200 zurückgegeben.
-				\end{itemize}
-				\item PUT, das Projekt kann mit dieser Methode verändert werden. Alle Parameter sind optional. Erfolgt keine Wertzuweisung bei den Parametern, gibt es auch keine Änderung. Die Parameter liegen in gleicher Weise vor, wie bei der POST-Methode von der \emph{/projects} Ressource.
-				\item DELETE, Das Projekt-Objekt mit der zugehörigen \emph{id} wird gelöscht.
-				\begin{itemize}
-					\item Rückgabewert: Es wird das gelöschte Projekt-Objekt mit einem Statuscode 200 zurückgegeben. Ist diese \emph{id} nicht vorhanden, wird ein Statuscode 404 gesendet.
+					\item GET, ruft das Projekt ab und stellt es dar. 
+					\begin{itemize}
+						\item Rückgabewert: Falls ein Projekt mit dieser \emph{id} nicht vorhanden ist wird ein Statuscode 404 erzeugt. Ansonsten wird das Projekt mit dem Statuscode 200 zurückgegeben.
+					\end{itemize}
+					\item PUT, das Projekt kann mit dieser Methode verändert werden. Alle Parameter sind optional. Erfolgt keine Wertzuweisung bei den Parametern, gibt es auch keine Änderung. Die Parameter liegen in gleicher Weise vor, wie bei der POST-Methode von der \emph{/projects} Ressource.
+					\item DELETE, Das Projekt-Objekt mit der zugehörigen \emph{id} wird gelöscht.
+					\begin{itemize}
+						\item Rückgabewert: Es wird das gelöschte Projekt-Objekt mit einem Statuscode 200 zurückgegeben. Ist diese \emph{id} nicht vorhanden, wird ein Statuscode 404 gesendet.
+					\end{itemize}
+					
 				\end{itemize}
 				
-
-	\end{itemize}
-\end{itemize}
- Schnittstellen im einzelnen dokumentieren:
- Welcher Dienst wird bereit gestellt? Was passiert?
- Welche Aufrufe sind dazu notwendig?
- Welche Parameter m"ussen "ubergeben werden? (obligatorisch, verpflichtend)
- Welche Status-Codes sind zu erwarten?
- Welche Ergebnisse werden zur"uckgegeben? 
-\section{Datenmodell und Persistierung}
-\section{Client}
-
-\section{Bedienung}
-
-	Der Client ist auf der Kommandozeile ausführbar. Gestartet wird er indem man ihn zuerst mit Hilfe von \emph{gradle} baut. Sollte man das gesamte Projekt gebaut haben wird er als Abhängigkeit bereits erstellt.
-	\begin{verbatim}
-		$ gradle build client
-	\end{verbatim}
-	
-	Danach findet man im Verzeichnis \emph{client/build/distributions} eine \emph{client.tar}, in welcher sich der lauffähige Client befindet. Man muss sie zuerst entpacken und danach den client starten.
-	
-	\begin{verbatim}
-		$ cd client/build/distributions
-		$ tar xf client.tar
-		$ cd client
-		$ bin/client
-	\end{verbatim}
-	
-	Für eine JAR Datei mit allen Abhängigkeiten wurde von uns eine Task \emph{createRunnable} im client Projekt erstellt. Mithilfe von
-	\begin{verbatim}
-		$ gradle client:createRunnable
-		$ java -jar client/build/libs/client.jar
-	\end{verbatim}
-	
-	kann diese erzeugt und anschließend gestartet werden.
-	
-\section{Testszenarien}
-	
-	Er testet die Funktionalität des REST-Service und gibt die Rückgabe (XML) formatiert aus. Nach jedem Szenario unterbricht er seinen Lauf, um dem Bediener die Möglichkeit zu geben den Ablauf der Abrufe nachzuvollziehen und die Ausgabe zu betrachten. Die Ausführung kann durch das Drücken der ''ENTER'' Taste fortgesetzt werden. Während des Durchlaufs werden zudem die zurückgelieferten Statuscodes ausgegeben.
-	
-	Der Client testet folgende Anwendungsszenarien:
-	\begin{itemize}
-		\item Anzeigen eines bereits vorhandenen Demo - Projektes
-		\begin{itemize}
-			\item Erwartetes Ergebnis: erfolgreich (Statuscode: 200)
 		\end{itemize}
-		\item Anzeigen der Kommentare zu einem Projekt
+		Kurze Erklärung der Kommentare
 		\begin{itemize}
-			\item Erwartetes Ergebnis: erfolgreich (Statuscode: 200)
-			\item Es wird der Inhalt des ersten Kommentar ausgegeben
-		\end{itemize}
-		\item Versuch des Abrufs eines nicht vorhandenen Projektes (falsche ID)
-		\begin{itemize}
-			\item Erwartetes Ergebnis: Fehler (Statuscode: 404)
-		\end{itemize}
-		\item Erstellen eines neuen Projektes
-		\begin{itemize}
-			\item Erwartetes Ergebnis: erfolgreich (Statuscode: 201)
-			\item Die ID des angelegten Projektes wird am Ende ausgegeben
-		\end{itemize}
-		\item Suchen nach Projektnamen
-		\begin{itemize}
-			\item Erwartetes Ergebnis: erfolgreich (Statuscode: 200)
-			\item Anzahl der gefundenen Projekte wird ausgegeben
-		\end{itemize}
-		\item Modifizieren eines Projektes (zwei Abfragen)
-		\begin{itemize}
-			\item Tippfehler in Beschreibung wird korrigiert
-			\item Tag wird zum Projekt hinzugefügt
-			\item Erwartetes Ergebnis: erfolgreich (Statuscode: 200) (beide Male)
-		\end{itemize}
-		\item Das Filtern von Projekten nach Tags
-		\begin{itemize}
-			\item Erwartetes Ergebnis: erfolgreich (Statuscode: 200)
-			\item Anzahl der mit Tag markierten Projekte wird ausgegeben
-		\end{itemize}
-		\item Erstellen eines Kommentars zu einem Projekt
-		\begin{itemize}
-			\item Erwartetes Ergebnis: erfolgreich (Statuscode: 201)
-			\item Kommentar-ID wird am Ende ausgegeben
-		\end{itemize}
-		\item Anzeigen der RSS-Posts zu einem Projekt
-		\begin{itemize}
-			\item Erwartetes Ergebnis: erfolgreich (Statuscode: 200)
-			\item (Abhängig von der Erreichbarkeit des fremden Service. Im Beispiel Projekt handelt es sich um github.com)
-			\item Der Inhalt des jüngsten Posts wird angezeigt
-		\end{itemize}
-		\item Anzeigen der letzten angelegten Projekte
-		\begin{itemize}
-			\item Erwartetes Ergebnis: erfolgreich (Statuscode: 200)
-			\item letzten (max. 10) angelegten Projekte werden absteigend sortiert angezeigt
-			\item Die ID des neusten Projektes wird angezeigt
-		\end{itemize}
-		\item Das Löschen eines Projektes
-		\begin{itemize}
-			\item Erwartetes Ergebnis: erfolgreich (Statuscode: 200)
-			\item Projekt wird in Datenbank als gelöscht markiert
-			\item Letzter Zustand des gelöschten Projektes wird ausgegeben
-		\end{itemize}
-		\item gelöschtes Projekt erneut anzeigen
-		\begin{itemize}
-			\item Erwartetes Ergebnis: Fehler (Statuscode: 404)
-		\end{itemize}
+			\item projects/id/comments
+			\begin{itemize}
+				\item GET, listet alle in der Datenbank verfügbaren Kommentare auf, die zu der \emph{id} des Projektes gehören und  den Status \emph{published} oder \emph{closed} besitzen
+						\begin{itemize}
+							\item Rückgabewert: Es wird eine Liste von Kommentaren, die zu der Projekt-\emph{id} des Projektes gehören, ausgegeben. Der Statuscode ist bei erfolgreicher Rückgabe 200. Falls keine Kommentare vorhanden sind wird ein Statuscode 204 zurückgegeben. 
+						\end{itemize}
+						\item POST, Es wird ein neuer Kommentar erzeugt und in die Datenbank eingetragen.
+						\begin{itemize}
+							\item Form Parameter:
+							\begin{itemize}
+								\item  \emph{title}, Titel des Kommentars als String
+								\item  \emph{creator}, Benutzername des Erstellers. Der Ersteller muss als User in der Datenbank vorhanden sein.
+								\item  \emph{content}, Inhalt des Kommentars als String
+								\item  \emph{status}, Hier kann der Status des Kommentars angegeben werden. Es sind folgende Wert möglich: \emph{new, published, closed}.???Erklärung???
+							\end{itemize}
+							\item Rückgabewert: Es wird das erstellte Kommentar-Objekt zurückgegeben. Der zugehörige Statuscode ist 200. Ist ein Parameter leer oder wird gegen die Syntax verstoßen, ist ein Statuscode 406 zu erwarten.  
+						\end{itemize}
+					\end{itemize}
+					\item \emph{projects/id/comments/id} Hier kann die \emph{id} des Projektes angegeben werden. Alle Methoden werden zur Manipulation des Projektes mit dieser \emph{id} verwendet.
+					\begin{itemize}
+						\item GET, ruft das Projekt ab und stellt es dar. 
+						\begin{itemize}
+							\item Rückgabewert: Falls ein Projekt mit dieser \emph{id} nicht vorhanden ist wird ein Statuscode 404 erzeugt. Ansonsten wird das Projekt mit dem Statuscode 200 zurückgegeben.
+						\end{itemize}
+						\item PUT, das Projekt kann mit dieser Methode verändert werden. Alle Parameter sind optional. Erfolgt keine Wertzuweisung bei den Parametern, gibt es auch keine Änderung. Die Parameter liegen in gleicher Weise vor, wie bei der POST-Methode von der \emph{/projects} Ressource.
+						\item DELETE, Das Projekt-Objekt mit der zugehörigen \emph{id} wird gelöscht.
+						\begin{itemize}
+							\item Rückgabewert: Es wird das gelöschte Projekt-Objekt mit einem Statuscode 200 zurückgegeben. Ist diese \emph{id} nicht vorhanden, wird ein Statuscode 404 gesendet.
+						\end{itemize}
+						
 		
-	\end{itemize}
-	
-	Für die einzelnen Aufgaben wurden jeweils Methoden erstellt, die eine Instanz der Apache \emph{HttpClient} Klasse bedienen. Sie senden eine GET/POST/PUT/DELETE Anfrage zum REST-Service und empfangen das Ergebnis. Das anschließende Unmarschalling der empfangenen XML Bäume in die entsprechenden Java-Objekte übernehmen spezielle Methoden für die einzelnen Objekt-Typen.
-	
-	Für die formatierte Ausgabe der XML-Antworten wurde außerdem eine Klassen-Methode \emph{prettyPrintXml} geschrieben.
-	
-	
-	
-\section{Zusammenfassung}
-\section{Fazit}
-\section{Arbeitsverteilung}
-Wer hat was gemacht.
+			\end{itemize}
+		\end{itemize}
+		 Schnittstellen im einzelnen dokumentieren:
+		 Welcher Dienst wird bereit gestellt? Was passiert?
+		 Welche Aufrufe sind dazu notwendig?
+		 Welche Parameter m"ussen "ubergeben werden? (obligatorisch, verpflichtend)
+		 Welche Status-Codes sind zu erwarten?
+		 Welche Ergebnisse werden zur"uckgegeben? 
+	\section{Datenmodell und Persistierung}
+	\section{Client}
+		\subsection{Bedienung}
+		
+			Der Client ist auf der Kommandozeile ausführbar. Gestartet wird er indem man ihn zuerst mit Hilfe von \emph{gradle} baut. Sollte man das gesamte Projekt gebaut haben wird er als Abhängigkeit bereits erstellt.
+			\begin{verbatim}
+				$ gradle build client
+			\end{verbatim}
+			
+			Danach findet man im Verzeichnis \emph{client/build/distributions} eine \emph{client.tar}, in welcher sich der lauffähige Client befindet. Man muss sie zuerst entpacken und danach den client starten.
+			
+			\begin{verbatim}
+				$ cd client/build/distributions
+				$ tar xf client.tar
+				$ cd client
+				$ bin/client
+			\end{verbatim}
+			
+			Für eine JAR Datei mit allen Abhängigkeiten wurde von uns eine Task \emph{createRunnable} im client Projekt erstellt. Mithilfe von
+			\begin{verbatim}
+				$ gradle client:createRunnable
+				$ java -jar client/build/libs/client.jar
+			\end{verbatim}
+			
+			kann diese erzeugt und anschließend gestartet werden.
+		\subsection{Methoden des Clients}
+		
+			Für die einzelnen Aufgaben wurden jeweils Methoden erstellt, die eine Instanz der Apache \emph{HttpClient} Klasse bedienen. Sie senden eine GET/POST/PUT/DELETE Anfrage zum REST-Service und empfangen das Ergebnis. Das anschließende Unmarschalling der empfangenen XML Bäume in die entsprechenden Java-Objekte übernehmen spezielle Methoden für die einzelnen Objekt-Typen.
+			
+			Für die formatierte Ausgabe der XML-Antworten wurde außerdem eine Klassen-Methode \emph{prettyPrintXml} geschrieben.
+		
+		
+		\subsection{Testszenarien}
+			
+			Er testet die Funktionalität des REST-Service und gibt die Rückgabe (XML) formatiert aus. Nach jedem Szenario unterbricht er seinen Lauf, um dem Bediener die Möglichkeit zu geben den Ablauf der Abrufe nachzuvollziehen und die Ausgabe zu betrachten. Die Ausführung kann durch das Drücken der ''ENTER'' Taste fortgesetzt werden. Der Client gibt aus, was er gerade macht und was darauf hin passiert. Während des Durchlaufs werden zudem die zurückgelieferten Statuscodes ausgegeben.
+			
+			Der Client testet folgende Anwendungsszenarien:
+			\begin{itemize}
+				\item Anzeigen eines bereits vorhandenen Demo - Projektes
+				\begin{itemize}
+					\item Erwartetes Ergebnis: erfolgreich (Statuscode: 200)
+				\end{itemize}
+				\item Anzeigen der Kommentare zu einem Projekt
+				\begin{itemize}
+					\item Erwartetes Ergebnis: erfolgreich (Statuscode: 200)
+					\item Es wird der Inhalt des ersten Kommentar ausgegeben
+				\end{itemize}
+				\item Versuch des Abrufs eines nicht vorhandenen Projektes (falsche ID)
+				\begin{itemize}
+					\item Erwartetes Ergebnis: Fehler (Statuscode: 404)
+				\end{itemize}
+				\item Erstellen eines neuen Projektes
+				\begin{itemize}
+					\item Erwartetes Ergebnis: erfolgreich (Statuscode: 201)
+					\item Die ID des angelegten Projektes wird am Ende ausgegeben
+				\end{itemize}
+				\item Suchen nach Projektnamen
+				\begin{itemize}
+					\item Erwartetes Ergebnis: erfolgreich (Statuscode: 200)
+					\item Anzahl der gefundenen Projekte wird ausgegeben
+				\end{itemize}
+				\item Modifizieren eines Projektes (zwei Abfragen)
+				\begin{itemize}
+					\item Tippfehler in Beschreibung wird korrigiert
+					\item Tag wird zum Projekt hinzugefügt
+					\item Erwartetes Ergebnis: erfolgreich (Statuscode: 200) (beide Male)
+				\end{itemize}
+				\item Das Filtern von Projekten nach Tags
+				\begin{itemize}
+					\item Erwartetes Ergebnis: erfolgreich (Statuscode: 200)
+					\item Anzahl der mit Tag markierten Projekte wird ausgegeben
+				\end{itemize}
+				\item Erstellen eines Kommentars zu einem Projekt
+				\begin{itemize}
+					\item Erwartetes Ergebnis: erfolgreich (Statuscode: 201)
+					\item Kommentar-ID wird am Ende ausgegeben
+				\end{itemize}
+				\item Anzeigen der RSS-Posts zu einem Projekt
+				\begin{itemize}
+					\item Erwartetes Ergebnis: erfolgreich (Statuscode: 200)
+					\item (Abhängig von der Erreichbarkeit des fremden Service. Im Beispiel Projekt handelt es sich um github.com)
+					\item Der Inhalt des jüngsten Posts wird angezeigt
+				\end{itemize}
+				\item Anzeigen der letzten angelegten Projekte
+				\begin{itemize}
+					\item Erwartetes Ergebnis: erfolgreich (Statuscode: 200)
+					\item letzten (max. 10) angelegten Projekte werden absteigend sortiert angezeigt
+					\item Die ID des neusten Projektes wird angezeigt
+				\end{itemize}
+				\item Das Löschen eines Projektes
+				\begin{itemize}
+					\item Erwartetes Ergebnis: erfolgreich (Statuscode: 200)
+					\item Projekt wird in Datenbank als gelöscht markiert
+					\item Letzter Zustand des gelöschten Projektes wird ausgegeben
+				\end{itemize}
+				\item gelöschtes Projekt erneut anzeigen
+				\begin{itemize}
+					\item Erwartetes Ergebnis: Fehler (Statuscode: 404)
+				\end{itemize}
+			\end{itemize}
+		
+	\section{Zusammenfassung}
+	\section{Fazit}
+	\section{Arbeitsverteilung}
+		Wer hat was gemacht.
 \end{document}

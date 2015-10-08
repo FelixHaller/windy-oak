@@ -6,6 +6,7 @@
 package windyoak.rest.impl;
 
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import windyoak.core.OakCoreException;
 import windyoak.core.Projects;
@@ -24,7 +25,11 @@ public class RecentResourceImpl implements RecentResource {
     @Override
     public Response getRecents() {
         
-        throw new UnsupportedOperationException("Nicht implementiert, da keine zweite RECENT Quelle verfügbar. Für die Zukunft vorbereitet."); //To change body of generated methods, choose Tools | Templates.
+        return Response
+            .status(Response.Status.METHOD_NOT_ALLOWED)
+            .type("text/plain; charset=utf-8")
+            .entity("Nicht implementiert, da keine zweite RECENT Quelle verfügbar. Für die Zukunft vorbereitet.")
+            .build();
     }
 
     @Override

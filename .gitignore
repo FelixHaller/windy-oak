@@ -8,8 +8,9 @@ db.sqlite
 doc/Technische_Dokumentation/*.aux
 doc/Technische_Dokumentation/*.glg
 doc/Technische_Dokumentation/*.glo
-doc/Technische_Dokumentation/*.gls
 doc/Technische_Dokumentation/*.idx
+doc/Technische_Dokumentation/*.gls
+doc/Technische_Dokumentation/*.toc
 doc/Technische_Dokumentation/*.ilg
 doc/Technische_Dokumentation/*.ind
 doc/Technische_Dokumentation/*.ist
