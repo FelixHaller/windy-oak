@@ -3,7 +3,9 @@
 \usepackage[all,blueheadings,150]{HSMW-Logo}
 \usepackage[utf8]{inputenc} 			% wichtig für Umlaute
 \usepackage[onehalfspacing]{setspace} % Zeilenabstand 1,5 Fach
+\usepackage[ngerman]{babel}
 \setlength{\parindent}{0pt} % Neue Absätze nicht einrücken
+\usepackage{hyperref}
 
 
 
@@ -22,20 +24,45 @@
 	%\lowertitleback{Für dieses Beispiel wird keine Haftung übernommen.}
 	%\dedication{Dieses Beispiel widme ich\\allen LaTeX Usern}
 	\maketitle
-	
+	\thispagestyle{empty} 
 	\newpage
 	\tableofcontents
+	\thispagestyle{empty}
 	\newpage	
-	
+	\setcounter{page}{1} 
 	
 	
 	
 	\section{Aufgabenstellung}
+		Nachfolgend weitestgehend übernommen aus offizieller Aufgabenstellung:
+		Es soll im Rahmen einer Belegarbeit ein eigener, lauffähiger RESTful Webservice mit einem frei wählbaren Thema entwickelt
+		werden. Zum Nachweis der Funktionsfähigkeit ist ein Testclient notwendig, der ein Testszenario nachvollziehbar durchspielt und damit alle Funktionen des Service prüft. In der abzugebenden technischen Dokumentation soll alles enthalten sein, was zum Verständnis des Services, also seiner Funktion und dem technischen Hintergrund, notwendig ist.
+		
 	\section{Motivation}
+		Zur Zeit existiert keine zentrale Anlaufstelle, wenn es um die Bekanntmachung von und die Suche nach Projekten geht. Das Ziel des Webservice ist eine bessere Vernetzung der Hochschulmitglieder während der Planung und Durchführung von Projekten. Einerseits soll eine Möglichkeit für Professoren gegeben werden geplante Forschungsarbeiten, für die noch Unterstützer gesucht werden, vorzustellen. Andererseits soll Studenten die Möglichkeit geboten werden bei Interesse an einem Thema - beispielsweise einer bestimmten Programmiersprache - eine Anlaufstelle zur praktischen Umsetzung zu finden. Außerdem erleichtert es u.U. das Finden eines Themas für praktische Belegarbeiten (z.B. Java2, Verteilte Systeme, SWT, ...)
 	\section{Installations- und Startanleitung}
+		Das Projekt wird mittels des Build Systems \emph{gradle} entwickelt. Es hilft bei den regelmäßig auszuführenden Arbeiten, wie dem Kompilieren von Klassen, dem Testen der Anwendung und der Erstellung der Javadoc Dokumentation. Innerhalb der gradle Konfigurationsdateien wurden Abhängigkeiten so definiert, dass beim Bau des Hauptprojektes alle Unterprojekte gleich mit gebaut und getestet werden. Außerdem werden alle benötigten Abhängigkeiten beim erstmaligen Kompilieren der Quellen heruntergeladen. Somit ist keine manuelle Installation von externen Abhängigkeiten notwendig. Um zuvor gebaute und temporäre Dateien vor dem Kompilieren zu löschen empfiehlt es sich den \emph{clean} Auftrag vorher auszuführen.
+				
+		Zum Erstellen und Testen des gesamten Projektes verwendet man also den folgenden Befehl:
+		\begin{verbatim}
+			$ gradle clean build
+		\end{verbatim}
+		
+		Zum Starten des REST-Service verwendet man den entsprechenden Auftrag innerhalb des \emph{rest} Projektes:
+		\begin{verbatim}
+			$ gradle rest:jettyRun
+		\end{verbatim}
+		
+		Danach ist der Service unter der Adresse http://localhost:8080 erreichbar und gemäß den in Abschnitt \ref{sec:restschnittstellen} beschriebenen Methodenaufrufen verwendbar.
+		
+		Die Verwendung des mitgelieferten Clients wird in Abschnitt \ref{sec:client} ausführlich erklärt.
+		
+		
+		
 	\section{REST Ressourcen im Überblick}
 		Hier soll eine "Ubersichtsgrafik hin.
-	\section{REST-Schnittstellen}
+	
+	\section{REST-Schnittstellen} \label{sec:restschnittstellen}
 		 Schnittstellen im einzelnen dokumentieren:
 		 Welcher Dienst wird bereit gestellt? Was passiert?
 		 Welche Aufrufe sind dazu notwendig?
@@ -44,6 +71,7 @@
 		 Welche Ergebnisse werden zur"uckgegeben?
 	\section{Datenmodell und Persistierung}
 	\section{Client}
+	\label{sec:client}
 		\subsection{Bedienung}
 		
 			Der Client ist auf der Kommandozeile ausführbar. Gestartet wird er indem man ihn zuerst mit Hilfe von \emph{gradle} baut. Sollte man das gesamte Projekt gebaut haben wird er als Abhängigkeit bereits erstellt.
@@ -63,7 +91,7 @@
 			Für eine JAR Datei mit allen Abhängigkeiten wurde von uns eine Task \emph{createRunnable} im client Projekt erstellt. Mithilfe von
 			\begin{verbatim}
 				$ gradle client:createRunnable
-				$ java -jar client/build/libs/client.jar
+				$ java -jar client/build/libs/client-all.jar
 			\end{verbatim}
 			
 			kann diese erzeugt und anschließend gestartet werden.
@@ -145,6 +173,8 @@
 		
 	\section{Zusammenfassung}
 	\section{Fazit}
+		%Felix
 	\section{Arbeitsverteilung}
+		%Felix
 		Wer hat was gemacht.
 \end{document}
