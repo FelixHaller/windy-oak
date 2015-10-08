@@ -175,7 +175,8 @@ public class StoreServiceInSQLite implements StoreService {
             }
 
             resultset = statement.executeQuery(sql);
-
+            
+            //Projekt wurde nicht gefunden
             if (resultset.getInt("count") == 0) {
                 this.endConnection();
                 return null;

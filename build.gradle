@@ -13,5 +13,14 @@ subprojects {
     dependencies {
         testCompile 'junit:junit:+'
         testCompile 'commons-lang:commons-lang:+'
-    }
+    }   
 }
+
+task initDatabase(type: Exec) {
+        executable "bash"
+        args "createDB.sh"
+    }
+
+task build(dependsOn: initDatabase) {
+    
+    }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -31,5 +32,23 @@ public class Projects {
         this.projects = projects;
     }
     
+    /**
+     * Diese Methode dient dazu ein bestimmtes Projekt aus den Projekten zu 
+     * extrahieren. 
+     * 
+     * @param id Die ID des gesuchten Projektes
+     * @return Das Projekt, wenn vorhanden, sonst null.
+     */
+    public Project getProject(int id)
+    {
+        for (Project project : this.getProjects())
+        {
+            if (project.getId() == id)
+            {
+                return project;
+            }
+        }
+        return null;
+    }
 
 }

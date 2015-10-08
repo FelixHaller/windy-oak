@@ -5,6 +5,7 @@ core/build/
 rest/build/
 client/build
 db.sqlite
+core/db.sqlite
 doc/Technische_Dokumentation/*.aux
 doc/Technische_Dokumentation/*.glg
 doc/Technische_Dokumentation/*.glo

@@ -6,7 +6,6 @@
 package windyoak.rest.impl;
 
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import windyoak.core.OakCoreException;
 import windyoak.core.Projects;

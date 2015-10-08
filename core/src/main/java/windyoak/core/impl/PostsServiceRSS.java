@@ -39,8 +39,8 @@ public class PostsServiceRSS implements PostsService
         return this.getPosts(url, true, n);
     }
 
-    @Override
-    public RSSPosts getPosts(URL url, boolean recent, int count) throws OakCoreException
+    
+    private RSSPosts getPosts(URL url, boolean recent, int count) throws OakCoreException
     {
         RSSPosts rssPosts = new RSSPosts();
 
