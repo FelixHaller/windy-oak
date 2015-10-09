@@ -10,8 +10,6 @@
 \usepackage{rotating}
 \usepackage{pdflscape}
 
-%Anhang
-
 
 \begin{document}
 	
@@ -79,12 +77,35 @@
 				\begin{verbatim}
 					$ gradle initDatabase
 				\end{verbatim}
-				gestartet werden. Es wurde während der Entwicklung mit anderen Tasks über Abhängigkeiten verknüpft um die Entwicklung zu erleichtern.
+				gestartet werden. Es wurde während der Entwicklung mit anderen Tasks über Abhängigkeiten verknüpft um die Entwicklung zu erleichtern und zu beschleunigen.
 			
 	\section{REST Ressourcen im Überblick}
-		%Konstantin
-		Wie in der Abbildung \ref{fig:rest} zu sehen
-
+		
+		Bei der Entwicklung des REST Service haben wir uns immer an bestimmten Anwendungsfällen (User Stories) orientiert, die wir uns vorher überlegt haben. Als Clients für den Service kommen sowohl eine WebApp als auch eine mobile Smartphone App in Frage.
+		
+		Um zu erläutern wie wir uns grob die Interaktion mit dem Service vorstellen und welche Ressourcen benötigt werden dienen die beiden Skizzen in Abbildung \ref{fig:webgui1} und Abbildung \ref{fig:webgui2} einer möglichen Implementation eines Web Clients.
+		
+		\begin{figure}[h]
+			\centering
+			\includegraphics[width=0.8\linewidth]{Bilder/Hauptseite.png}
+			\caption[Hauptseite]{Die Übersicht aller Projekte (Skizze)}
+			\label{fig:webgui1}
+		\end{figure}
+		
+		\begin{figure}[h]
+			\centering
+			\includegraphics[width=0.8\linewidth]{Bilder/Projektseite.png}
+			\caption[Projektseite]{Die Detailansicht eines bestimmten Projektes}
+			\label{fig:webgui2}
+		\end{figure}
+		
+		Auf Abbildung \ref{fig:webgui1} sieht man eine grobe Darstellung der Hauptseite. Auf dieser werden alle oder wahlweise nur die zuletzt angelegten Projekte angezeigt. Für beide Fälle wurden Ressourcen angelegt (siehe Abschnitt \ref{sec:restschnittstellen}). Die blauen und unterstrichenen Wörter sind klickbare Links, die wiederum eine Abfrage auslösen. In dieser Übersicht sind das der Projektname, um die Detailansicht des Projektes aufzurufen, der Ersteller des Projektes, um zu dessen Benutzerseite mit Details zu gelangen und die vergebenen Tags (Markierungen) um danach in der Datenbank zu filtern und alle Projekte mit eben diesem geklickten Tag anzuzeigen.
+		
+		Abbildung \ref{fig:webgui2} zeigt die Detailansicht eines Projektes. Hier sieht man weitere Felder und Ressourcen, die zusätzlich abgerufen werden müssen. Das kann z.B. asynchron über ein JavaScript erfolgen. Dazu gehören die Kommentare zum Projekt und die News (auch Posts genannt), welche aus einem dem Projekt zugeordneten RSS oder Atom Feed ausgelesen werden können.
+		
+		Das ist natürlich nur ein Vorschlag für einen Client. Wir hoffen aber dadurch zum besseren Verständnis des Clients beitragen zu können. Eine komplette Übersichtsgrafik aller REST Ressourcen finden Sie in Anhang \ref{sec:restdiagramm}.
+		
+		Anmerkung: Es versteht sich von selbst, dass dieser Dienst nicht ohne Nutzerverwaltung und Authentifizierung eingesetzt werden könnte. Diese ist nicht Teil des Belegs und würde im Fall der Hochschule auch über die zentralen Authentifizierung abgewickelt werden. Sowohl die User in der Datenbank als auch die entsprechende Ressource sind also exemplarisch zu betrachten und müssten abgeändert werden um einen sicheren Einsatz zu gewährleisten.
 
 	\section{REST-Schnittstellen} \label{sec:restschnittstellen}
 \subsection{Projekte}
@@ -344,14 +365,12 @@ Diese Ressource dient dazu die Benutzer über aktuelle Projekte zu informieren. 
 			\end{itemize}
 		
 	\section{Zusammenfassung}
-	Mit diesem Projekt ist es gelungen eine Plattform zu schaffen, die für das Bekanntmachen von Projekten geeignet ist. Es erleichtert den Professoren für neue Projekte zu werben und Mitglieder zu gewinnen, die sich an Projekten beteiligen wollen. Durch Zuordnung von Tags zu den Projekten kann nach individuellen Gesichtspunkten eine Suche zu einem Thema durchgeführt werden. Für Studierende ist es einfacher ein Thema für z.B. eine Belegarbeit zu finden. Durch individuelle Kommentarfunktionen und RSS-Feed Unterstützung ist eine hohe Vernetzung gegeben, die es ermöglicht Projekte zu diskutieren. Die Neuigkeitenfunktion ermöglicht es Studenten und Professoren immer auf dem aktuellen Stand zu halten und Informationen über neue Projekte zu bekannt zu machen. 
-	\section{Fazit (Entwurf)}
-		\begin{itemize}
-			\item viel gelernt
-			\item Zeit für Doku unterschätzt
-			\item wollten RSS Service (war Bonus) noch integrieren, dadurch zu wenig Zeit für Doku
-			\item Arbeiten im Team am Anfang schwierig (Aufwand durch Merge Konflikte und unbekannte Workflows sowie unterschiedliche Programmierstile)
-		\end{itemize}
+		Mit diesem Projekt ist es gelungen eine Plattform zu schaffen, die für das Bekanntmachen von Projekten geeignet ist. Es erleichtert den Professoren für neue Projekte zu werben und Mitglieder zu gewinnen, die sich an Projekten beteiligen wollen. Durch Zuordnung von Tags zu den Projekten kann nach individuellen Gesichtspunkten eine Suche zu einem Thema durchgeführt werden. Für Studierende ist es einfacher ein Thema für z.B. eine Belegarbeit zu finden. Durch individuelle Kommentarfunktionen und RSS-Feed Unterstützung ist eine hohe Vernetzung gegeben, die es ermöglicht Projekte zu diskutieren. Die Neuigkeitenfunktion ermöglicht es Studenten und Professoren immer auf dem aktuellen Stand zu halten und Informationen über neue Projekte zu bekannt zu machen.
+		
+	\section{Fazit}
+		Während des Projektes gab es wenige Schwierigkeiten bei der Umsetzung und doch haben wir viel gelernt. Es war an einigen Stellen notwendig sich über die Inhalte der Vorlesung hinaus zu informieren, aber auch das klappte gut.  Das Einbinden externer RSS/Atom Feeds, welches ursprünglich nicht Inhalt des geplanten Projektes war, wurde umgesetzt, da die Zeit für ausreichend befunden wurde. Insgesamt haben wir jedoch den Zeitaufwand für die Dokumentation unterschätzt. Auch das Arbeiten im Team an einer Software war neu und Merge Konflikte, unbekannte Workflows und die unterschiedlichen Programmierstile haben uns vor Herausforderungen gestellt und an manchen Stellen den ablauf verzögert.
+		
+		Insgesamt sind wir sehr zufrieden mit dem, was wir erreicht haben, denn die Software läuft so, wie sie geplant wurde.
 		
 	\section{Arbeitsverteilung}
 		
@@ -364,17 +383,17 @@ Diese Ressource dient dazu die Benutzer über aktuelle Projekte zu informieren. 
 		\subsection{Design des REST Service und gradle Skripte}
 			Gemeinsame Arbeit.
 		\subsection{Entwicklung REST Service}
-			Grundlegender REST Service von Felix Haller erstellt mit einigen Methoden der /projects Ressource. Später weiterentwickelt (/recent..., /user...) durch Konstantin Lorenz. Fehlerbeseitigung in gemeinsamer Arbeit. 
+			Grundlegender REST Service von Felix Haller erstellt mit einigen Methoden der /projects Ressource. Später weiterentwickelt (/recent, /user, /tags) durch Konstantin Lorenz. Fehlerbeseitigung in gemeinsamer Arbeit. 
 		\subsection{Design der Datenbank}
 			Gemeinsame Arbeit.
 		\subsection{Erstellung Datenbank}
-			Größtenteils durch Konstantin Lorenz parallel zur Erstellung des Grundgerüsts des REST Service. Nach Rollentausch wurden in den Meetings besprochene Datenbankänderungen auch durch Felix Haller eingepflegt. Datenbankpflege übernahm aber weiterhin Konstantin Lorenz.
+			Größtenteils durch Konstantin Lorenz parallel zur Erstellung des Grundgerüsts des REST Service. Nach Rollentausch wurden in den Meetings besprochene Datenbankänderungen durch Felix Haller eingepflegt. Datenbankpflege übernahm aber weiterhin Konstantin Lorenz.
 		\subsection{Erstellung der Datenbankschnittstellen}
 			Grundlegende Funktion und Einbindung in das Core Projekt durch Felix Haller. Später Weiterentwicklung durch Konstantin Lorenz. Gemeinsame Fehlerbehebung während der gesamten Entwicklungszeit.
 		\subsection{Erstellung der RSS Schnittstelle}
 			Durch Felix Haller.
 		\subsection{Erstellung der Testklassen}
-			
+			Durch Felix Haller
 		\subsection{Erstellung Client}
 			Durch Felix Haller.
 		\subsection{Erstellung Dokumentation}
@@ -477,11 +496,11 @@ Diese Ressource dient dazu die Benutzer über aktuelle Projekte zu informieren. 
 				\end{itemize}
 			\end{itemize}
 		\end{itemize}
-		\section{Abbildungen}
+		\section{REST Diagramm} \label{sec:restdiagramm}
 			\begin{landscape}
 			 \begin{figure}
 			  \centering
-			  \includegraphics[width=\linewidth,height=\textheight,keepaspectratio]{../Bilder/rest.pdf} 
+			  \includegraphics[width=\linewidth,height=\textheight,keepaspectratio]{Bilder/rest.pdf} 
 			  \caption{REST-Schnittstelle im Überblick}
 			  \label{fig:rest}
 			 \end{figure}
