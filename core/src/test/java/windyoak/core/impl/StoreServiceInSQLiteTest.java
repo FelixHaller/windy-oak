@@ -174,62 +174,7 @@ public class StoreServiceInSQLiteTest
         assertNull(againProject);
     }
     
-    
-    
 
-//    /**
-//     * Test of fetchRecentProjects method, of class StoreServiceInSQLite.
-//     */
-//    @Test
-//    public void testFetchRecentProjects() throws Exception
-//    {
-//        System.out.println("fetchRecentProjects");
-//        int n = 0;
-//        StoreServiceInSQLite instance = new StoreServiceInSQLite();
-//        Projects expResult = null;
-//        Projects result = instance.fetchRecentProjects(n);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getProjectByID method, of class StoreServiceInSQLite.
-//     */
-//    @Test
-//    public void testGetProjectByID() throws Exception
-//    {
-//        System.out.println("getProjectByID");
-//        int projectID = 0;
-//        StoreServiceInSQLite instance = new StoreServiceInSQLite();
-//        Project expResult = null;
-//        Project result = instance.getProjectByID(projectID);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//
-// 
-//
-//    
-//
-//    /**
-//     * Test of createProject method, of class StoreServiceInSQLite.
-//     */
-//    @Test
-//    public void testCreateProject() throws Exception
-//    {
-//        System.out.println("createProject");
-//        Project project = null;
-//        StoreServiceInSQLite instance = new StoreServiceInSQLite();
-//        Project expResult = null;
-//        Project result = instance.createProject(project);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
 //    /**
 //     * Test of updateProject method, of class StoreServiceInSQLite.
 //     */

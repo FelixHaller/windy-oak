@@ -1,5 +1,13 @@
 #!/bin/bash
 
+which sqlite3 &> /dev/zero
+
+if [ $? -eq 1 ]
+    then
+    echo "sqlite Befehl nicht gefunden. Breche ab."
+    exit 1
+fi
+
 echo "lösche Datenbank..."
 rm db.sqlite
 echo "lösche Test Datenbank"

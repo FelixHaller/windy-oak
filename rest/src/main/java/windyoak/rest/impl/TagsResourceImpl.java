@@ -8,6 +8,7 @@ package windyoak.rest.impl;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import windyoak.core.OakCoreException;
@@ -41,19 +42,19 @@ public class TagsResourceImpl implements TagsResource {
 
             if (tagName == null || tagName.isEmpty() || description == null
                     || description.isEmpty()) {
-                return Response.status(Response.Status.NOT_ACCEPTABLE).entity("Empty Parameter").build();
+                return Response.status(Response.Status.NOT_ACCEPTABLE).type("text/plain; charset=utf-8").entity("Empty Parameter").build();
             }
             Pattern tp = Pattern.compile("^\\w+");
             Matcher tm = tp.matcher(tagName);
             if (!tm.matches()) {
-                return Response.status(Response.Status.NOT_ACCEPTABLE).entity("Only whole words possible without special characters!").build();
+                return Response.status(Response.Status.NOT_ACCEPTABLE).type("text/plain; charset=utf-8").entity("Only whole words possible without special characters!").build();
             }
             if (storeService.getTagByName(tagName) == null) {
                 tag.setName(tagName);
                 tag.setDescription(description);
                 storeService.createTag(tag);
             } else {
-                return Response.status(Response.Status.NOT_ACCEPTABLE).entity("Tag " + tagName + " already exists!").build();
+                return Response.status(Response.Status.NOT_ACCEPTABLE).type("text/plain; charset=utf-8").entity("Tag " + tagName + " already exists!").build();
             }
 
         } catch (OakCoreException ex) {
@@ -67,7 +68,7 @@ public class TagsResourceImpl implements TagsResource {
         try {
             Tags tagList = storeService.getTags();
             if (tagList == null) {
-                return Response.status(Response.Status.NOT_FOUND).entity("No Tags found!").build();
+                return Response.status(Response.Status.NOT_FOUND).type("text/plain; charset=utf-8").entity("No Tags found!").build();
             }
             return Response.status(Response.Status.OK).entity(tagList).build();
         } catch (OakCoreException ex) {
@@ -79,12 +80,12 @@ public class TagsResourceImpl implements TagsResource {
     public Response getTag(String tagName) {
         Tag newTag;
         if (tagName == null || tagName.isEmpty()) {
-            return Response.status(Response.Status.NOT_ACCEPTABLE).entity("Empty Parameter").build();
+            return Response.status(Response.Status.NOT_ACCEPTABLE).type("text/plain; charset=utf-8").entity("Empty Parameter").build();
         }
         try {
             newTag = storeService.getTagByName(tagName);
             if (newTag == null) {
-                return Response.status(Response.Status.NOT_FOUND).entity("Can't found Tagname!").build();
+                return Response.status(Response.Status.NOT_FOUND).type("text/plain; charset=utf-8").entity("Can't found Tagname!").build();
             }
             return Response.status(Response.Status.OK).entity(newTag).build();
 
@@ -98,18 +99,18 @@ public class TagsResourceImpl implements TagsResource {
         Tag newTag;
         try {
             if (tagName == null || tagName.isEmpty()) {
-                return Response.status(Response.Status.NOT_ACCEPTABLE).entity("Empty Parameter!").build();
+                return Response.status(Response.Status.NOT_ACCEPTABLE).type("text/plain; charset=utf-8").entity("Empty Parameter!").build();
             }
 
             Pattern tp = Pattern.compile("^\\w+");
             Matcher tm = tp.matcher(tagName);
             if (!tm.matches()) {
-                return Response.status(Response.Status.NOT_ACCEPTABLE).entity("Only whole words possible without special characters!").build();
+                return Response.status(Response.Status.NOT_ACCEPTABLE).type("text/plain; charset=utf-8").entity("Only whole words possible without special characters!").build();
             }
 
             newTag = storeService.getTagByName(tagName);
             if (newTag == null) {
-                return Response.status(Response.Status.NOT_FOUND).entity("Can't found Tagname!").build();
+                return Response.status(Response.Status.NOT_FOUND).type("text/plain; charset=utf-8").entity("Can't found Tagname!").build();
             }
             newTag.setDescription(description);
             storeService.updateTagDescription(newTag);
@@ -123,7 +124,7 @@ public class TagsResourceImpl implements TagsResource {
     @Override
     public Response deleteTag(String tagName) {
         if (tagName == null || tagName.isEmpty()) {
-            return Response.status(Response.Status.NOT_ACCEPTABLE).entity("Empty Paramter!").build();
+            return Response.status(Response.Status.NOT_ACCEPTABLE).type("text/plain; charset=utf-8").entity("Empty Paramter!").build();
         }
         try {
 
@@ -133,7 +134,7 @@ public class TagsResourceImpl implements TagsResource {
                 Tag newTag = storeService.deleteTag(tagName);
                 return Response.status(Response.Status.OK).entity(newTag).build();
             } else {
-                return Response.status(Response.Status.CONFLICT).entity("Tag is used in a Project. Delete the Project first!").build();
+                return Response.status(Response.Status.CONFLICT).type("text/plain; charset=utf-8").entity("Tag is used in a Project. Delete the Project first!").build();
             }
 
         } catch (OakCoreException ex) {
