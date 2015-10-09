@@ -44,7 +44,6 @@
 		
 	\section{Motivation}
 		Zur Zeit existiert keine zentrale Anlaufstelle, wenn es um die Bekanntmachung von und die Suche nach Projekten geht. Das Ziel des Webservice ist eine bessere Vernetzung der Hochschulmitglieder während der Planung und Durchführung von Projekten. Einerseits soll eine Möglichkeit für Professoren gegeben werden geplante Forschungsarbeiten, für die noch Unterstützer gesucht werden, vorzustellen. Andererseits soll Studenten die Möglichkeit geboten werden bei Interesse an einem Thema - beispielsweise einer bestimmten Programmiersprache - eine Anlaufstelle zur praktischen Umsetzung zu finden. Außerdem erleichtert es u.U. das Finden eines Themas für praktische Belegarbeiten (z.B. Java2, Verteilte Systeme, SWT, ...)
-		
 	\section{Installations- und Startanleitung}
 		Das Projekt wird mittels des Build Systems \emph{gradle} entwickelt. Es hilft bei den regelmäßig auszuführenden Arbeiten, wie dem Kompilieren von Klassen, dem Testen der Anwendung und der Erstellung der Javadoc Dokumentation. Innerhalb der gradle Konfigurationsdateien wurden Abhängigkeiten so definiert, dass beim Bau des Hauptprojektes alle Unterprojekte gleich mit gebaut und getestet werden. Außerdem werden alle benötigten Abhängigkeiten beim erstmaligen Kompilieren der Quellen heruntergeladen. Somit ist keine manuelle Installation von externen Abhängigkeiten notwendig. Um zuvor gebaute und temporäre Dateien vor dem Kompilieren zu löschen empfiehlt es sich den \emph{clean} Auftrag vorher auszuführen.
 				
@@ -61,26 +60,6 @@
 		Danach ist der Service unter der Adresse http://localhost:8080 erreichbar und gemäß den in Abschnitt \ref{sec:restschnittstellen} beschriebenen Methodenaufrufen verwendbar.
 		
 		Die Verwendung des mitgelieferten Clients wird in Abschnitt \ref{sec:client} ausführlich erklärt.
-		
-		\subsection{Zusätzliche Helferskripte}
-			\subsubsection{dbscript.sql}
-				In diesem Script stehen alle Anweisungen um die SQLite Datenbank wieder in den Auslieferungszustand zu bringen.
-			\subsubsection{createDB.sh}
-				Dieses Script automatisiert den Prozess der Datenbank-Neuerstellung. Es ist unter Linux lauffähig und setzt den \emph{sqlite3} Befehl voraus. Sollte dieser nicht gefunden werden, bricht das Skript die Ausführung ab.
-				Sonst erledigt es folgende Aufgaben:
-				\begin{itemize}
-					\item Löschen der Datenbank
-					\item Löschen der Test-Datenbank
-					\item Erstellen der Datenbank aus dbscript.sql
-					\item Erstellen der Test-Datenbank aus dbscript.sql
-				\end{itemize}
-			\subsubsection{gradle-task 'initDatabase'}
-				Der gradle task \emph{initDatabase} ruft lediglich createDB.sh auf und kann über den Befehl
-				\begin{verbatim}
-					$ gradle initDatabase
-				\end{verbatim}
-				gestartet werden. Es wurde während der Entwicklung mit anderen Tasks über Abhängigkeiten verknüpft um die Entwicklung zu erleichtern.
-			
 	\section{REST Ressourcen im Überblick}
 		%Konstantin
 		Wie in der Abbildung \ref{fig:rest} zu sehen
@@ -241,7 +220,9 @@ Diese Ressource dient dazu die Benutzer über aktuelle Projekte zu informieren. 
 	\end{itemize} 
 \end{itemize}
 	\section{Datenmodell und Persistierung}
-	%Konstantin
+	Zur Persistierung der Daten wird ein relationales Datenbanksystem namens SQLite eingesetzt. Die Datenbank ließ sich ohne weitere Serversoftware einbinden. Zur Anbindung wird der JDBC-Treiber benutzt. Die gesamte Datenbank befindet sich in einer einzigen Datei, der db.sqlite. Diese kann mit der beigefügten createDB.sh neu gebaut werden. In der Datei dbscript.sql befindet sich das dazugehörige SQL-Script mit vielen Beispieldatensätzen. Im produktiven Einsatz ist eine SQLite nicht zweckmäßig und kann durch eine gebräuchlichere Datenbank z.B. MySQL ersetzt werden.  
+	
+	In der Abbildung\ref{fig:db} ist das Datenbankschema dargestellt. 
 	\section{Client}
 	\label{sec:client}
 		\subsection{Bedienung}
@@ -469,7 +450,7 @@ Diese Ressource dient dazu die Benutzer über aktuelle Projekte zu informieren. 
 				\end{itemize}
 				\item RSS Service
 				\begin{itemize}
-					\item Beschluss: Integration wird begonnen durch Felix Haller
+					\item Integration wird begonnen durch Felix Haller
 				\end{itemize}
 				\item Weitere Kommunikation (während Prüfungsperiode/Semesterferien)
 				\begin{itemize}
@@ -486,5 +467,13 @@ Diese Ressource dient dazu die Benutzer über aktuelle Projekte zu informieren. 
 			  \label{fig:rest}
 			 \end{figure}
 			\end{landscape}
+		\begin{landscape}
+			\begin{figure}
+  				\centering
+  				\includegraphics[width=\linewidth,height=\textheight,keepaspectratio]{../Bilder/db.pdf} 
+  				\caption{Datenbankschema im Überblick}
+  				\label{fig:db}
+		 	\end{figure}
+		\end{landscape}
 		
 \end{document}
