@@ -41,9 +41,9 @@
 		werden. Zum Nachweis der Funktionsfähigkeit ist ein Testclient notwendig, der ein Testszenario nachvollziehbar durchspielt und damit alle Funktionen des Service prüft. In der abzugebenden technischen Dokumentation soll alles enthalten sein, was zum Verständnis des Services, also seiner Funktion und dem technischen Hintergrund, notwendig ist.
 		
 	\section{Motivation}
-		Zur Zeit existiert keine zentrale Anlaufstelle, wenn es um die Bekanntmachung von und die Suche nach Projekten geht. Das Ziel des Webservice ist eine bessere Vernetzung der Hochschulmitglieder während der Planung und Durchführung von Projekten. Einerseits soll eine Möglichkeit für Professoren gegeben werden geplante Forschungsarbeiten, für die noch Unterstützer gesucht werden, vorzustellen. Andererseits soll Studenten die Möglichkeit geboten werden bei Interesse an einem Thema - beispielsweise einer bestimmten Programmiersprache - eine Anlaufstelle zur praktischen Umsetzung zu finden. Außerdem erleichtert es u.U. das Finden eines Themas für praktische Belegarbeiten (z.B. Java2, Verteilte Systeme, SWT, ...)
+		Zur Zeit existiert keine zentrale Anlaufstelle, wenn es um die Bekanntmachung von und die Suche nach Projekten geht. Das Ziel des Webservice ist, eine bessere Vernetzung der Hochschulmitglieder während der Planung und Durchführung von Projekten zu erreichen. Einerseits soll eine Möglichkeit für Professoren gegeben werden geplante Forschungsarbeiten, für die noch Unterstützer gesucht werden, vorzustellen. Andererseits soll Studenten die Möglichkeit geboten werden, bei Interesse an einem Thema - beispielsweise einer bestimmten Programmiersprache - eine Anlaufstelle zur praktischen Umsetzung zu finden. Außerdem erleichtert es u.U. das Finden eines Themas für praktische Belegarbeiten (z.B. Java2, Verteilte Systeme, SWT, ...)
 	\section{Installations- und Startanleitung}
-		Das Projekt wird mittels des Build Systems \emph{gradle} entwickelt. Es hilft bei den regelmäßig auszuführenden Arbeiten, wie dem Kompilieren von Klassen, dem Testen der Anwendung und der Erstellung der Javadoc Dokumentation. Innerhalb der gradle Konfigurationsdateien wurden Abhängigkeiten so definiert, dass beim Bau des Hauptprojektes alle Unterprojekte gleich mit gebaut und getestet werden. Außerdem werden alle benötigten Abhängigkeiten beim erstmaligen Kompilieren der Quellen heruntergeladen. Somit ist keine manuelle Installation von externen Abhängigkeiten notwendig. Um zuvor gebaute und temporäre Dateien vor dem Kompilieren zu löschen empfiehlt es sich den \emph{clean} Auftrag vorher auszuführen.
+		Das Projekt wird mittels des Build Systems \emph{gradle} entwickelt. Es hilft bei den regelmäßig auszuführenden Arbeiten, wie dem Kompilieren von Klassen, dem Testen der Anwendung und der Erstellung der Javadoc Dokumentation. Innerhalb der gradle Konfigurationsdateien wurden Abhängigkeiten so definiert, dass beim Bau des Hauptprojektes alle Unterprojekte gleich mit gebaut und getestet werden. Außerdem werden alle benötigten Abhängigkeiten beim erstmaligen Kompilieren der Quellen heruntergeladen. Somit ist keine manuelle Installation von externen Abhängigkeiten notwendig. Um zuvor gebaute und temporäre Dateien vor dem Kompilieren zu löschen, empfiehlt es sich den \emph{clean} Auftrag vorher auszuführen.
 				
 		Zum Erstellen und Testen des gesamten Projektes verwendet man also den folgenden Befehl:
 		\begin{verbatim}
@@ -76,7 +76,7 @@
 				\begin{verbatim}
 					$ gradle initDatabase
 				\end{verbatim}
-				gestartet werden. Es wurde während der Entwicklung mit anderen Tasks über Abhängigkeiten verknüpft um die Entwicklung zu erleichtern und zu beschleunigen.
+				gestartet werden. Es wurde während der Entwicklung mit anderen Tasks über Abhängigkeiten verknüpft, um die Entwicklung zu erleichtern und zu beschleunigen.
 			
 	\section{REST Ressourcen im Überblick}
 		
@@ -98,13 +98,13 @@
 			\label{fig:webgui2}
 		\end{figure}
 		
-		Auf Abbildung \ref{fig:webgui1} sieht man eine grobe Darstellung der Hauptseite. Auf dieser werden alle oder wahlweise nur die zuletzt angelegten Projekte angezeigt. Für beide Fälle wurden Ressourcen angelegt (siehe Abschnitt \ref{sec:restschnittstellen}). Die blauen und unterstrichenen Wörter sind klickbare Links, die wiederum eine Abfrage auslösen. In dieser Übersicht sind das der Projektname, um die Detailansicht des Projektes aufzurufen, der Ersteller des Projektes, um zu dessen Benutzerseite mit Details zu gelangen und die vergebenen Tags (Markierungen) um danach in der Datenbank zu filtern und alle Projekte mit eben diesem geklickten Tag anzuzeigen.
+		Auf Abbildung \ref{fig:webgui1} sieht man eine grobe Darstellung der Hauptseite. Auf dieser werden alle oder wahlweise nur die zuletzt angelegten Projekte angezeigt. Für beide Fälle wurden Ressourcen angelegt (siehe Abschnitt \ref{sec:restschnittstellen}). Die blauen und unterstrichenen Wörter sind klickbare Links, die wiederum eine Abfrage auslösen. In dieser Übersicht sind: der Projektname, um die Detailansicht des Projektes aufzurufen, der Ersteller des Projektes, um zu dessen Benutzerseite mit Details zu gelangen und die vergebenen Tags (Markierungen), um danach in der Datenbank zu filtern und alle Projekte mit eben diesem geklickten Tag anzuzeigen.
 		
 		Abbildung \ref{fig:webgui2} zeigt die Detailansicht eines Projektes. Hier sieht man weitere Felder und Ressourcen, die zusätzlich abgerufen werden müssen. Das kann z.B. asynchron über ein JavaScript erfolgen. Dazu gehören die Kommentare zum Projekt und die News (auch Posts genannt), welche aus einem dem Projekt zugeordneten RSS oder Atom Feed ausgelesen werden können.
 		
-		Das ist natürlich nur ein Vorschlag für einen Client. Wir hoffen aber dadurch zum besseren Verständnis des Clients beitragen zu können. Eine komplette Übersichtsgrafik aller REST Ressourcen finden Sie in Anhang \ref{sec:restdiagramm}.
+		Das ist natürlich nur ein Vorschlag für einen Client. Wir hoffen aber, dadurch zum besseren Verständnis des Clients beitragen zu können. Eine komplette Übersichtsgrafik aller REST Ressourcen finden Sie in Anhang \ref{sec:restdiagramm}.
 		
-		Anmerkung: Es versteht sich von selbst, dass dieser Dienst nicht ohne Nutzerverwaltung und Authentifizierung eingesetzt werden könnte. Diese ist nicht Teil des Belegs und würde im Fall der Hochschule auch über die zentralen Authentifizierung abgewickelt werden. Sowohl die User in der Datenbank als auch die entsprechende Ressource sind also exemplarisch zu betrachten und müssten abgeändert werden um einen sicheren Einsatz zu gewährleisten.
+		Anmerkung: Es versteht sich von selbst, dass dieser Dienst nicht ohne Nutzerverwaltung und Authentifizierung eingesetzt werden könnte. Diese ist nicht Teil des Belegs und würde im Fall der Hochschule auch über die zentralen Authentifizierung abgewickelt werden. Sowohl die User in der Datenbank als auch die entsprechende Ressource sind also exemplarisch zu betrachten und müssten abgeändert werden, um einen sicheren Einsatz zu gewährleisten.
 
 	\section{REST-Schnittstellen} \label{sec:restschnittstellen}
 \subsection{Projekte}
@@ -117,7 +117,7 @@
 					\item Query Parameter: \emph{title, tag, creator} sind alle optional und dienen der Einschränkung der Projektausgabe. Dabei kann eine Filterung über den Projekt-Title, die zugehören Tags sowie über den Ersteller vorgenommen werden. Es werden nur Projekte angezeigt, die den Status \emph{published} oder \emph{closed} besitzen.
 					\item Rückgabewerte: Es wird eine Liste von Projekten, die der Filterung entsprechen, zurückgegeben. Falls keine Übereinstimmung bei der Filterung erfolgt, wird ein Statuscode 204 gesendet. 
 				\end{itemize}
-				\item POST, Es wird ein neues Projekt erzeugt und in die Datenbank eingetragen.
+				\item POST, es wird ein neues Projekt erzeugt und in die Datenbank eingetragen.
 				\begin{itemize}
 					\item Form Parameter:
 					\begin{itemize}
@@ -139,14 +139,14 @@
 					\item Rückgabewerte: Falls ein Projekt mit dieser \emph{id} nicht vorhanden ist, wird ein Statuscode 404 erzeugt. Ansonsten wird das Projekt mit dem Statuscode 200 zurückgegeben.
 				\end{itemize}
 				\item PUT, das Projekt kann mit dieser Methode verändert werden. Alle Parameter sind optional. Erfolgt keine Wertzuweisung bei den Parametern, gibt es auch keine Änderung. Die Parameter liegen in gleicher Weise vor, wie bei der POST-Methode von der \emph{/projects} Ressource.
-				\item DELETE, Das Projekt-Objekt mit der zugehörigen \emph{id} wird gelöscht.
+				\item DELETE, das Projekt-Objekt mit der zugehörigen \emph{id} wird gelöscht.
 				\begin{itemize}
 					\item Rückgabewerte: Es wird das gelöschte Projekt-Objekt mit einem Statuscode 200 zurückgegeben. Ist diese \emph{id} nicht vorhanden, wird ein Statuscode 404 gesendet.
 				\end{itemize}	
 			\end{itemize}
 	\end{itemize}
 \subsection{Kommentare}
-	Die Kommentare dient den Benutzern des \emph{Project-Hub} als Rückkanal für die Betreiber des Projektes. Damit ist es möglich Verbesserungsvorschläge, Anregungen, Wünsche aber auch Kritik anzubringen und somit eine höhere Qualität und Benutzerfreundlichkeit von Projekten zu erreichen.  
+	Die Kommentare dienen den Benutzern des \emph{Project-Hub} als Rückkanal für die Betreiber des Projektes. Damit ist es möglich Verbesserungsvorschläge, Anregungen, Wünsche aber auch Kritik anzubringen und somit eine höhere Qualität und Benutzerfreundlichkeit von Projekten zu erreichen.  
 	\begin{itemize}
 		\item \emph {projects/\{id\}/comments}, ist eine Ressource, die einen Kommentar darstellt.
 		\begin{itemize}
@@ -154,14 +154,14 @@
 			\begin{itemize}
 				\item Rückgabewerte: Es wird eine Liste von Kommentaren, die zu der Projekt-\emph{id} des Projektes gehören, ausgegeben. Der Statuscode ist bei erfolgreicher Rückgabe 200. Falls keine Kommentare vorhanden sind, wird ein Statuscode 204 zurückgegeben. Es werden nur Kommentare angezeigt, die den Status \emph{published} oder \emph{closed} besitzen.
 			\end{itemize}
-					\item POST, Es wird ein neuer Kommentar erzeugt und in die Datenbank eingetragen.
+					\item POST, es wird ein neuer Kommentar erzeugt und in die Datenbank eingetragen.
 					\begin{itemize}
 						\item Form Parameter:
 						\begin{itemize}
 							\item  \emph{title}, Titel des Kommentars als String
 							\item  \emph{creator}, Benutzername des Erstellers. Der Ersteller muss als User in der Datenbank vorhanden sein.
 							\item  \emph{content}, Inhalt des Kommentars als String
-							\item  \emph{status}, Hier kann der Status des Kommentars angegeben werden. Es sind folgende Wert möglich: \emph{new, published, closed}.
+							\item  \emph{status}, hier kann der Status des Kommentars angegeben werden. Es sind folgende Wert möglich: \emph{new, published, closed}.
 						\end{itemize}
 						\item Rückgabewerte: Es wird das erstellte Kommentar-Objekt zurückgegeben. Der zugehörige Statuscode ist 200. Ist ein Parameter leer oder wird gegen die Syntax verstoßen, ist ein Statuscode 406 zu erwarten.  
 					\end{itemize}
@@ -173,7 +173,7 @@
 						\item Rückgabewerte: Falls ein Kommentar mit dieser \emph{id} nicht vorhanden ist, wird ein Statuscode 404 erzeugt. Ansonsten wird der Kommentar mit dem Statuscode 200 zurückgegeben.
 					\end{itemize}
 					\item PUT, der Kommentar kann mit dieser Methode verändert werden. Alle Parameter sind optional. Erfolgt keine Wertzuweisung bei den Parametern, gibt es auch keine Änderung. Die Parameter liegen in gleicher Weise vor, wie bei der POST-Methode von der \emph{projects/\{id\}/comments} Ressource.
-					\item DELETE, Das Kommentar-Objekt mit der zugehörigen \emph{id} wird gelöscht.
+					\item DELETE, das Kommentar-Objekt mit der zugehörigen \emph{id} wird gelöscht.
 					\begin{itemize}
 						\item Rückgabewerte: Es wird das gelöschte Kommentar-Objekt mit einem Statuscode 200 zurückgegeben.
 					\end{itemize}
@@ -207,7 +207,7 @@ Tags dienen der näheren Beschreibung und Klassifizierung eines Projektes. Es is
 		\begin{itemize}
 			\item Rückgabewerte: Gibt alle Tags, die in der Datenbank vorhanden sind, aus. Bei Erfolg wird der Statuscode 200 erzeugt. Sind keine Tags vorhanden wird ein Statuscode 204 gesendet. 
 		\end{itemize}
-		\item POST, Es wird ein neues Tag-Objekt erstellt und in der Datenbank abgelegt. Es können keine Tags doppelt angelegt werden.
+		\item POST, es wird ein neues Tag-Objekt erstellt und in der Datenbank abgelegt. Es können keine Tags doppelt angelegt werden.
 		\begin{itemize}
 			\item Form Parameter: Die Parameter \emph{tagName, description} sind alles Pflichtfelder. \emph{tagName} darf keine Sonderzeichen oder Zahlen enthalten. Die Beschreibung ist frei wählbar. 
 		\end{itemize} 
@@ -220,7 +220,7 @@ Tags dienen der näheren Beschreibung und Klassifizierung eines Projektes. Es is
 		\end{itemize}
 		\item PUT, diese Methode dient zum Updaten des Tag. Allerdings ist nur eine Änderung der Beschreibung möglich. Möchte man den Namen ändern, muss ein neue Tag-Objekt erstellt werden.
 		\begin{itemize}
-			\item Form Parameter: Der einzige Parameter der geändert werden kann:\emph{description}. Wird kein Parameter angegeben oder ist der Parameter leer, erfolgt keine Änderung. 
+			\item Form Parameter: Der einzige Parameter der geändert werden kann: \emph{description}. Wird kein Parameter angegeben oder ist der Parameter leer, erfolgt keine Änderung. 
 			\item Rückgabewerte: Wird ein Update erfolgreich ausgeführt, wird der Statuscode 200 generiert und das aktuelle Tag-Objekt angezeigt. Falls das Tag-Objekt mit diesem \emph{tagName} nicht vorhanden ist, wird ein Statuscode 404 ausgegeben.  
 		\end{itemize} 
 		\item DELETE, löscht einen Tag. Der Tag kann nur gelöscht werden, wenn dieser in keinem Projekt-Objekt mehr verwendet wird.
@@ -234,16 +234,16 @@ Der Bentzer, in der Ressource als \emph{user} bezeichnet, dient zur eindeutigen 
 \begin{itemize}
 	\item \emph{/users}, steht für die \emph{Users} Ressource. 
 	\begin{itemize}
-		\item GET, Es werden alle Benutzer, die in der Datenbank verfügbar sind, abgerufen und als Liste ausgegeben.
+		\item GET, es werden alle Benutzer, die in der Datenbank verfügbar sind, abgerufen und als Liste ausgegeben.
 		\begin{itemize}
-			\item Rückgabewerte: Bei Erfolg wird eine Benutzerliste mit dem Statuscode 200 übertragen. Ist die Datenbank leer wird der Statuscode 204 erzeugt.
+			\item Rückgabewerte: Bei Erfolg wird eine Benutzerliste mit dem Statuscode 200 übertragen. Ist die Datenbank leer, wird der Statuscode 204 erzeugt.
 		\end{itemize} 
 	\end{itemize}
 	\item \emph{ /users/\{id\}}, dient als Ressource für einen einzelnen Nutzer. Über die \emph{id} kann ein Nutzer eindeutig identifiziert werden. 
 	\begin{itemize}
 		\item GET, Methode zum Abrufen des Nutzers
 		\begin{itemize}
-			\item Rückgabewerte:Bei erfolgreicher Übertragung wird ein Statuscode 200 ausgegeben. Falls die \emph{id} nicht vorhanden ist, kommt es zu einem Statuscode 404.
+			\item Rückgabewerte: Bei erfolgreicher Übertragung wird ein Statuscode 200 ausgegeben. Falls die \emph{id} nicht vorhanden ist, kommt es zu einem Statuscode 404.
 		\end{itemize} 
 	\end{itemize}
 \end{itemize}
@@ -268,7 +268,7 @@ Diese Ressource dient dazu die Benutzer über aktuelle Projekte zu informieren. 
 	\label{sec:client}
 		\subsection{Bedienung}
 		
-			Der Client ist auf der Kommandozeile ausführbar. Gestartet wird er indem man ihn zuerst mit Hilfe von \emph{gradle} baut. Sollte man das gesamte Projekt gebaut haben wird er als Abhängigkeit bereits erstellt.
+			Der Client ist auf der Kommandozeile ausführbar. Gestartet wird er indem man ihn zuerst mit Hilfe von \emph{gradle} baut. Sollte man das gesamte Projekt gebaut, haben wird er als Abhängigkeit bereits erstellt.
 			\begin{verbatim}
 				$ gradle build client
 			\end{verbatim}
@@ -366,17 +366,17 @@ Diese Ressource dient dazu die Benutzer über aktuelle Projekte zu informieren. 
 			\end{itemize}
 		
 	\section{Zusammenfassung}
-		Mit diesem Projekt ist es gelungen eine Plattform zu schaffen, die für das Bekanntmachen von Projekten geeignet ist. Es erleichtert den Professoren für neue Projekte zu werben und Mitglieder zu gewinnen, die sich an Projekten beteiligen wollen. Durch Zuordnung von Tags zu den Projekten kann nach individuellen Gesichtspunkten eine Suche zu einem Thema durchgeführt werden. Für Studierende ist es einfacher ein Thema für z.B. eine Belegarbeit zu finden. Durch individuelle Kommentarfunktionen und RSS-Feed Unterstützung ist eine hohe Vernetzung gegeben, die es ermöglicht Projekte zu diskutieren. Die Neuigkeitenfunktion ermöglicht es Studenten und Professoren immer auf dem aktuellen Stand zu halten und Informationen über neue Projekte zu bekannt zu machen.
+		Mit diesem Projekt ist es gelungen, eine Plattform zu schaffen, die für das Bekanntmachen von Projekten geeignet ist. Es erleichtert den Professoren für neue Projekte zu werben und Mitglieder zu gewinnen, die sich an Projekten beteiligen wollen. Durch Zuordnung von Tags zu den Projekten kann nach individuellen Gesichtspunkten eine Suche zu einem Thema durchgeführt werden. Für Studierende ist es einfacher ein Thema für z.B. eine Belegarbeit zu finden. Durch individuelle Kommentarfunktionen und RSS-Feed Unterstützung ist eine hohe Vernetzung gegeben, die es ermöglicht Projekte zu diskutieren. Die Neuigkeitenfunktion ermöglicht es Studenten und Professoren immer auf dem aktuellen Stand zu halten und Informationen über neue Projekte bekannt zu machen.
 		
 	\section{Fazit}
-		Während des Projektes gab es wenige Schwierigkeiten bei der Umsetzung und doch haben wir viel gelernt. Es war an einigen Stellen notwendig sich über die Inhalte der Vorlesung hinaus zu informieren, aber auch das klappte gut.  Das Einbinden externer RSS/Atom Feeds, welches ursprünglich nicht Inhalt des geplanten Projektes war, wurde umgesetzt, da die Zeit für ausreichend befunden wurde. Insgesamt haben wir jedoch den Zeitaufwand für die Dokumentation unterschätzt. Auch das Arbeiten im Team an einer Software war neu und Merge Konflikte, unbekannte Workflows und die unterschiedlichen Programmierstile haben uns vor Herausforderungen gestellt und an manchen Stellen den ablauf verzögert.
+		Während des Projektes gab es wenige Schwierigkeiten bei der Umsetzung und doch haben wir viel gelernt. Es war an einigen Stellen notwendig, sich über die Inhalte der Vorlesung hinaus zu informieren, aber auch das klappte gut.  Das Einbinden externer RSS/Atom Feeds, welches ursprünglich nicht Inhalt des geplanten Projektes war, wurde umgesetzt, da die Zeit für ausreichend befunden wurde. Insgesamt haben wir jedoch den Zeitaufwand für die Dokumentation unterschätzt. Auch das Arbeiten im Team an einer Software war neu und Merge Konflikte, unbekannte Workflows und die unterschiedlichen Programmierstile haben uns vor Herausforderungen gestellt und an manchen Stellen den Ablauf verzögert.
 		
 		Insgesamt sind wir sehr zufrieden mit dem, was wir erreicht haben, denn die Software läuft so, wie sie geplant wurde.
 		
 	\section{Arbeitsverteilung}
 		
-		Die Entwicklung erfolgte in enger Zusammenarbeit beider beteiligten. Ganz am Anfang startete Felix Haller mit der Entwicklung eines lauffähigen REST Service mit Demo-Antworten auf REST-Anfragen. Währenddessen erstellte Konstantin Lorenz die zuvor ausgearbeitete Datenbank und ein Skript um diese automatisiert erstellen zu können. Als diese beiden Sachen lauffähig waren, wurde das erste mal getauscht um auch die anderen Bereiche kennen zu lernen. Konstantin Lorenz übernahm die Weiterentwicklung des REST Service um die fehlenden Ressourcen sowie Methoden und Felix Haller programmierte die Schnittstelle zur nun vorhandenen Datenbank so wie die Kapsel-Klassen für alle Objekte.
-		Nachdem der Kern-Service lief widmete sich Felix Haller der Schnittstelle zu den RSS Posts. Das beinhaltet den Backend-Service für die zuvor von Konstantin Lorenz vorbereiteten REST Ressource (/projects/{id}/posts). Herr Lorenz begann mit dem Beheben von im Laufe der Tests aufgefallenen Fehlern und dem dazugehörigen Anpassen der Services und der Datenbank.
+		Die Entwicklung erfolgte in enger Zusammenarbeit beider Beteiligten. Ganz am Anfang startete Felix Haller mit der Entwicklung eines lauffähigen REST Service mit Demo-Antworten auf REST-Anfragen. Währenddessen erstellte Konstantin Lorenz die zuvor ausgearbeitete Datenbank und ein Skript, um diese automatisiert erstellen zu können. Als diese beiden Sachen lauffähig waren, wurde das erste Mal getauscht, um auch die anderen Bereiche kennen zu lernen. Konstantin Lorenz übernahm die Weiterentwicklung des REST Service, um die fehlenden Ressourcen sowie Methoden. Felix Haller programmierte die Schnittstelle zur nun vorhandenen Datenbank sowie die Kapsel-Klassen für alle Objekte.
+		Nachdem der Kern-Service lief, widmete sich Felix Haller der Schnittstelle zu den RSS Posts. Das beinhaltet den Backend-Service für die zuvor von Konstantin Lorenz vorbereiteten REST Ressource (/projects/{id}/posts). Herr Lorenz begann mit dem Beheben von Fehlern, die im Laufe des Test aufgefallen waren und dem dazugehörigen Anpassen der Services und der Datenbank.
 		
 		Nachfolgend eine genauere Aufschlüsselung aller weiteren Teile der Entwicklung und der jeweiligen Arbeitsverteilung:
 	 
@@ -394,7 +394,7 @@ Diese Ressource dient dazu die Benutzer über aktuelle Projekte zu informieren. 
 		\subsection{Erstellung der RSS Schnittstelle}
 			Durch Felix Haller.
 		\subsection{Erstellung der Testklassen}
-			Durch Felix Haller
+			Durch Felix Haller.
 		\subsection{Erstellung Client}
 			Durch Felix Haller.
 		\subsection{Erstellung Dokumentation}
@@ -443,7 +443,7 @@ Diese Ressource dient dazu die Benutzer über aktuelle Projekte zu informieren. 
 				\begin{itemize}
 					\item Beschluss: Hosting auf Github (git VCS, Wiki, Issue-Tracker)
 				\end{itemize}
-				\item Termin für erste Lauffähige Funktionen
+				\item Termin für erste lauffähige Funktionen
 				\begin{itemize}
 					\item Beschluss: 30.04.2015
 				\end{itemize}
