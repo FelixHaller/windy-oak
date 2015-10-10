@@ -33,6 +33,8 @@ import windyoak.core.Comments;
 import windyoak.core.Project;
 import windyoak.core.Projects;
 import windyoak.core.RSSPosts;
+import windyoak.core.Tag;
+import windyoak.core.Tags;
 
 /**
  * Der Testclient für den WindyOak REST-Service.
@@ -386,6 +388,79 @@ public class Client
         return projects;
     }
     
+    public Tags getAllTags()
+    {
+        Tags tags = new Tags();
+        String response;
+        GetMethod getMethod = new GetMethod(getBaseUri() + "/tags");      
+        getMethod.setRequestHeader("Accept", xml);
+        try
+        {
+            int responseCode = this.httpClient.executeMethod(getMethod);
+            System.out.println("ResponseCode war: " + responseCode);
+            response = getMethod.getResponseBodyAsString();
+            if (responseCode != 200)
+            {
+                System.out.println(response);
+                return tags;
+            }
+        }
+        catch (IOException ex)
+        {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, "Fehler bei Ausführung (getAllTags)");
+            throw new RuntimeException(ex.getMessage());
+        }
+        
+        if (VERBOSE)
+        {
+            System.out.println(prettyPrintXml(response));
+        }
+        
+        tags = this.tagsFromResponse(response);
+        
+        return tags;
+    }
+    
+    public Tag addTag(String name, String description)
+    {
+        String response;
+        Tag tag = new Tag();
+        PostMethod postMethod = new PostMethod(getBaseUri() + "/tags");
+        
+        //Request auf Charset UTF-8 (das Charset der Datenbank) setzen
+        postMethod.addRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+        
+        postMethod.addParameter("tagName", name);
+        postMethod.addParameter("description", description);
+        postMethod.setRequestHeader("Accept", xml);
+
+        try
+        {
+            int responseCode = httpClient.executeMethod(postMethod);
+            System.out.println("Der Response-Code war: " + responseCode);
+            response = new String(postMethod.getResponseBody(),"UTF-8");
+            if (responseCode >=300)
+            {
+                System.out.println(response);
+                return tag;
+            }
+        }
+        catch (IOException ex)
+        {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, "Fehler bei Ausführung (addTag)");
+            throw new RuntimeException(ex.getMessage());
+        }
+        
+        if (VERBOSE)
+        {
+            System.out.println(prettyPrintXml(response));
+        }
+        
+        tag = tagFromResponse(response);
+
+        return tag;
+    }
+    
     public Project deleteProject(int projectID)
     {
         String response;
@@ -427,7 +502,10 @@ public class Client
      * - Erstellen eines Projektes
      * - Suchen nach Projektnamen
      * - Modifizieren eines Projektes
-     * - Tags zu Projekt hinzufügen
+     * - Tags anzeigen
+     * - Einen Tag hinzufügen, den es noch nicht gibt
+     * - Einen Tag hinzufügen, den es schon gibt
+     * - hinzugefügten Tag zu Projekt hinzufügen
      * - Filtern nach tags
      * - Anzeigen der Kommentare zu einem Projekt
      * - Erstellen eines Kommentars zu einem Projekt
@@ -497,7 +575,25 @@ public class Client
             "tagNames",
             "java,rest");
         
-        String tag = "Java";
+        System.out.println("Rufe alle vorhandenen Tags (Markierungen) aus Datenbank ab.");
+        Tags allTags = client.getAllTags();
+        System.out.println(String.format("Es sind %d Tags in der Datenbank vorhanden.",allTags.getTags().size()));
+        
+        String tag = "wundervoll";
+        System.out.println(String.format("Füge '%s' als Tag hinzu (noch nicht vorhanden)", tag));
+        client.addTag(tag, "Eine Markierung für Sachen, die wundervoll sind.");
+        
+        String doubleTag = "Java";
+        System.out.println(String.format("Füge '%s' als Tag hinzu (bereits vorhanden, sollte Fehler werfen)", doubleTag));
+        client.addTag(doubleTag, "Eine Programmiersprache.");
+        
+        
+        System.out.println(String.format("Füge Tag '%s' zu Projekt windy oak hinzu", tag));
+        updatedProject = client.updateProjectAttribute(
+            windyoakProject.getId(),
+            "tagNames",
+            "java,rest,"+tag);
+        
         System.out.println(String.format("Rufe alle Projekte die mit '%s' markiert sind ab.",tag));
         Projects foundProjects2 = client.searchProject("tag", tag);
         System.out.println(String.format("Es wurden %d Projekt(e) gefunden.", foundProjects2.getProjects().size()));
@@ -565,6 +661,23 @@ public class Client
         return project;
     }
     
+    private Tag tagFromResponse(String response)
+    {
+        Tag tag;
+        
+        try
+        {
+            JAXBContext jaxbContext = JAXBContext.newInstance(Tag.class);
+            tag = (Tag) unmarshallfromXML(new StringReader(response), jaxbContext);
+        }
+        catch (JAXBException ex)
+        {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, "Fehler beim Unmarshalling von Tag", ex);
+            throw new RuntimeException("Fehler beim Unmarshalling von Tag");
+        }
+        return tag;
+    }
+    
     private Projects projectsFromResponse(String response)
     {
         Projects projects;
@@ -630,6 +743,23 @@ public class Client
             throw new RuntimeException("Fehler beim Unmarshalling von Posts");
         }
         return rssPosts;
+    }
+    
+    private Tags tagsFromResponse(String response)
+    {
+        Tags tags;
+        
+        try
+        {
+            JAXBContext jaxbContext = JAXBContext.newInstance(Tags.class);
+            tags = (Tags) unmarshallfromXML(new StringReader(response), jaxbContext);
+        }
+        catch (JAXBException ex)
+        {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, "Fehler beim Unmarshalling von Tags", ex);
+            throw new RuntimeException("Fehler beim Unmarshalling von Tags");
+        }
+        return tags;
     }
     
     public static String prettyPrintXml(final String xml)
