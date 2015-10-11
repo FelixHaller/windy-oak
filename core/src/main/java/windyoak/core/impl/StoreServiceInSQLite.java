@@ -485,8 +485,6 @@ public class StoreServiceInSQLite implements StoreService {
                 createTags = connection.prepareStatement(createTagsSt);
                 for (Tag newTag : tags.getTags())
                 {
-                    System.out.println(newTag.getName());
-
                     createTags.setInt(1, project.getId());
                     createTags.setString(2, newTag.getName());
                     createTags.executeUpdate();

@@ -25,6 +25,12 @@ public interface RecentResource {
     })
     public Response getRecents();
 
+    /**
+     * Liefert die letzten 10 angelegten Projekte zurück.
+     * 
+     * @return Die Liste der Projekte in absteigender Reihenfolge geordnet nach 
+     * Erstellungsdatum.
+     */
     @GET
     @Produces({
         MediaType.APPLICATION_XML,

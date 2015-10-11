@@ -22,6 +22,19 @@ import javax.ws.rs.core.UriInfo;
 @Path("projects")
 public interface ProjectsResource {
 
+    /**
+     * Legt ein neues Projekt in der Datenbank an.
+     * 
+     * @param uriInfo
+     * @param name
+     * @param username
+     * @param description
+     * @param members
+     * @param status
+     * @param tagNames
+     * @param postsURL
+     * @return Das neu angelegte Projekt.
+     */
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(
@@ -41,6 +54,17 @@ public interface ProjectsResource {
             @FormParam("postsURL") String postsURL
     );
 
+    /**
+     * Ruft eine Liste aller Projekte ab. Die Ausgabe kann mittels Angabe von 
+     * Projekttitel (title), einer Markierung (tag) oder des Erstellers 
+     * gefiltert werden.
+     * 
+     * @param title Bei Angabe dieses Parameters werden Projekte mit Inhalt von
+     * title im Projektnamen gesucht.
+     * @param tag Bei Angabe dieses Parameters wird nach Markierung gefiltert.
+     * @param creator Bei Angabe dieses Parameters wird nach Ersteller gefiltert.
+     * @return Alle gefundenen Projekte.
+     */
     @GET
     @Produces(
             {
@@ -54,6 +78,12 @@ public interface ProjectsResource {
             
     );
 
+    /**
+     * Ruft ein einzelnes Projekt ab.
+     *
+     * @param projectId Die ID des Projektes.
+     * @return Das Projekt, sollte die ID gülig sein. Sonst 404.
+     */
     @GET
     @Produces(
             {
@@ -63,6 +93,22 @@ public interface ProjectsResource {
     @Path("{projectid}")
     public Response getProject(@PathParam("projectid") int projectId);
 
+    /**
+     * Aktualisiert ein bestimmtes Projekt. Es werden nur die Teile 
+     * aktualisiert, die auch als Parameter übergeben werden. Sollte ein Teil 
+     * entfernt werden, muss ein leerer String ("") übergeben werden 
+     * 
+     * @param projectId Die ID des zu aktualisierenden Projektes.
+     * @param uriInfo
+     * @param name
+     * @param username
+     * @param description
+     * @param status
+     * @param members
+     * @param tagNames
+     * @param postsURL
+     * @return
+     */
     @PUT
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(
@@ -83,6 +129,12 @@ public interface ProjectsResource {
             @QueryParam("postsURL") String postsURL
     );
 
+    /**
+     * Löscht ein Projekt.
+     * 
+     * @param projectId Die ID des zu löschenden Projektes.
+     * @return Der letzte Stand des gelöschten Projektes.
+     */
     @DELETE
     @Produces({
         MediaType.APPLICATION_XML,
@@ -91,7 +143,19 @@ public interface ProjectsResource {
     @Path("{projectid}")
     public Response deleteProject(@PathParam("projectid") int projectId);
 
-//comments!!!!
+    //comments!!!!
+
+    /**
+     * Legt ein neuen Kommentar zu einem Projekt an.
+     * 
+     * @param projectid ID des Projektes, das Kommentiert werden soll.
+     * @param uriInfo
+     * @param title
+     * @param creator
+     * @param content
+     * @param status
+     * @return Das neu angelegte Projekt mit vergebener ID.
+     */
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(
@@ -110,6 +174,11 @@ public interface ProjectsResource {
             
     );
 
+    /**
+     * Alle Kommentare zu einem Projekt aus der Datenbank abrufen.
+     * @param projectid Die ID des Projektes.
+     * @return Alle gefundenen Kommentare.
+     */
     @GET
     @Produces(
             {
@@ -119,6 +188,12 @@ public interface ProjectsResource {
     @Path("{projectid}/comments")
     public Response getComments(@PathParam("projectid") int projectid);
 
+    /**
+     * Ruft einen bestimmten Kommentar ab.
+     * 
+     * @param commentid ID des Kommentars.
+     * @return Den gewünschten Kommentar, sonst 404.
+     */
     @GET
     @Produces(
             {
@@ -128,6 +203,16 @@ public interface ProjectsResource {
     @Path("{projectid}/comments/{commentid}")
     public Response getComment(@PathParam("commentid") int commentid);
 
+    /**
+     * Aktualisiert einen bestimmten Kommentar.
+     * 
+     * @param commentid ID des zu aktualisierenden Kommentars.
+     * @param uriInfo
+     * @param title
+     * @param content
+     * @param status
+     * @return Den aktualisierten Kommentar.
+     */
     @PUT
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(
@@ -144,6 +229,11 @@ public interface ProjectsResource {
             @FormParam("status") String  status
     );
 
+    /**
+     * Löscht einen Kommenatar.
+     * @param commentid Die ID des zu löschenden Kommentars.
+     * @return Den letzten Stand des Kommentars.
+     */
     @DELETE
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(
@@ -154,7 +244,12 @@ public interface ProjectsResource {
     @Path("{projectid}/comments/{commentid}")
     public Response deleteComment(@PathParam("commentid") int commentid);
     
-    
+    /**
+     * Die Posts (RSS Feed News) zu einem Projekt abrufen (sofern vorhanden).
+     * @param projectid Die ID des Projektes, zu dem Feeds abgerufen werden 
+     * sollen.
+     * @return Alle Posts zum Projekt (Auszug aus Inhalt des RSS Feeds)
+     */
     @GET
     @Produces(
             {
@@ -164,6 +259,13 @@ public interface ProjectsResource {
     @Path("{projectid}/posts")
     public Response getPosts(@PathParam("projectid") int projectid);
     
+    /**
+     * Einen bestimmten Post anhand seiner ID abrufen.
+     * 
+     * @param projectid
+     * @param postid
+     * @return Der gewünschte Post.
+     */
     @GET
     @Produces(
             {
@@ -172,30 +274,4 @@ public interface ProjectsResource {
             })
     @Path("{projectid}/posts/{postid}")
     public Response getPost(@PathParam("projectid") int projectid, @PathParam("postid") String postid);
-    
-    
-    
-//    @GET
-//    @Produces(
-//        {
-//            MediaType.APPLICATION_XML,
-//            MediaType.APPLICATION_JSON
-//        })
-//    @Path("{userid}")
-//    public Response getUser(@PathParam("userid") int userId);
-//
-//    @PUT
-//    @Path("{userid}" + "/numbers/" + "{caption}")
-//    public Response addNumber(@Context UriInfo uriInfo,
-//        @PathParam("userid") int userId,
-//        @PathParam("caption") String caption,
-//        @QueryParam("number") @DefaultValue("") String number);
-//
-//    @DELETE
-//    @Path("{userid}" + "/numbers/" + "{caption}")
-//    public Response deleteNumber(@PathParam("userid") int userId,
-//        @PathParam("caption") String caption);
-//    @DELETE
-//    @Path("/projects/" + "{projectid}")
-//    public Response deleteUser(@PathParam("projectid") int projectId);
 }

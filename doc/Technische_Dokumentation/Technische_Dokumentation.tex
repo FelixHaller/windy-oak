@@ -94,7 +94,7 @@
 		\begin{figure}[h]
 			\centering
 			\includegraphics[width=0.8\linewidth]{Bilder/Projektseite.png}
-			\caption[Projektseite]{Die Detailansicht eines bestimmten Projektes}
+			\caption[Projektseite]{Die Detailansicht eines bestimmten Projektes (Skizze)}
 			\label{fig:webgui2}
 		\end{figure}
 		
@@ -331,6 +331,26 @@ Diese Ressource dient dazu die Benutzer über aktuelle Projekte zu informieren. 
 					\item Tag wird zum Projekt hinzugefügt
 					\item Erwartetes Ergebnis: erfolgreich (Statuscode: 200) (beide Male)
 				\end{itemize}
+				
+				\item Tags anzeigen
+				\begin{itemize}
+					\item Gesamtanzahl aller in der Datenbank vorhandenen Tags wird angezeigt.
+					\item Erwartetes Ergebnis: erfolgreich (Statuscode: 200)
+				\end{itemize}
+				\item Einen Tag hinzufügen, den es noch nicht gibt
+				\begin{itemize}
+					\item Erwartetes Ergebnis: erfolgreich (Statuscode: 201)
+				\end{itemize}
+				\item Einen Tag hinzufügen, den es schon gibt
+				\begin{itemize}
+					\item Erwartetes Ergebnis: Fehler (Statuscode: 406)
+				\end{itemize}
+				\item hinzugefügten Tag zu Projekt hinzufügen
+				\begin{itemize}
+					\item Erwartetes Ergebnis: erfolgreich (Statuscode: 200)
+				\end{itemize}
+				
+				
 				\item Das Filtern von Projekten nach Tags
 				\begin{itemize}
 					\item Erwartetes Ergebnis: erfolgreich (Statuscode: 200)

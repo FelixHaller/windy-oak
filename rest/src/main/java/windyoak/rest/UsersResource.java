@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package windyoak.rest;
 
 import javax.ws.rs.GET;
@@ -13,12 +8,19 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
- *
- * @author klorenz1
+ * Dieses Interface dient nur als kleiner Ersatz für eine echte Userverwaltung 
+ * mit Authenfizierungsmöglichkeit. Deshalb existiert auch nur lesender Zugriff.
+ * 
+ * 
  */
 @Path("users")
 public interface UsersResource {
     
+    /**
+     * Ruft die Liste aller Benutzer ab.
+     * 
+     * @return Liste aller Benutzer
+     */
     @GET
     @Produces({
                 MediaType.APPLICATION_XML,
@@ -26,6 +28,12 @@ public interface UsersResource {
     })
     public Response getUsers();
     
+    /**
+     * Liefert die Details zu einem bestimmten username.
+     * 
+     * @param username Benutzername des Benutzers.
+     * @return alle Details, die zum username vorhanden sind.
+     */
     @GET
     @Produces({
                 MediaType.APPLICATION_XML,

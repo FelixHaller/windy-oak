@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package windyoak.rest.impl;
 
 import java.util.regex.Matcher;
@@ -59,7 +54,7 @@ public class TagsResourceImpl implements TagsResource {
         } catch (OakCoreException ex) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
-        return Response.status(Response.Status.OK).entity(tag).build();
+        return Response.status(Response.Status.CREATED).entity(tag).build();
     }
 
     @Override

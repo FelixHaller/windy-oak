@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package windyoak.rest;
 
 import javax.ws.rs.Consumes;
@@ -26,6 +21,15 @@ import javax.ws.rs.core.UriInfo;
 @Path("tags")
 public interface TagsResource {
 
+    /**
+     * Erstellt einen Tag in der Datenbank, sofern dieser noch nicht vorhanden 
+     * ist.
+     * 
+     * @param uriInfo
+     * @param tagName
+     * @param description
+     * @return Den erstellten Tag.
+     */
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(
@@ -39,6 +43,11 @@ public interface TagsResource {
             @FormParam("description") String description
     );
 
+    /**
+     * Liefert Liste alle Tags.
+     * 
+     * @return Liste aller Tags.
+     */
     @GET
     @Produces(
             {
@@ -47,6 +56,12 @@ public interface TagsResource {
             })
     public Response getTags();
 
+    /**
+     * Liefert einen bestimmten Tag.
+     * 
+     * @param tagName
+     * @return
+     */
     @GET
     @Produces(
             {
@@ -56,6 +71,15 @@ public interface TagsResource {
     @Path("{tagName}")
     public Response getTag(@PathParam("tagName") String tagName);
 
+    /**
+     * Ändert zu einem Tag mit Namen tagName die Beschreibung (description).
+     * 
+     * 
+     * @param tagName Name des zu ändernden Tags 
+     * @param uriInfo
+     * @param description Neue Beschreibung für den Tag.
+     * @return den geänderten Tag.
+     */
     @PUT
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(
@@ -70,6 +94,13 @@ public interface TagsResource {
             @FormParam("description") String description
     );
 
+    /**
+     * Löscht einen bestehenden Tag.
+     * 
+     * 
+     * @param tagName
+     * @return
+     */
     @DELETE
     @Produces({
         MediaType.APPLICATION_XML,
