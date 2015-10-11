@@ -36,12 +36,13 @@
 	
 	
 	\section{Aufgabenstellung}
-		Nachfolgend weitestgehend übernommen aus offizieller Aufgabenstellung:
+		(Nachfolgend weitestgehend übernommen aus offizieller Aufgabenstellung)
+		
 		Es soll im Rahmen einer Belegarbeit ein eigener, lauffähiger RESTful Webservice mit einem frei wählbaren Thema entwickelt
 		werden. Zum Nachweis der Funktionsfähigkeit ist ein Testclient notwendig, der ein Testszenario nachvollziehbar durchspielt und damit alle Funktionen des Service prüft. In der abzugebenden technischen Dokumentation soll alles enthalten sein, was zum Verständnis des Services, also seiner Funktion und dem technischen Hintergrund, notwendig ist.
 		
 	\section{Motivation}
-		Zur Zeit existiert keine zentrale Anlaufstelle, wenn es um die Bekanntmachung von und die Suche nach Projekten geht. Das Ziel des Webservice ist, eine bessere Vernetzung der Hochschulmitglieder während der Planung und Durchführung von Projekten zu erreichen. Einerseits soll eine Möglichkeit für Professoren gegeben werden geplante Forschungsarbeiten, für die noch Unterstützer gesucht werden, vorzustellen. Andererseits soll Studenten die Möglichkeit geboten werden, bei Interesse an einem Thema - beispielsweise einer bestimmten Programmiersprache - eine Anlaufstelle zur praktischen Umsetzung zu finden. Außerdem erleichtert es u.U. das Finden eines Themas für praktische Belegarbeiten (z.B. Java2, Verteilte Systeme, SWT, ...)
+		Zur Zeit existiert keine zentrale Anlaufstelle, wenn es um die Bekanntmachung von und die Suche nach Projekten geht. Das Ziel des Webservice ist, eine bessere Vernetzung der Hochschulmitglieder während der Planung und Durchführung von Projekten zu erreichen. Einerseits soll eine Möglichkeit für Professoren gegeben werden geplante Forschungsarbeiten, für die noch Unterstützer gesucht werden, vorzustellen. Andererseits soll Studenten die Möglichkeit geboten werden, bei Interesse an einem Thema - beispielsweise einer bestimmten Programmiersprache - eine Anlaufstelle zur praktischen Umsetzung zu finden. Außerdem erleichtert es u.U. das Finden eines Themas für praktische Belegarbeiten (z.B. Java2, Verteilte Systeme, Softwaretechnik, ...)
 	\section{Installations- und Startanleitung}
 		Das Projekt wird mittels des Build Systems \emph{gradle} entwickelt. Es hilft bei den regelmäßig auszuführenden Arbeiten, wie dem Kompilieren von Klassen, dem Testen der Anwendung und der Erstellung der Javadoc Dokumentation. Innerhalb der gradle Konfigurationsdateien wurden Abhängigkeiten so definiert, dass beim Bau des Hauptprojektes alle Unterprojekte gleich mit gebaut und getestet werden. Außerdem werden alle benötigten Abhängigkeiten beim erstmaligen Kompilieren der Quellen heruntergeladen. Somit ist keine manuelle Installation von externen Abhängigkeiten notwendig. Um zuvor gebaute und temporäre Dateien vor dem Kompilieren zu löschen, empfiehlt es sich den \emph{clean} Auftrag vorher auszuführen.
 				
@@ -61,7 +62,7 @@
 		
 		\subsection{Zusätzliche Helferskripte}
 			\subsubsection{dbscript.sql}
-				In diesem Script stehen alle Anweisungen um die SQLite Datenbank wieder in den Auslieferungszustand zu bringen.
+				In diesem SQL-Script stehen alle Anweisungen um die SQLite Datenbank wieder in den Auslieferungszustand zu bringen.
 			\subsubsection{createDB.sh}
 				Dieses Script automatisiert den Prozess der Datenbank-Neuerstellung. Es ist unter Linux lauffähig und setzt den \emph{sqlite3} Befehl voraus. Sollte dieser nicht gefunden werden, bricht das Skript die Ausführung ab.
 				Sonst erledigt es folgende Aufgaben:
@@ -102,9 +103,9 @@
 		
 		Abbildung \ref{fig:webgui2} zeigt die Detailansicht eines Projektes. Hier sieht man weitere Felder und Ressourcen, die zusätzlich abgerufen werden müssen. Das kann z.B. asynchron über ein JavaScript erfolgen. Dazu gehören die Kommentare zum Projekt und die News (auch Posts genannt), welche aus einem dem Projekt zugeordneten RSS oder Atom Feed ausgelesen werden können.
 		
-		Das ist natürlich nur ein Vorschlag für einen Client. Wir hoffen aber, dadurch zum besseren Verständnis des Clients beitragen zu können. Eine komplette Übersichtsgrafik aller REST Ressourcen finden Sie in Anhang \ref{sec:restdiagramm}.
+		Das ist natürlich nur ein Vorschlag für einen Client. Auch werden hier lediglich ein Teil der lesenden Methoden dargestellt. Wir hoffen aber, dadurch zum besseren Verständnis des Clients beitragen zu können. Wie das aktualisieren einer Beschreibung oder das hinzufügen eines Tags zu einem Projekt aussehen würde, sollte aber ab hier auch klar werden. Eine komplette Übersichtsgrafik aller REST Ressourcen finden Sie in Anhang \ref{sec:restdiagramm}.
 		
-		Anmerkung: Es versteht sich von selbst, dass dieser Dienst nicht ohne Nutzerverwaltung und Authentifizierung eingesetzt werden könnte. Diese ist nicht Teil des Belegs und würde im Fall der Hochschule auch über die zentralen Authentifizierung abgewickelt werden. Sowohl die User in der Datenbank als auch die entsprechende Ressource sind also exemplarisch zu betrachten und müssten abgeändert werden, um einen sicheren Einsatz zu gewährleisten.
+		\emph{Anmerkung}: Es versteht sich von selbst, dass dieser Dienst nicht ohne Nutzerverwaltung und Authentifizierung eingesetzt werden könnte. Diese ist nicht Teil des Belegs und würde im Fall der Hochschule auch über die zentralen Authentifizierung abgewickelt werden. Sowohl die User in der Datenbank als auch die entsprechende Ressource sind also exemplarisch zu betrachten und müssten abgeändert werden, um einen sicheren Einsatz zu gewährleisten.
 
 	\section{REST-Schnittstellen} \label{sec:restschnittstellen}
 \subsection{Projekte}
@@ -261,9 +262,9 @@ Diese Ressource dient dazu die Benutzer über aktuelle Projekte zu informieren. 
 	\end{itemize} 
 \end{itemize}
 	\section{Datenmodell und Persistierung}
-	Zur Persistierung der Daten wird ein relationales Datenbanksystem namens SQLite eingesetzt. Die Datenbank ließ sich ohne weitere Serversoftware einbinden. Zur Anbindung wird der JDBC-Treiber benutzt. Die gesamte Datenbank befindet sich in einer einzigen Datei, der db.sqlite. Diese kann mit der beigefügten createDB.sh neu gebaut werden. In der Datei dbscript.sql befindet sich das dazugehörige SQL-Script mit vielen Beispieldatensätzen. Im produktiven Einsatz ist eine SQLite nicht zweckmäßig und kann durch eine gebräuchlichere Datenbank z.B. MySQL ersetzt werden.  
+	Zur Persistierung der Daten wird ein relationales Datenbanksystem namens SQLite eingesetzt. Die Datenbank ließ sich ohne weitere Serversoftware einbinden. Zur Anbindung wird der JDBC-Treiber benutzt. Die gesamte Datenbank befindet sich in einer einzigen Datei, der db.sqlite. Diese kann mit der beigefügten createDB.sh neu gebaut werden. In der Datei dbscript.sql befindet sich das dazugehörige SQL-Script mit vielen Beispieldatensätzen. Im produktiven Einsatz ist eine SQLite nicht zweckmäßig und kann durch eine gebräuchlichere Datenbank z.B. MySQL ersetzt werden. Der Quellcode wurde durch geeignete Interfaces dafür vorbereitet.
 	
-	In der Abbildung \ref{fig:db} ist das Datenbankschema dargestellt. 
+	In Anhang \ref{sec:erdiagramm} ist das Datenbankschema dargestellt. 
 	\section{Client}
 	\label{sec:client}
 		\subsection{Bedienung}
@@ -298,7 +299,7 @@ Diese Ressource dient dazu die Benutzer über aktuelle Projekte zu informieren. 
 		
 		\subsection{Testszenarien}
 			
-			Er testet die Funktionalität des REST-Service und gibt die Rückgabe (XML) formatiert aus. Nach jedem Szenario unterbricht er seinen Lauf, um dem Bediener die Möglichkeit zu geben den Ablauf der Abrufe nachzuvollziehen und die Ausgabe zu betrachten. Die Ausführung kann durch das Drücken der ''ENTER'' Taste fortgesetzt werden. Der Client gibt aus, was er gerade macht und was darauf hin passiert. Während des Durchlaufs werden zudem die zurückgelieferten Statuscodes ausgegeben.
+			Der Client testet die Funktionalität des REST-Service und gibt die Rückgabe (XML) formatiert aus. Nach jedem Szenario unterbricht er seinen Lauf, um dem Bediener die Möglichkeit zu geben den Ablauf der Abrufe nachzuvollziehen und die Ausgabe zu betrachten. Die Ausführung kann durch das Drücken der ''ENTER'' Taste fortgesetzt werden. Der Client gibt aus, was er gerade macht und was darauf hin passiert. Während des Durchlaufs werden zudem die zurückgelieferten Statuscodes ausgegeben.
 			
 			Der Client testet folgende Anwendungsszenarien:
 			\begin{itemize}
@@ -389,7 +390,7 @@ Diese Ressource dient dazu die Benutzer über aktuelle Projekte zu informieren. 
 		Mit diesem Projekt ist es gelungen, eine Plattform zu schaffen, die für das Bekanntmachen von Projekten geeignet ist. Es erleichtert den Professoren für neue Projekte zu werben und Mitglieder zu gewinnen, die sich an Projekten beteiligen wollen. Durch Zuordnung von Tags zu den Projekten kann nach individuellen Gesichtspunkten eine Suche zu einem Thema durchgeführt werden. Für Studierende ist es einfacher ein Thema für z.B. eine Belegarbeit zu finden. Durch individuelle Kommentarfunktionen und RSS-Feed Unterstützung ist eine hohe Vernetzung gegeben, die es ermöglicht Projekte zu diskutieren. Die Neuigkeitenfunktion ermöglicht es Studenten und Professoren immer auf dem aktuellen Stand zu halten und Informationen über neue Projekte bekannt zu machen.
 		
 	\section{Fazit}
-		Während des Projektes gab es wenige Schwierigkeiten bei der Umsetzung und doch haben wir viel gelernt. Es war an einigen Stellen notwendig, sich über die Inhalte der Vorlesung hinaus zu informieren, aber auch das klappte gut.  Das Einbinden externer RSS/Atom Feeds, welches ursprünglich nicht Inhalt des geplanten Projektes war, wurde umgesetzt, da die Zeit für ausreichend befunden wurde. Insgesamt haben wir jedoch den Zeitaufwand für die Dokumentation unterschätzt. Auch das Arbeiten im Team an einer Software war neu und Merge Konflikte, unbekannte Workflows und die unterschiedlichen Programmierstile haben uns vor Herausforderungen gestellt und an manchen Stellen den Ablauf verzögert.
+		Während des Projektes gab es wenige Schwierigkeiten bei der Umsetzung und doch haben wir viel gelernt. Es war an einigen Stellen notwendig, sich über die Inhalte der Vorlesung hinaus zu informieren, aber auch das klappte gut. Das Einbinden externer RSS/Atom Feeds, welches ursprünglich nicht Inhalt des geplanten Projektes war, wurde umgesetzt, da die Zeit für ausreichend befunden wurde. Insgesamt haben wir jedoch den Zeitaufwand für die Dokumentation unterschätzt. Auch das Arbeiten im Team an einer Software war neu und Merge Konflikte, unbekannte Workflows und die unterschiedlichen Programmierstile haben uns vor Herausforderungen gestellt und an manchen Stellen den Ablauf verzögert.
 		
 		Insgesamt sind wir sehr zufrieden mit dem, was wir erreicht haben, denn die Software läuft so, wie sie geplant wurde.
 		
@@ -526,13 +527,14 @@ Diese Ressource dient dazu die Benutzer über aktuelle Projekte zu informieren. 
 			  \label{fig:rest}
 			 \end{figure}
 			\end{landscape}
-		\begin{landscape}
-			\begin{figure}
-  				\centering
-  				\includegraphics[width=\linewidth,height=\textheight,keepaspectratio]{Bilder/db.pdf} 
-  				\caption{Datenbankschema im Überblick}
-  				\label{fig:db}
-		 	\end{figure}
-		\end{landscape}
+		\section{Datenbank ER Diagramm}	\label{sec:erdiagramm}
+			\begin{landscape}
+				\begin{figure}
+	  				\centering
+	  				\includegraphics[width=\linewidth,height=\textheight,keepaspectratio]{Bilder/db.pdf} 
+	  				\caption{Datenbankschema im Überblick}
+	  				\label{fig:db}
+			 	\end{figure}
+			\end{landscape}
 		
 \end{document}
