@@ -179,7 +179,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
                     Projects projects = storeService.searchProject(title,tag,creator,false);
                     if (projects.getProjects().isEmpty()) {
                         
-                        return Response.status(Status.NOT_FOUND).type("text/plain; charset=utf-8").entity(String.format("Keine Projekte mit '%s' im Titel gefunden!", title)).build();
+                        return Response.status(Status.NOT_FOUND).type("text/plain; charset=utf-8").entity("Keine Projekte mit diesen Kriterien gefunden!").build();
                     }
                     return Response.status(Status.OK).entity(projects).build();
                 } else {
