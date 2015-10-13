@@ -173,7 +173,10 @@ public class StoreServiceInSQLiteTest
         Project againProject = storeService.getProjectByID(project.getId());
         assertNull(againProject);
     }
-    //Comments
+    /**
+     * Testet ob noch alle Comments eines Projekts angezeigt werden
+     * @throws OakCoreException 
+     */
     @Test
     public void testFetchallComments() throws OakCoreException
     {
@@ -182,7 +185,10 @@ public class StoreServiceInSQLiteTest
         assertTrue(allComments.getComments().size()==4);
 
     }
-    
+    /**
+     * Es wird getestet, ob die Methode getCommentByID den richtigen Comment zurückgibt.
+     * @throws Exception 
+     */
     @Test
     public void testGetCommentByID() throws Exception
     {
@@ -196,6 +202,10 @@ public class StoreServiceInSQLiteTest
         assertEquals(comment.getDateUpdated(),null);
             
     }
+    /**
+     * Testet das Erstellen und Updaten von Comments
+     * @throws Exception 
+     */
     @Test
     public void testCreateAndUpdateComment() throws Exception
     {
