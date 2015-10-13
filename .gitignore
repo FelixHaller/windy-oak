@@ -21,3 +21,6 @@ doc/Technische_Dokumentation/*.nlo
 doc/Technische_Dokumentation/*.nls
 doc/Technische_Dokumentation/*.synctex.gz
 doc/Technische_Dokumentation/*.pdf
+doc/Technische_Dokumentation/*.nav
+doc/Technische_Dokumentation/*.snm
+doc/Technische_Dokumentation/*.vrb
