@@ -119,6 +119,8 @@ public class StoreServiceInSQLiteTest
     /**
      * Ruft ein bestehendes Projekt aus der Datenbank ab, 
      * verändert den Namen und den Creator und trägt es als neues Projekt ein. 
+     * Anschließend ruft er das neu erstellte Projekt nochmal frisch aus der 
+     * Datenbank ab.
      * 
      * @throws windyoak.core.OakCoreException
      */
@@ -424,12 +426,12 @@ public class StoreServiceInSQLiteTest
 //     * Test of searchProject method, of class StoreServiceInSQLite.
 //     */
 //    @Test
-//    public void testSearchProject() throws Exception
+//    public void testSearchProject() throws OakCoreException
 //    {
-//        System.out.println("searchProject");
-//        String title = "";
-//        String tagName = "";
-//        String creator = "";
+//        String title = "Sinn";
+//        String tagName = "Java";
+//        String wrongTagName = "Perl";
+//        String creator = "Tutnix";
 //        boolean recent = false;
 //        StoreServiceInSQLite instance = new StoreServiceInSQLite();
 //        Projects expResult = null;
