@@ -568,10 +568,11 @@ public class StoreServiceInSQLite implements StoreService {
         ResultSet resultset;
         Comment comment = new Comment();
         try {
-
+            
             sql = "select count(*) count, * from comment, user "
-                    + "where comment.creator = user.username "
-                    + "and comment.commentID = " + commentID;
+                    +   "where comment.creator = user.username "
+                    +   "and comment.status!='deleted' "
+                    +   "and comment.commentID = " + commentID;
 
             resultset = statement.executeQuery(sql);
             if (resultset.getInt("count") == 0) {

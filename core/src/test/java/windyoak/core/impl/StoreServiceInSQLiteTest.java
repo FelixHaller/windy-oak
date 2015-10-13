@@ -1,11 +1,14 @@
 package windyoak.core.impl;
 
+import java.util.Date;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import windyoak.core.Comment;
+import windyoak.core.Comments;
 import windyoak.core.OakCoreException;
 import windyoak.core.Project;
 import windyoak.core.Projects;
@@ -168,8 +171,80 @@ public class StoreServiceInSQLiteTest
         Project againProject = storeService.getProjectByID(project.getId());
         assertNull(againProject);
     }
-    
+    //Comments
+    @Test
+    public void testFetchallComments() throws OakCoreException
+    {
+        Comments allComments = storeService.fetchAllComments(1);
+        assertEquals(allComments.getClass(), Comments.class);
+        assertTrue(allComments.getComments().size()==4);
 
+    }
+    
+    @Test
+    public void testGetCommentByID() throws Exception
+    {
+
+        Comment comment = storeService.getCommentByID(1);
+        assertEquals(comment.getContent(), "Also dass, was ich bis jetzt von eurer Arbeit gesehen habe ist wirklich super! Weiter so! ;)");
+        assertEquals(comment.getCreator().getUsername(), "CMusencus");
+        assertEquals(comment.getId(), 1);
+        assertEquals(comment.getStatus(),"published");
+        assertEquals(comment.getDateCreated().getTime(),1388891495000L);
+        assertEquals(comment.getDateUpdated(),null);
+            
+    }
+    @Test
+    public void testCreateAndUpdateComment() throws Exception
+    {
+       
+        Comment comment = new Comment();
+        comment.setContent("Hello");
+        comment.setCreator(storeService.getUser("Tutnix"));
+        comment.setProjectID(2);
+        comment.setStatus("published");
+        comment.setTitle("Test");
+        Comment newComment = storeService.createComment(comment);
+        assertEquals(comment.getContent(),newComment.getContent());
+        assertEquals(comment.getCreator().getUsername(),newComment.getCreator().getUsername());
+        assertEquals(comment.getProjectID(),newComment.getProjectID());
+        assertEquals(comment.getStatus(),newComment.getStatus());
+        assertEquals(comment.getTitle(),newComment.getTitle());
+        assertTrue(newComment.getDateCreated().getTime()>0);
+        assertTrue(newComment.getDateUpdated()==null);
+        assertEquals(newComment.getDateCreated().getClass(),Date.class);
+        
+        newComment.setContent("Hello2");
+        newComment.setStatus("new");
+        newComment.setTitle("Test2");
+        
+        Comment nComment = storeService.updateComment(newComment);
+        assertEquals(nComment.getContent(),newComment.getContent());
+        assertEquals(nComment.getCreator().getUsername(),newComment.getCreator().getUsername());
+        assertEquals(nComment.getProjectID(),newComment.getProjectID());
+        assertEquals(nComment.getStatus(),newComment.getStatus());
+        assertEquals(nComment.getTitle(),newComment.getTitle());
+        assertTrue(newComment.getDateCreated().getTime()>0);
+        assertTrue(newComment.getDateUpdated().getTime()>0);
+        assertEquals(newComment.getDateCreated().getClass(),Date.class);
+    }
+    @Test
+    public void testdeleteComment() throws Exception
+    {
+        Comment comment =storeService.getCommentByID(1);
+        Comment copy = storeService.createComment(comment);
+        Comment newComment = storeService.deleteComment(copy.getId());
+        
+        assertEquals(copy.getContent(),newComment.getContent());
+        assertEquals(copy.getCreator().getUsername(),newComment.getCreator().getUsername());
+        assertEquals(copy.getProjectID(),newComment.getProjectID());
+        assertEquals("deleted",newComment.getStatus());
+        assertEquals(copy.getTitle(),newComment.getTitle());
+        assertTrue(newComment.getDateCreated().getTime()>0);
+        assertEquals(newComment.getDateCreated().getClass(),Date.class);
+        
+        assertNull(storeService.getCommentByID(newComment.getId()));
+    }
 //    /**
 //     * Test of updateProject method, of class StoreServiceInSQLite.
 //     */
