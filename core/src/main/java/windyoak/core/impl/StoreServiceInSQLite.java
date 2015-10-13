@@ -864,7 +864,7 @@ public class StoreServiceInSQLite implements StoreService {
     public Projects searchProject(String title, String tagName, String creator, boolean recent) throws OakCoreException {
         Projects projects = new Projects();
         this.establishConnection();
-
+        
         try {
 
             if (recent) {

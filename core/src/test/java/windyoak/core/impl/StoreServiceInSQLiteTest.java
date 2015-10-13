@@ -247,198 +247,27 @@ public class StoreServiceInSQLiteTest
         
         assertNull(storeService.getCommentByID(newComment.getId()));
     }
-//    /**
-//     * Test of updateProject method, of class StoreServiceInSQLite.
-//     */
-//    @Test
-//    public void testUpdateProject() throws Exception
-//    {
-//        System.out.println("updateProject");
-//        Project project = null;
-//        StoreServiceInSQLite instance = new StoreServiceInSQLite();
-//        Project expResult = null;
-//        Project result = instance.updateProject(project);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of fetchAllComments method, of class StoreServiceInSQLite.
-//     */
-//    @Test
-//    public void testFetchAllComments() throws Exception
-//    {
-//        System.out.println("fetchAllComments");
-//        int projectID = 0;
-//        StoreServiceInSQLite instance = new StoreServiceInSQLite();
-//        Comments expResult = null;
-//        Comments result = instance.fetchAllComments(projectID);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getCommentByID method, of class StoreServiceInSQLite.
-//     */
-//    @Test
-//    public void testGetCommentByID() throws Exception
-//    {
-//        System.out.println("getCommentByID");
-//        int commentID = 0;
-//        StoreServiceInSQLite instance = new StoreServiceInSQLite();
-//        Comment expResult = null;
-//        Comment result = instance.getCommentByID(commentID);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of deleteComment method, of class StoreServiceInSQLite.
-//     */
-//    @Test
-//    public void testDeleteComment() throws Exception
-//    {
-//        System.out.println("deleteComment");
-//        int commentID = 0;
-//        StoreServiceInSQLite instance = new StoreServiceInSQLite();
-//        Comment expResult = null;
-//        Comment result = instance.deleteComment(commentID);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of updateComment method, of class StoreServiceInSQLite.
-//     */
-//    @Test
-//    public void testUpdateComment() throws Exception
-//    {
-//        System.out.println("updateComment");
-//        Comment comment = null;
-//        StoreServiceInSQLite instance = new StoreServiceInSQLite();
-//        Comment expResult = null;
-//        Comment result = instance.updateComment(comment);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of createComment method, of class StoreServiceInSQLite.
-//     */
-//    @Test
-//    public void testCreateComment() throws Exception
-//    {
-//        System.out.println("createComment");
-//        Comment comment = null;
-//        StoreServiceInSQLite instance = new StoreServiceInSQLite();
-//        Comment expResult = null;
-//        Comment result = instance.createComment(comment);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getTagByName method, of class StoreServiceInSQLite.
-//     */
-//    @Test
-//    public void testGetTagByName() throws Exception
-//    {
-//        System.out.println("getTagByName");
-//        String tagName = "";
-//        StoreServiceInSQLite instance = new StoreServiceInSQLite();
-//        Tag expResult = null;
-//        Tag result = instance.getTagByName(tagName);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getTags method, of class StoreServiceInSQLite.
-//     */
-//    @Test
-//    public void testGetTags() throws Exception
-//    {
-//        System.out.println("getTags");
-//        StoreServiceInSQLite instance = new StoreServiceInSQLite();
-//        Tags expResult = null;
-//        Tags result = instance.getTags();
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of updateTagDescription method, of class StoreServiceInSQLite.
-//     */
-//    @Test
-//    public void testUpdateTagDescription() throws Exception
-//    {
-//        System.out.println("updateTagDescription");
-//        Tag newtag = null;
-//        StoreServiceInSQLite instance = new StoreServiceInSQLite();
-//        Tag expResult = null;
-//        Tag result = instance.updateTagDescription(newtag);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of deleteTag method, of class StoreServiceInSQLite.
-//     */
-//    @Test
-//    public void testDeleteTag() throws Exception
-//    {
-//        System.out.println("deleteTag");
-//        String tagName = "";
-//        StoreServiceInSQLite instance = new StoreServiceInSQLite();
-//        Tag expResult = null;
-//        Tag result = instance.deleteTag(tagName);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of createTag method, of class StoreServiceInSQLite.
-//     */
-//    @Test
-//    public void testCreateTag() throws Exception
-//    {
-//        System.out.println("createTag");
-//        Tag tag = null;
-//        StoreServiceInSQLite instance = new StoreServiceInSQLite();
-//        Tag expResult = null;
-//        Tag result = instance.createTag(tag);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of searchProject method, of class StoreServiceInSQLite.
-//     */
-//    @Test
-//    public void testSearchProject() throws OakCoreException
-//    {
-//        String title = "Sinn";
-//        String tagName = "Java";
-//        String wrongTagName = "Perl";
-//        String creator = "Tutnix";
-//        boolean recent = false;
-//        StoreServiceInSQLite instance = new StoreServiceInSQLite();
-//        Projects expResult = null;
-//        Projects result = instance.searchProject(title, tagName, creator, recent);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
     
+    /**
+     * Testet die Projektsuche. Sucht nach Projekttitel, filtert nach gültigen 
+     * und ungültigen Tags. 
+     * 
+     */
+    @Test
+    public void testSearchProject() throws OakCoreException
+    {
+        String title = "sinn";
+        String tagName = "Java";
+        String wrongTagName = "Perl";
+        String creator = "Tutnix";
+        boolean recent = false;
+        Projects projects = storeService.searchProject(title, "", "", recent);
+        assertNotNull(projects.getProject(1));
+        
+        Projects projects2 = storeService.searchProject("", tagName, "", recent);
+        assertNull(projects2.getProject(1));
+        
+        Projects projects3 = storeService.searchProject("", wrongTagName, creator, recent);
+        assertEquals(projects3.getProjects().size(), 0);
+    }
 }
