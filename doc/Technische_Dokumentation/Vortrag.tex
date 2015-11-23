@@ -45,58 +45,94 @@
 				\item Vernetzung während Planung/Durchführung
 				\item Studenten
 				\begin{itemize}
-					\item finden geeigneter Projekte für Belege
-					\item umsetzen von Interessen	
+					\item Finden geeigneter Projekte für 
+					\begin{itemize}
+						\item Belege
+						\item Abschlussarbeiten
+					\end{itemize}
+					\item Vertiefen von Interessen	
 				\end{itemize}
 				\item Professoren
 				\begin{itemize}
 					\item Forschungsgruppen/-arbeiten
+					\item Hochschulprojekte (z.B. HSMWmobil)
 				\end{itemize}
 			\end{itemize}
 		\end{frame}
 		
 	\section{Bedienkonzept}
-		\begin{frame}{Bedienkonzept}
-			Moqups mit Erklärung.
+		\begin{frame}{Bedienkonzept - Methoden}
+			\begin{itemize}
+				\item GET - Objekte abrufen
+				\begin{itemize}
+					\item Ressourcenaufruf per URI (Pfad Parameter)
+					\item Filterung durch \textbf{Query} Parameter
+				\end{itemize}
+				\item POST - Objekt erstellen
+					\begin{itemize}
+						\item Auswahl des Ortes per URI (Pfad Parameter)
+						\item Attribute über \textbf{Form} Parameter 
+					\end{itemize}
+				\item PUT - Objekte bearbeiten
+					\begin{itemize}
+						\item Auswahl der Ressource per URI (Pfad Parameter)
+						\item geänderte Attribute über \textbf{Form} Parameter 
+					\end{itemize}
+				\item DELETE - Objekte löschen	
+				\begin{itemize}
+					\item Auswahl der Ressource per URI (Pfad Parameter) 
+				\end{itemize}
+			\end{itemize}
+		\end{frame}
+		
+		\begin{frame}{Bedienkonzept - Aufrufe}
+			\begin{block}{statische Ressourcen}
+				\begin{itemize}
+					\item URI führt zu eindeutiger Ressource
+					\item z.B.: Projekt mit ID 1: \textbf{/projects/1}
+				\end{itemize}
+			\end{block}	
+			
+			\begin{block}{Ressourcen Sammlungen}
+				\begin{itemize}
+					\item URI führt zu Sammlung von Ressourcen
+					\item z.B.: alle Projekte \textbf{/projects}
+					\item durch Query Parameter filterbar
+					\item z.B.: alle Projekte von tutnix:\\
+					\textbf{/projects/?creator=tutnix}
+				\end{itemize}
+			\end{block}	
 			
 		\end{frame}
 	\section{Übersicht REST Ressourcen}
 		\begin{frame}{Übersicht REST Ressourcen}
 			\begin{figure}
 				\centering
-				\includegraphics[height=156]{Bilder/rest.pdf} 
-			\end{figure}	
+				\includegraphics[width=1.05\linewidth]{Bilder/rest.pdf}
+			\end{figure}
 		\end{frame}
 	\section{Testszenario}
 		\begin{frame}{Testszenario}
 			\begin{itemize}
-				\item Client testet Funktionalität und zeigt Rückgabe als XML an
+				\item Demonstration der Funktionalität
+				\item Client zeigt Rückgabe als XML
 				\item Ausgabe von Statuscodes
 				\item Führung des Anwenders
 			\end{itemize}
-		
+			\begin{block}{Anwendungsszenarien:}
+				\begin{itemize}
+					\item Projekte
+					\item Kommentare
+					\item Tags
+					\item RSS-Posts
+				\end{itemize}
+			\end{block}
 		\end{frame}
-		\begin{frame}{Testszenario}
-		Anwendungsszenarien:
-			\begin{itemize}
-				\item Projekte
-				\item Kommentare
-				\item Tags
-				\item RSS-Posts
-			\end{itemize}
-				
+		\begin{frame}{Client Demo}
+			Client Demo...
 		\end{frame}
-		
 	\section{Live Aufrufe von einigen REST Befehlen}
 		\begin{frame}{Live REST Abfragen}
-			
+			Live Demo...
 		\end{frame}
-		
-	\section{Fazit oder Zusammenfassung oder so}
-		\begin{frame}{Fazit oder Zusammenfassung oder so}
-			
-		\end{frame}
-	
-	
 \end{document}
-

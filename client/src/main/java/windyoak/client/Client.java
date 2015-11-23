@@ -524,11 +524,11 @@ public class Client
         int id = 3;
         
         System.out.println(String.format("Rufe Projekt mit der ID %d ab.", id));
+        pause();
         Project project = client.getProjectByID(id);
         System.out.println(String.format("Name von Projekt mit ID %d: ", id) + project.getTitle());
-        //pause();
-        
         System.out.println("Rufe auch Kommentare zu diesem Projekt ab.");
+        pause();
         Comments comments = client.getCommentsForProject(id);
         if (comments.getComments().size() > 0)
         {
@@ -543,9 +543,12 @@ public class Client
         int id2 = 42;
         
         System.out.println(String.format("Rufe Projekt mit der ID %d ab. (welches nicht vorhanden ist)", id2));
+        
+        pause();
         Project project2 = client.getProjectByID(id2);
         
         System.out.println("Lege neues Projekt an...");
+        pause();
         Project windyoakProject = client.addProject(
             "Windy-Oak", 
             "Tutnix", 
@@ -560,45 +563,54 @@ public class Client
         String suchString= "sinnvoll";
         
         System.out.println(String.format("Suche nach Projekt mit '%s' im Namen.", suchString));
+        pause();
         Projects foundProjects = client.searchProject("title",suchString);
         System.out.println(String.format("Es wurden %d Projekt(e) gefunden mit '%s' im Namen.", foundProjects.getProjects().size(), suchString));
         
 
         System.out.println("Entferne Tippfehler in angelegtem windy-oak Projekt...");
+        pause();
         Project updatedProject = client.updateProjectAttribute(
             windyoakProject.getId(),
             "description",
             "Unser Beleg für das Modul Verteilte Systeme");
-        System.out.println("...und füge Tag Java mit Hilfe vorher erhaltener ID hinzu.");
+        System.out.println("...und füge Tag REST mit Hilfe vorher erhaltener ID hinzu.");
+        pause();
         updatedProject = client.updateProjectAttribute(
             windyoakProject.getId(),
             "tagNames",
             "java,rest");
         
         System.out.println("Rufe alle vorhandenen Tags (Markierungen) aus Datenbank ab.");
+        pause();
         Tags allTags = client.getAllTags();
         System.out.println(String.format("Es sind %d Tags in der Datenbank vorhanden.",allTags.getTags().size()));
         
         String tag = "wundervoll";
         System.out.println(String.format("Füge '%s' als Tag hinzu (noch nicht vorhanden)", tag));
+        pause();
         client.addTag(tag, "Eine Markierung für Sachen, die wundervoll sind.");
         
         String doubleTag = "Java";
         System.out.println(String.format("Füge '%s' als Tag hinzu (bereits vorhanden, sollte Fehler werfen)", doubleTag));
+        pause();
         client.addTag(doubleTag, "Eine Programmiersprache.");
         
         
         System.out.println(String.format("Füge Tag '%s' zu Projekt windy oak hinzu", tag));
+        pause();
         updatedProject = client.updateProjectAttribute(
             windyoakProject.getId(),
             "tagNames",
             "java,rest,"+tag);
         
         System.out.println(String.format("Rufe alle Projekte die mit '%s' markiert sind ab.",tag));
+        pause();
         Projects foundProjects2 = client.searchProject("tag", tag);
         System.out.println(String.format("Es wurden %d Projekt(e) gefunden.", foundProjects2.getProjects().size()));
         
         System.out.println("Füge Kommentar zu windy-Oak Projekt hinzu.");
+        pause();
         Comment comment = client.addCommentToProject(
             windyoakProject.getId(), 
             "Weiter so!", 
@@ -608,11 +620,12 @@ public class Client
         System.out.println("Der Kommentar bekam die ID: " + comment.getId());
         
         System.out.println("Zeige Posts (Live RSS/Atom Feed von hinterlegter URL) zu Windy-Oak Projekt an.");
+        pause();
         RSSPosts rssPosts = client.getPostsForProject(windyoakProject.getId());
         
         if (rssPosts.getRSSPosts().size() > 0)
         {
-            System.out.println("Inhalt des letzten Posts: \n ======================================\n" + rssPosts.getRSSPosts().get(0).getDescription());
+            System.out.println("Inhalt des letzten Posts: \n======================================\n" + rssPosts.getRSSPosts().get(0).getDescription());
         }
         else
         {
@@ -621,18 +634,19 @@ public class Client
         System.out.println("======================================");
         
         System.out.println("Rufe zuletzt angelegte Projekte ab.");
+        pause();
         Projects recentProjects = client.getRecentProjects();
         System.out.println(String.format("Das neueste Projekt nennt sich '%s' und hat die ID %d", 
             recentProjects.getProjects().get(0).getTitle(),
             recentProjects.getProjects().get(0).getId()));
         
         System.out.println("Lösche Windy-Oak Projekt wieder.");
+        pause();
         Project deletedProject = client.deleteProject(windyoakProject.getId());
         
         System.out.println("Versuche gerade gelöschtes Projekt erneut aufzurufen");
+        pause();
         Project nomoreProject = client.getProjectByID(windyoakProject.getId());
-        
-        
         
     }
     

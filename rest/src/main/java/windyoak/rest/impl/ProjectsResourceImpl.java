@@ -303,11 +303,7 @@ public class ProjectsResourceImpl implements ProjectsResource {
                 }
             }
             //TAG
-            if (tagNames == null || tagNames.isEmpty()) 
-            {
-                project.setTags(null);
-            }
-            else
+            if (tagNames != null) 
             {
                 Pattern pt = Pattern.compile("^[\\w+,]*\\w$");
                 Matcher mt = pt.matcher(tagNames);
