@@ -90,41 +90,49 @@ public class ProjectsResourceImpl implements ProjectsResource {
             } else {
                 return Response.status(Status.NOT_ACCEPTABLE).entity("Unknown Status").build();
             }
-
-            try
+            
+            if (postsURL != null)
             {
-                project.setPostsURL(new URL(postsURL));
-            }
-            catch (MalformedURLException ex)
-            {
-                errormsg = "keine gültige Feed-URL angegeben";
-                Logger.getLogger(ProjectsResourceImpl.class.getName()).log(Level.SEVERE, errormsg, ex);
-                return Response.status(Status.BAD_REQUEST).entity(errormsg).build();
-            }
-            Pattern p = Pattern.compile("^([\\w\\s]+,[\\w\\s]*;)+$");
-            Matcher m = p.matcher(members);
-            if (m.matches()) {
-                Members memberList = new Members(); //= Arrays.asList(ts)
-                String[] MembersAndRoles = members.split(";");
-                for (String MemberAndRole : MembersAndRoles)
+                try
                 {
-                    Member member = new Member();
-                    String[] paar = MemberAndRole.split(",");
-                    member.setUser(storeService.getUser(paar[0]));
-                    if (paar.length == 1) {
-                        member.setRole("");
-                    } else {
-                        member.setRole(paar[1]);
-                    }
-                    if (member.getUser() == null) {
-                        return Response.status(Status.NOT_ACCEPTABLE).entity("Member " + paar[0] + " not in Database!").build();
-                    }
-                    memberList.getMembers().add(member);
+                    project.setPostsURL(new URL(postsURL));
                 }
-                project.setMembers(memberList);
-            } else {
-                return Response.status(Status.NOT_ACCEPTABLE).entity("No valid members Specification!").build();
+                catch (MalformedURLException ex)
+                {
+                    errormsg = "keine gültige Feed-URL angegeben";
+                    Logger.getLogger(ProjectsResourceImpl.class.getName()).log(Level.SEVERE, errormsg, ex);
+                    return Response.status(Status.BAD_REQUEST).entity(errormsg).build();
+                }
             }
+            
+            Pattern p = Pattern.compile("^([\\w\\s]+,[\\w\\s]*;)+$");
+            if (members != null)
+            {
+                Matcher m = p.matcher(members);
+                if (m.matches()) {
+                    Members memberList = new Members(); //= Arrays.asList(ts)
+                    String[] MembersAndRoles = members.split(";");
+                    for (String MemberAndRole : MembersAndRoles)
+                    {
+                        Member member = new Member();
+                        String[] paar = MemberAndRole.split(",");
+                        member.setUser(storeService.getUser(paar[0]));
+                        if (paar.length == 1) {
+                            member.setRole("");
+                        } else {
+                            member.setRole(paar[1]);
+                        }
+                        if (member.getUser() == null) {
+                            return Response.status(Status.NOT_ACCEPTABLE).entity("Member " + paar[0] + " not in Database!").build();
+                        }
+                        memberList.getMembers().add(member);
+                    }
+                    project.setMembers(memberList);
+                } else {
+                    return Response.status(Status.NOT_ACCEPTABLE).entity("No valid members Specification!").build();
+                }
+            }
+            
             //TAG
             if (tagNames == null || tagNames.isEmpty()){
             project.setTags(null);

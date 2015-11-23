@@ -198,7 +198,7 @@ public class StoreServiceInSQLite implements StoreService {
 
             // Nur wenn auch eine URL hinterlegt ist
 
-            if (postsURL != null && ! postsURL.matches("\\s*"))
+            if (postsURL != null && !postsURL.matches("\\s*"))
             {
                 try {
                     project.setPostsURL(new URL(postsURL));
@@ -336,6 +336,19 @@ public class StoreServiceInSQLite implements StoreService {
     public Project createProject(Project project) throws OakCoreException {
         this.establishConnection();
         int newProjectID;
+        
+        String postsURL;
+        
+        if (project.getPostsURL() == null)
+        {
+            postsURL = "";
+        }
+        else
+        {
+            postsURL = project.getPostsURL().toString();
+        }
+        
+        
         try {
             connection.setAutoCommit(false);
             sql = String.format(
@@ -353,30 +366,34 @@ public class StoreServiceInSQLite implements StoreService {
                     project.getDescription(),
                     new Date().getTime(),
                     project.getStatus(),
-                    project.getPostsURL()
+                    postsURL
             );
             //while(project.getMembers())
             statement.executeUpdate(sql);
             newProjectID = statement.getGeneratedKeys().getInt(1);
-
+            
             Members memberList = project.getMembers();
-            Iterator<Member> itMember = memberList.getMembers().iterator();
+            if (memberList != null)
+            {
+                Iterator<Member> itMember = memberList.getMembers().iterator();
 
-            while (itMember.hasNext()) {
-                Member member = itMember.next();
-                sql = String.format(
-                        "INSERT INTO projectmember "
-                        + "(projectID, username, role) "
-                        + "VALUES("
-                        + "'%d',"
-                        + "'%s',"
-                        + "'%s')",
-                        newProjectID,
-                        member.getUser().getUsername(),
-                        member.getRole()
-                );
-                statement.executeUpdate(sql);
+                while (itMember.hasNext()) {
+                    Member member = itMember.next();
+                    sql = String.format(
+                            "INSERT INTO projectmember "
+                            + "(projectID, username, role) "
+                            + "VALUES("
+                            + "'%d',"
+                            + "'%s',"
+                            + "'%s')",
+                            newProjectID,
+                            member.getUser().getUsername(),
+                            member.getRole()
+                    );
+                    statement.executeUpdate(sql);
+                }
             }
+            
             if (project.getTags() != null) 
             {
                 Tags tags = project.getTags();
@@ -394,10 +411,9 @@ public class StoreServiceInSQLite implements StoreService {
                     statement.executeUpdate(sql);
 
                 }
-
-                connection.commit();
-                connection.setAutoCommit(true);
             }
+            connection.commit();
+            connection.setAutoCommit(true);
         } catch (SQLException ex) {
             errorMessage = "Fehler bei Datenbankabfrage";
             Logger.getLogger(StoreServiceInSQLite.class.getName()).log(Level.SEVERE, errorMessage, ex);
